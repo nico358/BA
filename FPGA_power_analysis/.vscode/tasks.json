@@ -1,0 +1,19 @@
+{
+    "tasks": [
+        {
+            "label": "build embedded hello world on WSL",
+            "type": "shell",
+            "command": "avr-g++",
+            "args": [
+                "-g",
+                "-o",
+                "/home/nic/projects/helloworld/helloworld.out",
+                "helloworld.cpp"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
