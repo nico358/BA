@@ -6,18 +6,6 @@
 		{
 			"name": "dummy",
 			"path": "empty"
-		},
-		{
-			"name": "FPGA_power_analysis",
-			"path": "C:\\Users\\Nicolas Frick\\Documents\\PlatformIO\\Projects\\FPGA_power_analysis"
-		},
-		{
-			"name": "elasticnodemonitor",
-			"path": "C:\\Users\\Nicolas Frick\\OneDrive\\Documents\\Eigene Dateien\\Uni\\SoSe19\\BA\\Repos\\elasticnodemonitor"
-		},
-		{
-			"name": "elasticnodetest",
-			"path": "C:\\Users\\Nicolas Frick\\OneDrive\\Documents\\Eigene Dateien\\Uni\\SoSe19\\BA\\Repos\\elasticnodetest"
 		}
 	],
 	"settings": {
