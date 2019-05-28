@@ -20,7 +20,7 @@
  ****/
 
 #include "debug.h"
-#include "lib/LUFA-Setup/Helpers.h"
+#include "../lib/LUFA-Setup/Helpers.h"
 
 void debugWriteBin(uint32_t num, uint8_t length);
 

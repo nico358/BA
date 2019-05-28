@@ -5,10 +5,10 @@
                 "name": "(gdb) Launch",
                 "type": "cppdbg",
                 "request": "launch",
-                "program": "/home/nic/projects/helloworld/helloworld.out",
+                "program": "out/helloworld.out",
                 "args": ["-fThreading"],
                 "stopAtEntry": true,
-                "cwd": "/home/nic/projects/helloworld/",
+                "cwd": "out/",
                 "environment": [],
                 "externalConsole": true,
                 "windows": {

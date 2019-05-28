@@ -8,7 +8,7 @@
             "args": [
                 "-g",
                 "-o",
-                "/home/nic/projects/helloworld/helloworld.out",
+                "out/helloworld.out",
                 "helloworld.cpp"
             ],
             "group": {

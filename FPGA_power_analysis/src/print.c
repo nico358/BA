@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
-#include "CException.h"
+#include "../CException.h"
 
 int
 main(void)

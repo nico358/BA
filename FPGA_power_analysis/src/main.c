@@ -1,7 +1,7 @@
-#include "FPGA_power_analysis/BazelTemplate/Functions.h"
+#include "../BazelTemplate/Functions.h"
 #include <util/delay.h>
 #include <avr/io.h>
-#include "FPGA_power_analysis/lib/debug/debug.h"
+#include "../lib/debug/debug.h"
 
 int
 main(void)
