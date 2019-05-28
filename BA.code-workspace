@@ -6,10 +6,6 @@
 		{
 			"name": "dummy",
 			"path": "empty"
-		},
-		{
-			"name": "FPGA_power_analysis",
-			"path": "C:\\Users\\Nicolas Frick\\Documents\\PlatformIO\\Projects\\FPGA_power_analysis"
 		}
 	],
 	"settings": {
