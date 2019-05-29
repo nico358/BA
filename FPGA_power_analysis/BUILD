@@ -51,11 +51,11 @@ default_embedded_binary(
     ],
 )
 
-cc_binary(
-    name = "Print",
-    srcs = ["src/print.c"],
-    deps = [":MyEmbeddedLib"],
-)
+#cc_binary(
+#    name = "Print",
+#    srcs = ["src/print.c"],
+#    deps = [":MyEmbeddedLib"],
+#)
 
 unity_test(
     copts = mcu_avr_gcc_flag() + cpu_frequency_flag(),
