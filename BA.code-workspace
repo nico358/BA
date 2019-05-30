@@ -1,17 +1,6 @@
 {
 	"folders": [
-		{
-			"name": "FPGA_power_analysis",
-			"path": "C:\\Users\\Nicolas Frick\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc\\LocalState\\rootfs\\home\\nic\\projects\\frick\\FPGA_power_analysis"
-		},
-		{
-			"name": "elasticnodemonitor",
-			"path": "C:\\Users\\Nicolas Frick\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc\\LocalState\\rootfs\\home\\nic\\projects\\elasticnodemonitor"
-		},
-		{
-			"name": "elasticnodetest",
-			"path": "C:\\Users\\Nicolas Frick\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc\\LocalState\\rootfs\\home\\nic\\projects\\elasticnodetest"
-		},
+		
 		{
 			"name": "thesis_project",
 			"path": "C:\\Users\\Nicolas Frick\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc\\LocalState\\rootfs\\home\\nic\\projects\\frick\\thesis_project"
@@ -26,7 +15,11 @@
 		"files.associations": {
 			"stdio.h": "c",
 			"string": "cpp",
-			"io.h": "c"
+			"io.h": "c",
+			"delay.h": "c",
+			"functions.h": "c",
+			"debug.h": "c",
+			"main.h": "c"
 		}
 	}
 }
