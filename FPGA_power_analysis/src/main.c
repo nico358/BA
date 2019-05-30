@@ -2,6 +2,7 @@
 #include <util/delay.h>
 #include <avr/io.h>
 #include "lib/debug/debug.h"
+#include "main.h"
 
 int
 main(void)
@@ -17,5 +18,6 @@ main(void)
     debugWriteLine("Running...");
     _delay_ms(500);
   }
+  
 
 }
