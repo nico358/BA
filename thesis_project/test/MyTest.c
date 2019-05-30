@@ -1,10 +1,13 @@
-//#include "unity.h"
+#include "unity.h"
 #include "BazelTemplate/Functions.h"
+#include "CException.h"
+
 
 void
 test_shouldPass(void)
 {
   TEST_ASSERT_EQUAL(5, add(3,2));
+
 }
 
 void

@@ -29,7 +29,9 @@
 			"delay.h": "c",
 			"functions.h": "c",
 			"debug.h": "c",
-			"main.h": "c"
+			"main.h": "c",
+			"unity.h": "c",
+			"cexception.h": "c"
 		}
 	}
 }

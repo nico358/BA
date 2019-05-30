@@ -22,7 +22,10 @@
                     "${workspaceFolder}/**",
                     "${workspaceFolder}/",
                     "C:\\Users\\Nicolas Frick\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc\\LocalState\\rootfs\\usr\\",
-                    "C:\\Users\\Nicolas Frick\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc\\LocalState\\rootfs\\usr\\lib\\avr\\include\\"
+                    "C:\\Users\\Nicolas Frick\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc\\LocalState\\rootfs\\usr\\lib\\avr\\include\\",
+                    "C:\\Users\\Nicolas Frick\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc\\LocalState\\rootfs\\home\nic\\libs\\Unity-master\\src\\",
+                    "C:\\Users\\Nicolas Frick\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc\\LocalState\\rootfs\\home\nic\\libs\\CException-master\\lib\\",
+                    "C:\\Users\\Nicolas Frick\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc\\LocalState\\rootfs\\home\nic\\libs\\CMock-master\\src\\"
                 ],
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": ""
