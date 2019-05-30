@@ -5,6 +5,16 @@
 			"name": "thesis_project",
 			"path": "C:\\Users\\Nicolas Frick\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc\\LocalState\\rootfs\\home\\nic\\projects\\frick\\thesis_project"
 
+		},
+		{
+			"name": "elasticnodemonitor",
+			"path": "C:\\Users\\Nicolas Frick\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc\\LocalState\\rootfs\\home\\nic\\projects\\elasticnodemonitor"
+
+		},
+		{
+			"name": "elasticnodetest",
+			"path": "C:\\Users\\Nicolas Frick\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc\\LocalState\\rootfs\\home\\nic\\projects\\elasticnodetest"
+
 		}
 	],
 	"settings": {
