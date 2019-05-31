@@ -57,13 +57,27 @@ default_embedded_binary(
         ":MyEmbeddedLib",
         "@CException",
     ],
+    visibility = ["//test:__pkg__"],
 )
 
+#example binary rule
 #cc_binary(
 #    name = "Print",
-#    srcs = ["src/print.c"],
+#    srcs = ["test/print.c"],
 #    deps = [":MyEmbeddedLib"],
+#    visibility = ["//visibility:public"],
 #)
+
+cc_binary(
+    name = "First",
+    srcs = ["test/first.c"],
+    deps = [
+        ":MyEmbeddedLib",
+        ":Unity",
+        "@CException",
+    ],
+    visibility = ["//visibility:public"],
+)
 
 unity_test(
     copts = mcu_avr_gcc_flag() + cpu_frequency_flag(),
@@ -78,6 +92,7 @@ generate_test_runner(
     file_name = "test/MyTest.c",
 )
 
+#use on platform with bazel build embeddedTest --config=motherboard
 default_embedded_binary(
     name = "embeddedTest",
     srcs = [
@@ -90,8 +105,21 @@ default_embedded_binary(
         ":MyEmbeddedLib",
         ":Unity",
     ],
+    visibility = ["//visibility:public"],
 )
 
 create_unity_library(
     name = "Unity",
 )
+
+
+#package(default_visibility = ["//visibility:public"])
+
+#cc_test(
+#    name = "MyTest",
+#    srcs = ["test/MyTest.c"],
+#    deps = [
+#        ":Unity",
+#        ":MyEmbeddedLib",
+#    ],
+#)

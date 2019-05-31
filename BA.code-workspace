@@ -3,17 +3,21 @@
 		
 		{
 			"name": "thesis_project",
-			"path": "C:\\Users\\Nicolas Frick\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc\\LocalState\\rootfs\\home\\nic\\projects\\frick\\thesis_project"
+			"path": "C:\\Users\\thesis\\wsl\\frick\\thesis_project"
 
 		},
 		{
+			"name": "bazel_stage3",
+			"path": "C:\\Users\\thesis\\wsl\\bazel_examples\\cpp-tutorial\\stage3\\",
+		},
+		{
 			"name": "elasticnodemonitor",
-			"path": "C:\\Users\\Nicolas Frick\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc\\LocalState\\rootfs\\home\\nic\\projects\\elasticnodemonitor"
+			"path": "C:\\Users\\thesis\\wsl\\elasticnodemonitor"
 
 		},
 		{
 			"name": "elasticnodetest",
-			"path": "C:\\Users\\Nicolas Frick\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc\\LocalState\\rootfs\\home\\nic\\projects\\elasticnodetest"
+			"path": "C:\\Users\\thesis\\wsl\\elasticnodetest"
 
 		}
 	],
@@ -34,6 +38,12 @@
 			"cexception.h": "c",
 			"ruby.h": "c",
 			"cmock.h": "c"
+		},
+		"files.exclude": {
+			"**/.classpath": true,
+			"**/.project": true,
+			"**/.settings": true,
+			"**/.factorypath": true
 		}
 	}
 }
