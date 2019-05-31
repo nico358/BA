@@ -114,7 +114,8 @@ create_unity_library(
 
 
 #package(default_visibility = ["//visibility:public"])
-
+#runs without main function if compiled inside /test folder
+#runs with main function from root (core dump in logfile)
 #cc_test(
 #    name = "MyTest",
 #    srcs = ["test/MyTest.c"],
@@ -123,3 +124,12 @@ create_unity_library(
 #        ":MyEmbeddedLib",
 #    ],
 #)
+
+cc_test(
+    name = "First",
+    srcs = ["test/host_tests/first.c"],
+    deps = [
+        ":Unity",
+        "@CException",
+    ],
+)

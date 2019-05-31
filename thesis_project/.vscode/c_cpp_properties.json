@@ -4,7 +4,8 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/",
+                "${workspaceFolder}/lib/**",
+                "${workspaceFolder}/lib/softSerial**",
                 "C:\\Users\\Nicolas Frick\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc\\LocalState\\rootfs\\usr\\",
                 "C:\\Users\\Nicolas Frick\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc\\LocalState\\rootfs\\usr\\lib\\avr\\include\\",
                 "C:\\Users\\Nicolas Frick\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc\\LocalState\\rootfs\\home\nic\\libs\\Unity-master\\src\\",
@@ -25,7 +26,8 @@
             "browse": {
                 "path": [
                     "${workspaceFolder}/**",
-                    "${workspaceFolder}/",
+                    "${workspaceFolder}/lib/**",
+                    "${workspaceFolder}/lib/softSerial**",
                     "C:\\Users\\Nicolas Frick\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc\\LocalState\\rootfs\\usr\\",
                     "C:\\Users\\Nicolas Frick\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc\\LocalState\\rootfs\\usr\\lib\\avr\\include\\",
                     "C:\\Users\\Nicolas Frick\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc\\LocalState\\rootfs\\home\nic\\libs\\Unity-master\\src\\",

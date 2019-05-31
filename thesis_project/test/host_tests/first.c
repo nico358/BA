@@ -7,9 +7,7 @@
 int main(void){
     setUp();
 
-char msg[100];
-sprintf(msg, "Hello %d\r\n", 13);
-printf(msg);
+    TEST_ASSERT(0);
 
     tearDown();
 
