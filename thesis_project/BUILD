@@ -68,16 +68,16 @@ default_embedded_binary(
 #    visibility = ["//visibility:public"],
 #)
 
-cc_binary(
-    name = "First",
-    srcs = ["test/first.c"],
-    deps = [
-        ":MyEmbeddedLib",
-        ":Unity",
-        "@CException",
-    ],
-    visibility = ["//visibility:public"],
-)
+#cc_binary(
+#    name = "First",
+#    srcs = ["test/first.c"],
+#    deps = [
+#        ":MyEmbeddedLib",
+#        ":Unity",
+#        "@CException",
+#    ],
+#    visibility = ["//visibility:public"],
+#)
 
 unity_test(
     copts = mcu_avr_gcc_flag() + cpu_frequency_flag(),
