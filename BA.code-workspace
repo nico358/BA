@@ -31,7 +31,9 @@
 			"debug.h": "c",
 			"main.h": "c",
 			"unity.h": "c",
-			"cexception.h": "c"
+			"cexception.h": "c",
+			"ruby.h": "c",
+			"cmock.h": "c"
 		}
 	}
 }

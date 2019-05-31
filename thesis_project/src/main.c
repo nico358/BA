@@ -8,8 +8,6 @@
 int
 main(void)
 {
-  DDRB |= _BV(PB5);
-  PORTB |= _BV(PB5);
   debugInit(NULL);
   _delay_ms(1000);
   int x = add(1,2);
