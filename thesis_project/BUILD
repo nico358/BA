@@ -132,6 +132,5 @@ cc_test(
     deps = [
         ":Unity",
         "@CException",
-        "//lib:gpio",
     ],
 )
