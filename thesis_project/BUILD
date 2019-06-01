@@ -16,9 +16,11 @@ cc_library(
     name = "MyEmbeddedLib",
     srcs = ["src/Functions.c"],
     hdrs = ["BazelTemplate/Functions.h"],
-    deps = ["@CException"],
+    deps = [
+        "@CException",
+        ":DebugLib"
+    ],
 )
-
 
 LUFA_COPTS = [
     "-Iexternal/LUFA/Demos/Device/ClassDriver/VirtualSerial/Config",
@@ -60,25 +62,6 @@ default_embedded_binary(
     visibility = ["//test:__pkg__"],
 )
 
-#example binary rule
-#cc_binary(
-#    name = "Print",
-#    srcs = ["test/print.c"],
-#    deps = [":MyEmbeddedLib"],
-#    visibility = ["//visibility:public"],
-#)
-
-#cc_binary(
-#    name = "First",
-#    srcs = ["test/first.c"],
-#    deps = [
-#        ":MyEmbeddedLib",
-#        ":Unity",
-#        "@CException",
-#    ],
-#    visibility = ["//visibility:public"],
-#)
-
 unity_test(
     copts = mcu_avr_gcc_flag() + cpu_frequency_flag(),
     file_name = "test/MyTest.c",
@@ -112,6 +95,24 @@ create_unity_library(
     name = "Unity",
 )
 
+#example binary rule
+#cc_binary(
+#    name = "Print",
+#    srcs = ["test/print.c"],
+#    deps = [":MyEmbeddedLib"],
+#    visibility = ["//visibility:public"],
+#)
+
+#cc_binary(
+#    name = "First",
+#    srcs = ["test/first.c"],
+#    deps = [
+#        ":MyEmbeddedLib",
+#        ":Unity",
+#        "@CException",
+#    ],
+#    visibility = ["//visibility:public"],
+#)
 
 #package(default_visibility = ["//visibility:public"])
 #runs without main function if compiled inside /test folder
@@ -131,5 +132,6 @@ cc_test(
     deps = [
         ":Unity",
         "@CException",
+        "//lib:gpio",
     ],
 )

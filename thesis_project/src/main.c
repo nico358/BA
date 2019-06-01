@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "main.h"
+#include "include/main.h"
 
 
 int16_t received;
@@ -32,6 +32,7 @@ bool softUartModeTx = false;
 void softUartTx(void);
 void softUartRx(void);
 
+
 /** Main program entry point. This routine contains the overall program flow, including initial
  *  setup of all components and the main program loop.
  */
@@ -40,7 +41,6 @@ int main(void)
 {
 
 	DDRC |= _BV(6) | _BV(7);
-	
 	/* Initialization */
 	SetupHardware();
 	wdt_reset();
