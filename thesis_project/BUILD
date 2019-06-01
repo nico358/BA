@@ -17,29 +17,30 @@ cc_library(
     srcs = ["src/Functions.c"],
     hdrs = ["BazelTemplate/Functions.h"],
     deps = [
+        "//lib:DebugLib",
         "@CException",
-        ":DebugLib"
     ],
 )
 
-LUFA_COPTS = [
-    "-Iexternal/LUFA/Demos/Device/ClassDriver/VirtualSerial/Config",
-    "-isystem external/LUFA/",
-    # "-Iexternal/LUFA/Demos/Device/ClassDriver/VirtualSerial/Config/",
-]
+#LUFA_COPTS = [
+#    "-Iexternal/LUFA/Demos/Device/ClassDriver/VirtualSerial/Config",
+#    "-isystem external/LUFA/",
+#    # "-Iexternal/LUFA/Demos/Device/ClassDriver/VirtualSerial/Config/",
+#]
 
 # lib definitions
-cc_library(
-	name = "DebugLib",
-	srcs = ["lib/debug/debugUsb.c", "lib/LUFA-Setup/Helpers.c"],
-	hdrs = glob(["lib/debug/*.h"]) + ["lib/LUFA-Setup/Helpers.h"],
-
-	visibility = ["//visibility:public"],
-
-	copts = mcu_avr_gcc_flag() + cpu_frequency_flag() + LUFA_COPTS,
-	linkstatic = True,
-	deps = ["@LUFA//:VirtualSerial"],
-)
+#cc_library(
+#    name = "DebugLib",
+#    srcs = [
+#        "lib/LUFA-Setup/Helpers.c",
+#        "lib/debug/debugUsb.c",
+#    ],
+#    hdrs = glob(["lib/debug/*.h"]) + ["lib/LUFA-Setup/Helpers.h"],
+#    copts = mcu_avr_gcc_flag() + cpu_frequency_flag() + LUFA_COPTS,
+#    linkstatic = True,
+#    visibility = ["//visibility:public"],
+#    deps = ["@LUFA//:VirtualSerial"],
+#)
 
 cc_library(
     name = "MainHeader",
@@ -53,13 +54,14 @@ default_embedded_binary(
     srcs = ["src/main.c"],
     copts = mcu_avr_gcc_flag() + cpu_frequency_flag(),
     linkopts = mcu_avr_gcc_flag(),
+    visibility = ["//test:__pkg__"],
     deps = [
+        "//lib:DebugLib",
         ":MainHeader",
-        ":DebugLib",
         ":MyEmbeddedLib",
         "@CException",
+        "//lib:gpio"
     ],
-    visibility = ["//test:__pkg__"],
 )
 
 unity_test(
@@ -84,11 +86,11 @@ default_embedded_binary(
     ],
     copts = mcu_avr_gcc_flag() + cpu_frequency_flag(),
     linkopts = mcu_avr_gcc_flag() + cpu_frequency_flag(),
+    visibility = ["//visibility:public"],
     deps = [
         ":MyEmbeddedLib",
         ":Unity",
     ],
-    visibility = ["//visibility:public"],
 )
 
 create_unity_library(
@@ -131,7 +133,7 @@ cc_test(
     srcs = ["test/host_tests/first.c"],
     deps = [
         ":Unity",
-        "@CException",
         "//lib:gpio",
+        "@CException",
     ],
 )
