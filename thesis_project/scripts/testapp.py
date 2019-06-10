@@ -1,3 +1,5 @@
+import os
+
 john_data = {
     'name': 'John Q. Public',
     'street': '123 Main St.',
@@ -34,6 +36,8 @@ def initial_transform(data):
             for key in data[item]:
                 data[key] = data[item][key]
             data.pop(item)
+
+    #os.system('ls /usr')
 
     return data
 

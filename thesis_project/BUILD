@@ -2,6 +2,7 @@ load(
     "@EmbeddedSystemsBuildScripts//:unity.bzl",
     "generate_test_runner",
     "unity_test",
+    #"generate_a_unity_test_for_every_file"
 )
 load(
     "@AvrToolchain//:helpers.bzl",
@@ -12,6 +13,14 @@ load(
     "mcu_avr_gcc_flag",
 )
 
+#commonCopts = mcu_avr_gcc_flag() + cpu_frequency_flag()
+
+LUFA_COPTS = [
+    "-Iexternal/LUFA/Demos/Device/ClassDriver/VirtualSerial/Config",
+    "-isystem external/LUFA/",
+    # "-Iexternal/LUFA/Demos/Device/ClassDriver/VirtualSerial/Config/",
+]
+
 cc_library(
     name = "MyEmbeddedLib",
     srcs = ["src/Functions.c"],
@@ -21,12 +30,6 @@ cc_library(
         ":DebugLib"
     ],
 )
-
-LUFA_COPTS = [
-    "-Iexternal/LUFA/Demos/Device/ClassDriver/VirtualSerial/Config",
-    "-isystem external/LUFA/",
-    # "-Iexternal/LUFA/Demos/Device/ClassDriver/VirtualSerial/Config/",
-]
 
 # lib definitions
 cc_library(
@@ -126,11 +129,11 @@ create_unity_library(
 #    ],
 #)
 
-cc_test(
-    name = "First",
-    srcs = ["test/host_tests/first.c"],
-    deps = [
-        ":Unity",
-        "@CException",
-    ],
-)
+# cc_test(
+#     name = "First",
+#     srcs = ["test/host_tests/first.c"],
+#     deps = [
+#         ":Unity",
+#         "@CException",
+#     ],
+# )

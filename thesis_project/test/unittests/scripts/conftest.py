@@ -1,4 +1,6 @@
 import pytest
+import mock as mocker
+import os
 
 @pytest.fixture(params=['nodict', 'dict'])#(scope="module")
 def generate_initial_transform_parameters(request):
@@ -24,5 +26,8 @@ def generate_initial_transform_parameters(request):
         }
         expected_output['siblings'] = ['Michael R. Public', 'Suzy Q. Public']
         expected_output['parents'] = ['John Q. Public Sr.', 'Mary S. Public']
+
+    #mocker.patch.object(os, 'system')
+    #mocker.system.return_value("ls /usr")
 
     return test_input, expected_output

@@ -1,0 +1,144 @@
+Config: 0b01010011 1248
+Current USB:		(0EE8) 72.95 mA
+Current MONITOR:	(00FB) 12.26 mA
+Current WIRELESS:	(01FA) 24.72 mA
+Current MCU:		(00AC) 8.40 mA
+Current FPGA VCCINT:	(0000) 0.00 mA
+Current FPGA VCCAUX:	(00D3) 10.31 mA
+
+Config: 0b01010011 1248
+Current USB:		(0EE8) 72.95 mA
+Current MONITOR:	(00FD) 12.36 mA
+Current WIRELESS:	(01FA) 24.72 mA
+Current MCU:		(00AC) 8.40 mA
+Current FPGA VCCINT:	(0000) 0.00 mA
+Current FPGA VCCAUX:	(00D3) 10.31 mA
+
+Config: 0b01010011 1248
+Current USB:		(0EE8) 72.95 mA
+Current MONITOR:	(00FD) 12.36 mA
+Current WIRELESS:	(01F9) 24.67 mA
+Current MCU:		(00AC) 8.40 mA
+Current FPGA VCCINT:	(0000) 0.00 mA
+Current FPGA VCCAUX:	(00D3) 10.31 mA
+
+Config: 0b01010011 1248
+Current USB:		(0EE8) 72.95 mA
+Current MONITOR:	(00FD) 12.36 mA
+Current WIRELESS:	(01FA) 24.72 mA
+Current MCU:		(00AC) 8.40 mA
+Current FPGA VCCINT:	(0000) 0.00 mA
+Current FPGA VCCAUX:	(00D3) 10.31 mA
+
+Config: 0b01010011 1248
+Current USB:		(0EE8) 72.95 mA
+Current MONITOR:	(00FD) 12.36 mA
+Current WIRELESS:	(01FA) 24.72 mA
+Current MCU:		(00AC) 8.40 mA
+Current FPGA VCCINT:	(0000) 0.00 mA
+Current FPGA VCCAUX:	(00D3) 10.31 mA
+
+Config: 0b01010011 1248
+Current USB:		(0EE8) 72.95 mA
+Current MONITOR:	(00FD) 12.36 mA
+Current WIRELESS:	(01FA) 24.72 mA
+Current MCU:		(00AC) 8.40 mA
+Current FPGA VCCINT:	(0000) 0.00 mA
+Current FPGA VCCAUX:	(00D3) 10.31 mA
+
+Config: 0b01010011 1248
+Current USB:		(0EE8) 72.95 mA
+Current MONITOR:	(00FD) 12.36 mA
+Current WIRELESS:	(01F9) 24.67 mA
+Current MCU:		(00AC) 8.40 mA
+Current FPGA VCCINT:	(0000) 0.00 mA
+Current FPGA VCCAUX:	(00D3) 10.31 mA
+
+Config: 0b01010011 1248
+Current USB:		(0EE8) 72.95 mA
+Current MONITOR:	(00FD) 12.36 mA
+Current WIRELESS:	(01F9) 24.67 mA
+Current MCU:		(00AC) 8.40 mA
+Current FPGA VCCINT:	(0000) 0.00 mA
+Current FPGA VCCAUX:	(00D3) 10.31 mA
+
+Config: 0b01010011 1248
+Current USB:		(0EE8) 72.95 mA
+Current MONITOR:	(00FD) 12.36 mA
+Current WIRELESS:	(01F9) 24.67 mA
+Current MCU:		(00AC) 8.40 mA
+Current FPGA VCCINT:	(0000) 0.00 mA
+Current FPGA VCCAUX:	(00D3) 10.31 mA
+
+Config: 0b01010011 1248
+Current USB:		(0EE8) 72.95 mA
+Current MONITOR:	(00FD) 12.36 mA
+Current WIRELESS:	(01F9) 24.67 mA
+Current MCU:		(00AC) 8.40 mA
+Current FPGA VCCINT:	(0000) 0.00 mA
+Current FPGA VCCAUX:	(00D3) 10.31 mA
+
+Config: 0b01010011 1248
+Current USB:		(0EE8) 72.95 mA
+Current MONITOR:	(00FD) 12.36 mA
+Current WIRELESS:	(01F9) 24.67 mA
+Current MCU:		(00AC) 8.40 mA
+Current FPGA VCCINT:	(0000) 0.00 mA
+Current FPGA VCCAUX:	(00D3) 10.31 mA
+
+Config: 0b01010011 1248
+Current USB:		(0EE8) 72.95 mA
+Current MONITOR:	(00FD) 12.36 mA
+Current WIRELESS:	(01FA) 24.72 mA
+Current MCU:		(00AC) 8.40 mA
+Current FPGA VCCINT:	(0000) 0.00 mA
+Current FPGA VCCAUX:	(00D3) 10.31 mA
+
+Config: 0b01010011 1248
+Current USB:		(0EE8) 72.95 mA
+Current MONITOR:	(00FD) 12.36 mA
+Current WIRELESS:	(01F9) 24.67 mA
+Current MCU:		(00AC) 8.40 mA
+Current FPGA VCCINT:	(0000) 0.00 mA
+Current FPGA VCCAUX:	(00D3) 10.31 mA
+
+Config: 0b01010011 1248
+Current USB:		(0EE8) 72.95 mA
+Current MONITOR:	(00FD) 12.36 mA
+Current WIRELESS:	(01FA) 24.72 mA
+Current MCU:		(00AC) 8.40 mA
+Current FPGA VCCINT:	(0000) 0.00 mA
+Current FPGA VCCAUX:	(00D3) 10.31 mA
+
+Config: 0b01010011 1248
+Current USB:		(0EE8) 72.95 mA
+Current MONITOR:	(00FD) 12.36 mA
+Current WIRELESS:	(01F9) 24.67 mA
+Current MCU:		(00AC) 8.40 mA
+Current FPGA VCCINT:	(0000) 0.00 mA
+Current FPGA VCCAUX:	(00D3) 10.31 mA
+
+Config: 0b01010011 1248
+Current USB:		(0EE8) 72.95 mA
+Current MONITOR:	(00FD) 12.36 mA
+Current WIRELESS:	(01FA) 24.72 mA
+Current MCU:		(00AC) 8.40 mA
+Current FPGA VCCINT:	(0000) 0.00 mA
+Current FPGA VCCAUX:	(00D3) 10.31 mA
+
+Config: 0b01010011 1248
+Current USB:		(0EE8) 72.95 mA
+Current MONITOR:	(00FD) 12.36 mA
+Current WIRELESS:	(01FA) 24.72 mA
+Current MCU:		(00AC) 8.40 mA
+Current FPGA VCCINT:	(0000) 0.00 mA
+Current FPGA VCCAUX:	(00D3) 10.31 mA
+
+Config: 0b01010011 1248
+Current USB:		(0EE8) 72.95 mA
+Current MONITOR:	(00FD) 12.36 mA
+Current WIRELESS:	(01F9) 24.67 mA
+Current MCU:		(00AC) 8.40 mA
+Current FPGA VCCINT:	(0000) 0.00 mA
+Current FPGA VCCAUX:	(00D3) 10.31 mA
+
