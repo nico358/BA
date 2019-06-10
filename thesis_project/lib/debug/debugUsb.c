@@ -19,8 +19,11 @@
  * }
  ****/
 
-#include "debug.h"
+#include <stdint.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include "lib/LUFA-Setup/Helpers.h"
+#include "lib/debug/debug.h"
 
 void debugWriteBin(uint32_t num, uint8_t length);
 
@@ -41,7 +44,8 @@ void debugEnable(void)
 void debugInit(void (*receiveHandler)(uint8_t))
 {
 	setUpUsbSerial();
-	debugWriteString("\r\n\n\n\n\n\n\n\n\n\nStarting debug...\n");
+	debugWriteString("\r\n\n\n\nStarting debug...");
+	debugNewLine();
 }
 
 void setDebugReceiveHandler(void (*receiveHandler)(uint8_t))
@@ -168,9 +172,9 @@ void debugWriteBin(uint32_t num, uint8_t length)
 	for(; i; i >>= 1)
 	{
 		if (number & i)
-			debugWriteChar('1');
+			debugWriteCharBlock('1');
 		else
-			debugWriteChar('0');
+			debugWriteCharBlock('0');
 		// number >>= 1;
 	}
 }

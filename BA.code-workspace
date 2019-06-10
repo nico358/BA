@@ -1,24 +1,23 @@
 {
 	"folders": [
-		
 		{
 			"name": "thesis_project",
 			"path": "C:\\Users\\thesis\\wsl\\frick\\thesis_project"
-
 		},
 		{
 			"name": "bazel_stage3",
-			"path": "C:\\Users\\thesis\\wsl\\bazel_examples\\cpp-tutorial\\stage3\\",
+			"path": "C:\\Users\\thesis\\wsl\\bazel_examples\\cpp-tutorial\\stage3\\"
 		},
 		{
 			"name": "elasticnodemonitor",
 			"path": "C:\\Users\\thesis\\wsl\\elasticnodemonitor"
-
 		},
 		{
 			"name": "elasticnodetest",
 			"path": "C:\\Users\\thesis\\wsl\\elasticnodetest"
-
+		},
+		{
+			"path": "C:\\Users\\Nicolas Frick\\OneDrive\\Documents\\Eigene Dateien\\Uni\\SoSe19\\BA\\repos\\elasticnodemonitor"
 		}
 	],
 	"settings": {
@@ -38,7 +37,14 @@
 			"cexception.h": "c",
 			"ruby.h": "c",
 			"cmock.h": "c",
-			"current_measurement.h": "c"
+			"current_measurement.h": "c",
+			"power.h": "c",
+			"current_sense.h": "c",
+			"iom32u4.h": "c",
+			"wdt.h": "c",
+			"i2cmaster.h": "c",
+			"circular_buffer.h": "c",
+			"interrupt.h": "c"
 		},
 		"files.exclude": {
 			"**/.classpath": true,

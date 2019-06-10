@@ -1,10 +1,4 @@
 load(
-    "@EmbeddedSystemsBuildScripts//:unity.bzl",
-    "generate_test_runner",
-    "unity_test",
-    #"generate_a_unity_test_for_every_file"
-)
-load(
     "@AvrToolchain//:helpers.bzl",
     "cpu_frequency_flag",
     "create_unity_library",
@@ -12,128 +6,69 @@ load(
     "generate_hex",
     "mcu_avr_gcc_flag",
 )
+load(
+    "@EmbeddedSystemsBuildScripts//:unity.bzl",
+    "generate_test_runner",
+    "unity_test",
+	"generate_a_unity_test_for_every_file"
+)
 
-#commonCopts = mcu_avr_gcc_flag() + cpu_frequency_flag()
+commonCopts = mcu_avr_gcc_flag() + cpu_frequency_flag()
+
+# print("\nFlags:\n")
+# print(mcu_avr_gcc_flag())
+# print(cpu_frequency_flag())
+# print("\n\n")
 
 LUFA_COPTS = [
     "-Iexternal/LUFA/Demos/Device/ClassDriver/VirtualSerial/Config",
     "-isystem external/LUFA/",
-    # "-Iexternal/LUFA/Demos/Device/ClassDriver/VirtualSerial/Config/",
 ]
 
-cc_library(
-    name = "MyEmbeddedLib",
-    srcs = ["src/Functions.c"],
-    hdrs = ["BazelTemplate/Functions.h"],
-    deps = [
-        "@CException",
-        ":DebugLib"
-    ],
-)
-
-# lib definitions
-cc_library(
-	name = "DebugLib",
-	srcs = ["lib/debug/debugUsb.c", "lib/LUFA-Setup/Helpers.c"],
-	hdrs = glob(["lib/debug/*.h"]) + ["lib/LUFA-Setup/Helpers.h"],
-
-	visibility = ["//visibility:public"],
-
-	copts = mcu_avr_gcc_flag() + cpu_frequency_flag() + LUFA_COPTS,
-	linkstatic = True,
-	deps = ["@LUFA//:VirtualSerial"],
-)
-
-cc_library(
-    name = "MainHeader",
-    srcs = [
-        "include/main.h",
-    ],
-)
-
 default_embedded_binary(
-    name = "MyApp",
-    srcs = ["src/main.c"],
-    copts = mcu_avr_gcc_flag() + cpu_frequency_flag(),
-    linkopts = mcu_avr_gcc_flag(),
-    deps = [
-        ":MainHeader",
-        ":DebugLib",
-        ":MyEmbeddedLib",
-        "@CException",
-    ],
-    visibility = ["//test:__pkg__"],
+	name = "Main",
+	srcs = [
+		"src/main.c"],
+	copts = commonCopts + LUFA_COPTS,
+	linkopts = commonCopts + LUFA_COPTS + ["-Wl,-u,vfprintf -lprintf_flt -lm"],
+	deps = [
+		"//lib:DebugLib",
+        "//lib:CurrentSenseLib"
+	],
+    uploader = "//:stk_upload_script"
 )
 
-unity_test(
-    copts = mcu_avr_gcc_flag() + cpu_frequency_flag(),
-    file_name = "test/MyTest.c",
-    linkopts = mcu_avr_gcc_flag() + cpu_frequency_flag(),
-    deps = [":MyEmbeddedLib"],
+
+# Uploading stuff
+load("//:vars.bzl", "defineProgrammer")
+
+defineProgrammer(
+  name = "programmerPort",
+  port = "/dev/tty.usbmodem142101"
 )
 
-generate_test_runner(
-    name = "embeddedTestRunner",
-    cexception = False,
-    file_name = "test/MyTest.c",
+STK_UPLOAD_SCRIPT_TEMPLATE = """
+{sudo}avrdude -v -V -p $$1 -c stk500v2 -P $(PROGPORT) -U flash:w:$$2 -e;
+"""
+
+genrule(
+    name = "stk_upload_script",
+    outs = ["stk_upload_script.sh"],
+    cmd = "echo '" +
+#    select({
+#        "@AvrToolchain//host_config:dfu_needs_sudo": UPLOAD_SCRIPT_TEMPLATE.format(
+#            export = "",
+#            sudo = "sudo ",
+#        ),
+#        "@AvrToolchain//host_config:dfu_needs_askpass": UPLOAD_SCRIPT_TEMPLATE.format(
+#            export = "export SUDO_ASKPASS=$(ASKPASS)",
+#            sudo = "sudo ",
+#        ),
+#        "//conditions:default":
+        STK_UPLOAD_SCRIPT_TEMPLATE.format(
+            sudo = "",
+        )
+#    })
+     + "' > $@",
+    toolchains = [":programmerPort"]
 )
-
-#use on platform with bazel build embeddedTest --config=motherboard
-default_embedded_binary(
-    name = "embeddedTest",
-    srcs = [
-        "test/MyTest.c",
-        ":embeddedTestRunner",
-    ],
-    copts = mcu_avr_gcc_flag() + cpu_frequency_flag(),
-    linkopts = mcu_avr_gcc_flag() + cpu_frequency_flag(),
-    deps = [
-        ":MyEmbeddedLib",
-        ":Unity",
-    ],
-    visibility = ["//visibility:public"],
-)
-
-create_unity_library(
-    name = "Unity",
-)
-
-#example binary rule
-#cc_binary(
-#    name = "Print",
-#    srcs = ["test/print.c"],
-#    deps = [":MyEmbeddedLib"],
-#    visibility = ["//visibility:public"],
-#)
-
-#cc_binary(
-#    name = "First",
-#    srcs = ["test/first.c"],
-#    deps = [
-#        ":MyEmbeddedLib",
-#        ":Unity",
-#        "@CException",
-#    ],
-#    visibility = ["//visibility:public"],
-#)
-
-#package(default_visibility = ["//visibility:public"])
-#runs without main function if compiled inside /test folder
-#runs with main function from root (core dump in logfile)
-#cc_test(
-#    name = "MyTest",
-#    srcs = ["test/MyTest.c"],
-#    deps = [
-#        ":Unity",
-#        ":MyEmbeddedLib",
-#    ],
-#)
-
-# cc_test(
-#     name = "First",
-#     srcs = ["test/host_tests/first.c"],
-#     deps = [
-#         ":Unity",
-#         "@CException",
-#     ],
-# )
