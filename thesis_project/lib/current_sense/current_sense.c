@@ -135,8 +135,6 @@ uint8_t currentSenseTask(void)
 
 ISR(TIMER3_COMPA_vect)
 {
-	// debugWriteLine("TIMER3_COMPA_vect");
-
 	currentSenseFlag = 0x1;
 	currentSenseTask();
 	// setLed(3, 1);
@@ -363,6 +361,8 @@ void printCurrentProductId(uint8_t device)
 // triggers reading of sensor values
 void currentSenseStartAll(void)
 {
+
+	// debugWriteLine("Start All");
 	currentDevice = CURRENT_USB;
 
 	// start with first device
@@ -379,7 +379,6 @@ void currentSenseStartAll(void)
 ISR(TWI_vect)
 {
 	cli();
-	// debugWriteLine("TWI_vect");
 
 	uint16_t data;
 	uint8_t status = i2c_status();
@@ -443,7 +442,6 @@ ISR(TWI_vect)
 
 		case I2C_READING:
 			data = (uint16_t) i2c_getData();
-			
 			// store new data
 			switch(currentDevice)
 			{
@@ -578,6 +576,7 @@ ISR(TWI_vect)
 							pushCurrentMeasurement(&monitorBuf, &measurement);
 
 							if (pushMeasurements)
+								//printCurrentMeasurement(measurement);
 								printAllCurrentMeasurementsFloat();
 							// debugWriteLine("done v2");
 

@@ -74,3 +74,15 @@ cc_library(
 	 "CircularBufferLib", "I2cLib","CurrentMeasurementLib", "DebugLib"
 	     ]
 )
+
+cc_library(
+	name = "SensorAdapterLib",
+	srcs = ["sensor-adapter/sensor_adapter.c"],
+	hdrs = ["sensor-adapter/sensor_adapter.h"],
+
+	copts = commonCopts,
+
+	deps = [
+	 "CircularBufferLib", "I2cLib", "CurrentMeasurementLib", "DebugLib"
+	]
+)

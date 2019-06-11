@@ -38,6 +38,23 @@ default_embedded_binary(
     uploader = "//:stk_upload_script"
 )
 
+default_embedded_binary(
+	name = "CurrentSenseApp",
+	srcs = [
+		"src/currentSenseApp.c"],
+	copts = commonCopts + LUFA_COPTS,
+	linkopts = commonCopts + LUFA_COPTS + ["-Wl,-u,vfprintf -lprintf_flt -lm"],
+	deps = [
+		"//lib:DebugLib",
+        "//lib:CurrentSenseLib",
+        "//lib:CircularBufferLib",
+        "//lib:CurrentMeasurementLib",
+        "//lib:SensorAdapterLib",
+        "//lib:I2cLib",
+        "//include:IncludeLib"
+	],
+    uploader = "//:stk_upload_script"
+)
 
 # Uploading stuff
 load("//:vars.bzl", "defineProgrammer")

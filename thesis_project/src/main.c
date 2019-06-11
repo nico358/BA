@@ -36,9 +36,6 @@ int main(void)
   finished = 0;
   while (!finished)
   {
-
-    _delay_ms(1000);
-    debugWriteLine("Running...\r\n");
     debugReadChar();
 
     if(debugReadCharAvailable())
