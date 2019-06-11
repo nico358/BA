@@ -114,7 +114,7 @@
         #error "prescale unsupported"
     #endif
 #else
-    #error "no definitions available for this AVR"
+    #error "no defintions available for this AVR"
 #endif
 
 #define SOFTUART_TIMERTOP ( F_CPU/SOFTUART_PRESCALE/SOFTUART_BAUD_RATE/3 - 1)

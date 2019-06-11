@@ -1,0 +1,6 @@
+[
+  "test/unittests/scripts/test_serial_storage.py::TestSerialStorage::test_writeToTextFile", 
+  "test/unittests/scripts/test_serial_storage.py::TestSerialStorage::test_appendPathToWriteIn", 
+  "test/unittests/scripts/test_testapp.py::test_initial_transform[nodict]", 
+  "test/unittests/scripts/test_testapp.py::test_initial_transform[dict]"
+]

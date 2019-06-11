@@ -1,16 +1,9 @@
-#ifndef DEBUG_H
-#define DEBUG_H
-
-#define DEBUG 0
+#ifndef LIB_DEBUG_H
+#define LIB_DEBUG_H
 
 #include <stdint.h>
-#include <avr/io.h>
-#include <util/delay.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <avr/interrupt.h>
 
-
+#define DEBUG 0
 
 void debugEnable(void);
 void debugDisable(void);

@@ -6,13 +6,8 @@
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/lib/**",
                 "${workspaceFolder}/lib/softSerial**",
-                "C:/Users/Nicolas Frick/AppData/Local/Packages/CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc/LocalState/rootfs/usr/**",
-                "C:/Users/Nicolas Frick/AppData/Local/Packages/CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc/LocalState/rootfs/usr/lib/avr/include/**",
-                "C:\\Users\\Nicolas Frick\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc\\LocalState\\rootfs\\home\nic\\libs\\Unity-master\\src\\",
-                "C:\\Users\\Nicolas Frick\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc\\LocalState\\rootfs\\home\nic\\libs\\CException-master\\lib\\",
-                "C:\\Users\\Nicolas Frick\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc\\LocalState\\rootfs\\home\nic\\libs\\CMock\\src\\",
-                "C:\\Users\\Nicolas Frick\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc\\LocalState\\rootfs\\usr\\lib\\ruby\\ruby-2.6.3\\include\\ruby\\",
-                "C:\\Users\\Nicolas Frick\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc\\LocalState\\rootfs\\usr\\lib\\ruby\\ruby-2.6.3\\include\\ruby\\backward"
+                "C:\\Users\\Nicolas Frick\\.platformio\\packages\\toolchain-atmelavr\\avr\\",
+                "C:\\Users\\Nicolas Frick\\.platformio\\packages\\toolchain-atmelavr\\avr\\include\\avr"
             ],
             "defines": [
                 "_DEBUG",
@@ -28,13 +23,8 @@
                     "${workspaceFolder}/**",
                     "${workspaceFolder}/lib/**",
                     "${workspaceFolder}/lib/softSerial**",
-                    "C:/Users/Nicolas Frick/AppData/Local/Packages/CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc/LocalState/rootfs/usr/**",
-                    "C:/Users/Nicolas Frick/AppData/Local/Packages/CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc/LocalState/rootfs/usr/lib/avr/include/**",
-                    "C:\\Users\\Nicolas Frick\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc\\LocalState\\rootfs\\home\nic\\libs\\Unity-master\\src\\",
-                    "C:\\Users\\Nicolas Frick\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc\\LocalState\\rootfs\\home\nic\\libs\\CException-master\\lib\\",
-                    "C:\\Users\\Nicolas Frick\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc\\LocalState\\rootfs\\home\nic\\libs\\CMock\\src\\",
-                    "C:\\Users\\Nicolas Frick\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc\\LocalState\\rootfs\\usr\\lib\\ruby\\ruby-2.6.3\\include\\ruby\\",
-                    "C:\\Users\\Nicolas Frick\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu18.04onWindows_79rhkp1fndgsc\\LocalState\\rootfs\\usr\\lib\\ruby\\ruby-2.6.3\\include\\ruby\\backward"
+                    "C:\\Users\\Nicolas Frick\\.platformio\\packages\\toolchain-atmelavr\\avr\\",
+                    "C:\\Users\\Nicolas Frick\\.platformio\\packages\\toolchain-atmelavr\\avr\\include\\avr"
                 ],
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": ""
