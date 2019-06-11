@@ -41,7 +41,9 @@ default_embedded_binary(
 default_embedded_binary(
 	name = "CurrentSenseApp",
 	srcs = [
-		"src/currentSenseApp.c"],
+		"src/currentSenseApp.c",
+        "src/sensorController.c"
+    ],
 	copts = commonCopts + LUFA_COPTS,
 	linkopts = commonCopts + LUFA_COPTS + ["-Wl,-u,vfprintf -lprintf_flt -lm"],
 	deps = [

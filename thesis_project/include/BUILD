@@ -26,8 +26,8 @@ filegroup(
 cc_library(
     name = "IncludeLib",
     hdrs = [
-        "main.h",
-        "sensor_controller.h"
+        "currentSenseApp.h",
+        "sensorController.h"
     ],
 
     copts = commonCopts,
