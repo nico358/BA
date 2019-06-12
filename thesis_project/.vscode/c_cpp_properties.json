@@ -12,7 +12,9 @@
             "defines": [
                 "_DEBUG",
                 "UNICODE",
-                "_UNICODE"
+                "_UNICODE",
+                "__AVR_ATmega32U4__",
+                "F_CPU=8000000UL"
             ],
             "compilerPath": "/usr/bin/avr-g++",
             "cStandard": "c11",

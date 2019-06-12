@@ -23,6 +23,30 @@ filegroup(
 	srcs = glob(["LUFA-Setup/*.h"])
 )
 
+###########################################
+filegroup(
+	name = "FPGApowerEvalLib",
+	srcs = [
+		"circular_buffer/circular_buffer.c",
+		"circular_buffer/circular_buffer.h",
+		"debug/debugUsb.c",
+		"debug/debug.h",
+		"i2cmaster/*.c",
+		"i2cmaster/*.h",
+		"sensor-adapter/sensor_adapter.c",
+		"sensor-adapter/sensor_adapter.h"
+	]
+)
+
+exports_files(
+	glob([
+		"**/*.c",
+		"**/*.h"
+	]),
+	visibility = ["//visibility:public"]
+)
+##############################################
+
 # lib definitions
 cc_library(
 	name = "DebugLib",
@@ -83,6 +107,9 @@ cc_library(
 	copts = commonCopts,
 
 	deps = [
-	 "CircularBufferLib", "I2cLib", "CurrentMeasurementLib", "DebugLib"
+		"CircularBufferLib", 
+		"I2cLib", 
+		"CurrentMeasurementLib", 
+		"DebugLib"
 	]
 )

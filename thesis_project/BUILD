@@ -1,9 +1,4 @@
 load(
-    "@EmbeddedSystemsBuildScripts//:unity.bzl",
-    "generate_test_runner",
-    "unity_test",
-)
-load(
     "@AvrToolchain//:helpers.bzl",
     "cpu_frequency_flag",
     "create_unity_library",
@@ -11,6 +6,7 @@ load(
     "generate_hex",
     "mcu_avr_gcc_flag",
 )
+
 load(
     "@EmbeddedSystemsBuildScripts//:unity.bzl",
     "generate_test_runner",
@@ -18,30 +14,30 @@ load(
 	"generate_a_unity_test_for_every_file"
 )
 
-commonCopts = mcu_avr_gcc_flag() + cpu_frequency_flag()
+#################################################
+filegroup(
+	name = "FPGApowerEvalSrc",
+	srcs = glob(
+		[
+			"src/**/*.c",
+			"src/**/*.h",
+		],
+	),
+)
 
 # print("\nFlags:\n")
 # print(mcu_avr_gcc_flag())
 # print(cpu_frequency_flag())
 # print("\n\n")
 
+#######################################################
+
+commonCopts = mcu_avr_gcc_flag() + cpu_frequency_flag()
+
 LUFA_COPTS = [
     "-Iexternal/LUFA/Demos/Device/ClassDriver/VirtualSerial/Config",
     "-isystem external/LUFA/",
 ]
-
-default_embedded_binary(
-	name = "Main",
-	srcs = [
-		"src/main.c"],
-	copts = commonCopts + LUFA_COPTS,
-	linkopts = commonCopts + LUFA_COPTS + ["-Wl,-u,vfprintf -lprintf_flt -lm"],
-	deps = [
-		"//lib:DebugLib",
-        "//lib:CurrentSenseLib"
-	],
-    uploader = "//:stk_upload_script"
-)
 
 default_embedded_binary(
 	name = "CurrentSenseApp",
