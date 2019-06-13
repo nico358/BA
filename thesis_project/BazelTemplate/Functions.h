@@ -1,0 +1,7 @@
+#ifndef BAZELTEMPLATE_FUNCTIONS_H
+#define BAZELTEMPLATE_FUNCTIONS_H
+
+int
+add(int a, int b);
+
+#endif //BAZELTEMPLATE_FUNCTIONS_H

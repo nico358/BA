@@ -40,8 +40,8 @@ filegroup(
 
 exports_files(
 	glob([
-		"**/*.c",
-		"**/*.h"
+		"/**/*.c",
+		"/**/*.h"
 	]),
 	visibility = ["//visibility:public"]
 )
@@ -52,15 +52,14 @@ cc_library(
 	name = "DebugLib",
 	srcs = ["debug/debugUsb.c", "LufaSetupSrcs"],
 	hdrs = ["debug/debug.h", "LufaSetupHeaders"],
-
 	copts = commonCopts + LUFA_COPTS,
 	deps = ["@LUFA//:VirtualSerial"],
 )
 
 cc_library(
 	name = "CircularBufferLib",
-	srcs = glob(["circular_buffer/*.c"]),
-	hdrs = glob(["circular_buffer/*.h"]),
+	srcs = glob(["circular_buffer/circular_buffer.c"]),
+	hdrs = glob(["circular_buffer/circular_buffer.h"]),
 
 	copts = commonCopts,
     deps = ["DebugLib"]

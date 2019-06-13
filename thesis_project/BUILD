@@ -1,28 +1,42 @@
 load(
     "@AvrToolchain//:helpers.bzl",
     "cpu_frequency_flag",
-    "create_unity_library",
+    # "create_unity_library",
     "default_embedded_binary",
     "generate_hex",
     "mcu_avr_gcc_flag",
 )
 
-load(
-    "@EmbeddedSystemsBuildScripts//:unity.bzl",
-    "generate_test_runner",
-    "unity_test",
-	"generate_a_unity_test_for_every_file"
-)
+# load(
+#     "@EmbeddedSystemsBuildScripts//:unity.bzl",
+#     "generate_test_runner",
+#     "unity_test",
+# 	"generate_a_unity_test_for_every_file"
+# )
 
 #################################################
 filegroup(
 	name = "FPGApowerEvalSrc",
 	srcs = glob(
 		[
-			"src/**/*.c",
-			"src/**/*.h",
+			"src/*.c",
+			"src/*.h",
 		],
 	),
+)
+
+filegroup(
+    name = "BazelTemplateIncl",
+    srcs = [
+        "BazelTemplate/Functions.h",
+    ],
+)
+
+exports_files(
+    glob([
+        "BazelTemplate/*.h",
+    ]),
+    visibility = ["//visibility:public"],
 )
 
 # print("\nFlags:\n")
@@ -30,7 +44,14 @@ filegroup(
 # print(cpu_frequency_flag())
 # print("\n\n")
 
-#######################################################
+cc_library(
+    name = "BazelTemplate",
+    hdrs = [":BazelTemplateIncl"],
+    visibility = ["//visibility:public"],
+    linkstatic = True,
+)
+
+# #######################################################
 
 commonCopts = mcu_avr_gcc_flag() + cpu_frequency_flag()
 
