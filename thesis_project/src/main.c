@@ -7,9 +7,13 @@
 #include "lib/current_sense/current_measurement.h"
 #include <avr/io.h>
 
+// #include "lib/i2cmaster/i2cmaster.h"
+
 
 int main(void) 
 {
+
+  // i2c_start(0xFF);
   int finished;
   debugInit(NULL);
   // init buffer, i2c, set timer mode to ctc, set ocr to 1250 (?), 

@@ -1,93 +1,181 @@
 load(
     "@AvrToolchain//:helpers.bzl",
     "cpu_frequency_flag",
-    "create_unity_library",
     "default_embedded_binary",
     "generate_hex",
     "mcu_avr_gcc_flag",
 )
-load(
-    "@EmbeddedSystemsBuildScripts//:unity.bzl",
-    "generate_test_runner",
-    "unity_test",
-	"generate_a_unity_test_for_every_file"
-)
 
 commonCopts = mcu_avr_gcc_flag() + cpu_frequency_flag()
-
-# print("\nFlags:\n")
-# print(mcu_avr_gcc_flag())
-# print(cpu_frequency_flag())
-# print("\n\n")
 
 LUFA_COPTS = [
     "-Iexternal/LUFA/Demos/Device/ClassDriver/VirtualSerial/Config",
     "-isystem external/LUFA/",
 ]
 
+filegroup(
+	name = "LufaSetupSrcs",
+	srcs = glob(["lib/LUFA-Setup/*.c"])
+)
+
+filegroup(
+	name = "LufaSetupHeaders",
+	srcs = glob(["lib/LUFA-Setup/*.h"])
+)
+
+exports_files(
+	glob([
+		"lib/circular_buffer/circular_buffer.c",
+		"lib/circular_buffer/circular_buffer.h",
+		"lib/current_sense/**/*.c",
+		"lib/current_sense/**/*.h",
+		"lib/debug/debugUsb.c",
+		"lib/debug/debug.h",
+		"lib/gpio/**/*.c",
+		"lib/gpio/**/*.h",
+		"lib/i2cmaster/twimaster.c",
+		"lib/i2cmaster/i2cmaster.h",
+		"lib/sensor-adapter/sensor_adapter.c",
+		"lib/sensor-adapter/sensor_adapter.h",
+		"lib/softSerial/**/*.c",
+		"lib/softSerial/**/*.h",
+		"lib/softSerial/usb/**/*.c",
+		"lib/softSerial/usb/**/*.h",
+	]),
+
+	visibility = ["//test:__pkg__"],
+)
+
+cc_library(
+	name = "DebugLib",
+	srcs = ["lib/debug/debugUsb.c", "LufaSetupSrcs"],
+	hdrs = ["lib/debug/debug.h", "LufaSetupHeaders"],
+
+	copts = commonCopts + LUFA_COPTS,
+
+	linkstatic = True,
+	deps = ["@LUFA//:VirtualSerial"],
+	visibility = ["//test:__pkg__"],
+)
+
+cc_library(
+	name = "CircularBufferLib",
+	srcs = glob(["lib/circular_buffer/*.c"]),
+	hdrs = glob(["lib/circular_buffer/*.h"]),
+
+	copts = commonCopts,
+
+    deps = [":DebugLib"],
+	visibility = ["//test:__pkg__"],
+)
+
+cc_library(
+	name = "I2cLib",
+	srcs = glob(["lib/i2cmaster/*.c"]),
+	hdrs = glob(["lib/i2cmaster/*.h"]),
+
+	copts = commonCopts,
+
+	visibility = ["//test:__pkg__"],
+)
+
+cc_library(
+	name = "CurrentMeasurementLib",
+	srcs = ["lib/current_sense/current_measurement.c"],
+	hdrs = ["lib/current_sense/current_measurement.h"],
+
+	copts = commonCopts,
+
+    deps = [
+		":CircularBufferLib",
+	],
+	visibility = ["//test:__pkg__"],
+)
+
+cc_library(
+	name = "CurrentSenseLib",
+	srcs = ["lib/current_sense/current_sense.c"],
+	hdrs = ["lib/current_sense/current_sense.h"],
+
+	copts = commonCopts,
+
+	deps = [
+	 ":CircularBufferLib", 
+	 ":I2cLib",
+	 ":CurrentMeasurementLib", 
+	 ":DebugLib",
+	],
+	visibility = ["//test:__pkg__"],
+)
+
+cc_library(
+	name = "SensorAdapterLib",
+	srcs = ["lib/sensor-adapter/sensor_adapter.c"],
+	hdrs = ["lib/sensor-adapter/sensor_adapter.h"],
+
+	copts = commonCopts,
+
+	deps = [
+	 ":CircularBufferLib", 
+	 ":I2cLib", 
+	 ":CurrentMeasurementLib", 
+	 ":DebugLib",
+	],
+	visibility = ["//test:__pkg__"],
+)
+
+cc_library(
+    name = "IncludeLib",
+    hdrs = [
+        "include/currentSenseApp.h",
+    ],
+
+    copts = commonCopts,
+
+    deps = [
+        ":DebugLib",
+        ":CurrentSenseLib",
+        ":CircularBufferLib",
+        ":CurrentMeasurementLib",
+        ":SensorAdapterLib",
+        ":I2cLib"
+    ],
+	visibility = ["//test:__pkg__"],
+)
+
 default_embedded_binary(
 	name = "Main",
 	srcs = [
 		"src/main.c"],
+
 	copts = commonCopts + LUFA_COPTS,
+
 	linkopts = commonCopts + LUFA_COPTS + ["-Wl,-u,vfprintf -lprintf_flt -lm"],
+
 	deps = [
-		"//lib:DebugLib",
-        "//lib:CurrentSenseLib"
+		":DebugLib",
+        ":CurrentSenseLib",
 	],
-    uploader = "//:stk_upload_script"
 )
 
 default_embedded_binary(
 	name = "CurrentSenseApp",
 	srcs = [
 		"src/currentSenseApp.c",
-        "src/sensorController.c"
     ],
+
 	copts = commonCopts + LUFA_COPTS,
+
 	linkopts = commonCopts + LUFA_COPTS + ["-Wl,-u,vfprintf -lprintf_flt -lm"],
+
 	deps = [
-		"//lib:DebugLib",
-        "//lib:CurrentSenseLib",
-        "//lib:CircularBufferLib",
-        "//lib:CurrentMeasurementLib",
-        "//lib:SensorAdapterLib",
-        "//lib:I2cLib",
-        "//include:IncludeLib"
+		":DebugLib",
+        ":CurrentSenseLib",
+        ":CircularBufferLib",
+        ":CurrentMeasurementLib",
+        ":SensorAdapterLib",
+        ":I2cLib",
+        ":IncludeLib"
 	],
-    uploader = "//:stk_upload_script"
 )
 
-# Uploading stuff
-load("//:vars.bzl", "defineProgrammer")
-
-defineProgrammer(
-  name = "programmerPort",
-  port = "/dev/tty.usbmodem142101"
-)
-
-STK_UPLOAD_SCRIPT_TEMPLATE = """
-{sudo}avrdude -v -V -p $$1 -c stk500v2 -P $(PROGPORT) -U flash:w:$$2 -e;
-"""
-
-genrule(
-    name = "stk_upload_script",
-    outs = ["stk_upload_script.sh"],
-    cmd = "echo '" +
-#    select({
-#        "@AvrToolchain//host_config:dfu_needs_sudo": UPLOAD_SCRIPT_TEMPLATE.format(
-#            export = "",
-#            sudo = "sudo ",
-#        ),
-#        "@AvrToolchain//host_config:dfu_needs_askpass": UPLOAD_SCRIPT_TEMPLATE.format(
-#            export = "export SUDO_ASKPASS=$(ASKPASS)",
-#            sudo = "sudo ",
-#        ),
-#        "//conditions:default":
-        STK_UPLOAD_SCRIPT_TEMPLATE.format(
-            sudo = "",
-        )
-#    })
-     + "' > $@",
-    toolchains = [":programmerPort"]
-)
