@@ -23,29 +23,6 @@ filegroup(
 	srcs = glob(["lib/LUFA-Setup/*.h"])
 )
 
-exports_files(
-	glob([
-		"lib/circular_buffer/circular_buffer.c",
-		"lib/circular_buffer/circular_buffer.h",
-		"lib/current_sense/**/*.c",
-		"lib/current_sense/**/*.h",
-		"lib/debug/debugUsb.c",
-		"lib/debug/debug.h",
-		"lib/gpio/**/*.c",
-		"lib/gpio/**/*.h",
-		"lib/i2cmaster/twimaster.c",
-		"lib/i2cmaster/i2cmaster.h",
-		"lib/sensor-adapter/sensor_adapter.c",
-		"lib/sensor-adapter/sensor_adapter.h",
-		"lib/softSerial/**/*.c",
-		"lib/softSerial/**/*.h",
-		"lib/softSerial/usb/**/*.c",
-		"lib/softSerial/usb/**/*.h",
-	]),
-
-	visibility = ["//test:__pkg__"],
-)
-
 cc_library(
 	name = "DebugLib",
 	srcs = ["lib/debug/debugUsb.c", "LufaSetupSrcs"],
@@ -115,12 +92,20 @@ cc_library(
 
 	copts = commonCopts,
 
-	deps = [
-	 ":CircularBufferLib", 
-	 ":I2cLib", 
-	 ":CurrentMeasurementLib", 
-	 ":DebugLib",
-	],
+	deps = select({
+
+        ":debug": [
+			"@ExtMockLib",
+		],
+
+        "//conditions:default": [
+			":CircularBufferLib", 
+	 		":I2cLib", 
+	 		":CurrentMeasurementLib", 
+	 		":DebugLib",
+		],	
+    }),
+
 	visibility = ["//test:__pkg__"],
 )
 
@@ -143,10 +128,16 @@ cc_library(
 	visibility = ["//test:__pkg__"],
 )
 
+config_setting(
+    name = "debug",
+    values = {
+        "define": "debug=true",
+    },
+)
+
 default_embedded_binary(
 	name = "Main",
-	srcs = [
-		"src/main.c"],
+	srcs = ["src/main.c"],
 
 	copts = commonCopts + LUFA_COPTS,
 
@@ -175,7 +166,7 @@ default_embedded_binary(
         ":CurrentMeasurementLib",
         ":SensorAdapterLib",
         ":I2cLib",
-        ":IncludeLib"
+        ":IncludeLib",
 	],
 )
 

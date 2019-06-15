@@ -9,13 +9,5 @@ unity_test(
     file_name = "My_Test.c",
     deps = [
         "@CException",
-        "//:SensorAdapterLib",
-    ],
-)
-
-test_suite(
-    name = "ALL",
-    tests = [
-        ":My_Test",
     ],
 )
