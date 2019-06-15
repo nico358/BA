@@ -6,9 +6,18 @@ load(
     "unity_test",
 )
 
+mock(
+    name = "CircBufMock",
+    srcs = ["//:lib/circular_buffer/circular_buffer.h"],
+    deps = ["//:CircularBufferLib"],
+)
+
 unity_test(
-    file_name = "First_Test.c",
+    file_name = "sensor_adapter_Test.c",
     deps = [
         "@CException",
+        "//:SensorAdapterLib",
+        ":CircBufMock",
+        "@CMock",
     ],
 )

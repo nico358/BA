@@ -1,3 +1,4 @@
+### Loading build tools ###
 load(
     "@AvrToolchain//:helpers.bzl",
     "cpu_frequency_flag",
@@ -6,6 +7,7 @@ load(
     "mcu_avr_gcc_flag",
 )
 
+### Define compiler/ linker options and filegroups for rules ###
 commonCopts = mcu_avr_gcc_flag() + cpu_frequency_flag()
 
 LUFA_COPTS = [
@@ -23,6 +25,7 @@ filegroup(
 	srcs = glob(["lib/LUFA-Setup/*.h"])
 )
 
+### Library rules ###
 cc_library(
 	name = "DebugLib",
 	srcs = ["lib/debug/debugUsb.c", "LufaSetupSrcs"],
@@ -31,8 +34,14 @@ cc_library(
 	copts = commonCopts + LUFA_COPTS,
 
 	linkstatic = True,
+	
 	deps = ["@LUFA//:VirtualSerial"],
-	visibility = ["//test:__pkg__"],
+	
+	visibility = [
+		"//test:__pkg__",
+		"//test:__subpackages__",
+		"@CMock//CMock:__pkg__",
+	],
 )
 
 cc_library(
@@ -42,8 +51,21 @@ cc_library(
 
 	copts = commonCopts,
 
-    deps = [":DebugLib"],
-	visibility = ["//test:__pkg__"],
+	deps = select({
+
+        ":test": [
+			"@ExtMockLib",
+		],
+
+        "//conditions:default": [
+	 		":DebugLib",
+		],	
+    }),
+	visibility = [
+		"//test:__pkg__",
+		"//test:__subpackages__",
+		"@CMock//CMock:__pkg__",
+	],
 )
 
 cc_library(
@@ -53,7 +75,11 @@ cc_library(
 
 	copts = commonCopts,
 
-	visibility = ["//test:__pkg__"],
+	visibility = [
+		"//test:__pkg__",
+		"//test:__subpackages__",
+		"@CMock//CMock:__pkg__",
+	],
 )
 
 cc_library(
@@ -87,26 +113,37 @@ cc_library(
 
 cc_library(
 	name = "SensorAdapterLib",
-	srcs = ["lib/sensor-adapter/sensor_adapter.c"],
-	hdrs = ["lib/sensor-adapter/sensor_adapter.h"],
+	srcs = ["lib/sensor-adapter/PAC1720_adapter.c"],
+	hdrs = ["lib/sensor-adapter/PAC1720_adapter.h"],
 
 	copts = commonCopts,
 
-	deps = select({
-
-        ":debug": [
-			"@ExtMockLib",
-		],
-
-        "//conditions:default": [
+	deps = [
 			":CircularBufferLib", 
 	 		":I2cLib", 
 	 		":CurrentMeasurementLib", 
 	 		":DebugLib",
-		],	
-    }),
+	],
 
-	visibility = ["//test:__pkg__"],
+	# deps = select({
+
+    #     ":test": [
+	# 		"@ExtMockLib",
+	# 	],
+
+    #     "//conditions:default": [
+	# 		":CircularBufferLib", 
+	#  		":I2cLib", 
+	#  		":CurrentMeasurementLib", 
+	#  		":DebugLib",
+	# 	],	
+    # }),
+
+	visibility = [
+		"//test:__pkg__",
+		"//test:__subpackages__",
+		"@CMock//CMock:__pkg__",
+	],
 )
 
 cc_library(
@@ -128,13 +165,29 @@ cc_library(
 	visibility = ["//test:__pkg__"],
 )
 
+### Exports lib-files to allow test-package access ###
+exports_files(
+	glob([
+		"lib/**/*.h",
+	]),
+	visibility = [
+		"//test:__pkg__",
+		"//test:__subpackages__",
+		"@CMock//CMock:__pkg__",
+	],
+	
+)
+
+### Create config to substitute dependencies in build process ###
+### "--define debug=true" appended to test call switches the actual dependencies ###
 config_setting(
-    name = "debug",
+    name = "test",
     values = {
-        "define": "debug=true",
+        "define": "test=true",
     },
 )
 
+### Binary rules ###
 default_embedded_binary(
 	name = "Main",
 	srcs = ["src/main.c"],
@@ -161,11 +214,7 @@ default_embedded_binary(
 
 	deps = [
 		":DebugLib",
-        ":CurrentSenseLib",
-        ":CircularBufferLib",
-        ":CurrentMeasurementLib",
         ":SensorAdapterLib",
-        ":I2cLib",
         ":IncludeLib",
 	],
 )
