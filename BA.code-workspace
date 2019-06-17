@@ -74,7 +74,9 @@
 			"sensor_controller.h": "c",
 			"sensor_adapter.h": "c",
 			"twi.h": "c",
-			"pac1720_adapter.h": "c"
+			"pac1720_adapter.h": "c",
+			"pac1720_driver.h": "c",
+			"pac1720_definitions.h": "c"
 		},
 		"files.exclude": {
 			"**/.classpath": true,

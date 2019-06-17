@@ -112,17 +112,17 @@ cc_library(
 )
 
 cc_library(
-	name = "SensorAdapterLib",
-	srcs = ["lib/sensor-adapter/PAC1720_adapter.c"],
-	hdrs = ["lib/sensor-adapter/PAC1720_adapter.h"],
+	name = "PAC1720DriverLib",
+	srcs = ["lib/PAC1720_driver/PAC1720_driver.c"],
+	hdrs = glob(["lib/PAC1720_driver/*.h"]),
 
 	copts = commonCopts,
 
 	deps = [
-			":CircularBufferLib", 
-	 		":I2cLib", 
-	 		":CurrentMeasurementLib", 
-	 		":DebugLib",
+			# ":CircularBufferLib", 
+	 		# ":I2cLib", 
+	 		# ":CurrentMeasurementLib", 
+	 		# ":DebugLib",
 	],
 
 	# deps = select({
@@ -216,6 +216,14 @@ default_embedded_binary(
 		":DebugLib",
         ":SensorAdapterLib",
         ":IncludeLib",
+	],
+)
+
+cc_binary(
+	name = "calc",
+	srcs = ["src/test.c"],
+	deps = [
+		#  "PAC1720DriverLib",
 	],
 )
 
