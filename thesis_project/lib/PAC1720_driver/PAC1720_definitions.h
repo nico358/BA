@@ -125,16 +125,19 @@ static const uint8_t revision_register_address                    = 0xFF;
 /** Configuration specific constants */
 /** Possible Full Scale Range values in current sensing, determined by current_sense_FSR_reg */
 static const float FSR_values[4] = {0.01f, 0.02f, 0.04f, 0.08f};
-/** Possible BUS current formula denominators, determined by current_sense_sampling_time_reg*/
+/** Possible BUS current formula denominators, determined by current_sense_sampling_time_reg */
 static const float DENOMINATOR_values_current_sense[8] = {63.0f, 127.0f, 255.0f, 511.0f, 1023.0f, 2047.0f, 2047.0f, 2047.0f};
+static const uint8_t CURRENT_RESOLUTION_IGNORE_BITS[8] = {9,8,7,6,5,4,4,4};
+static const uint16_t NEGATIVE_CURRENT_RESOLUTION_MASK[8] = {0x007F, 0x00FF, 0x01FF, 0x03FF, 0x07FF, 0x0FFF, 0x0FFF, 0x0FFF};
+/** Possible FSV formula denominators, determined by source_voltage_sampling_time_reg. Note: Vsource denominators are equal to these -1 */
+static const float DENOMINATOR_values_source_voltage[4] = {256.0f, 512.0f, 1024.0f, 2048.0f};
+static const uint8_t VSOURCE_RESOLUTION_IGNORE_BITS[4] = {8,7,6,5};
+static const float DENOMINATOR_correction_source_voltage = 1.0f;
+static const uint8_t SHIFT_TO_SIGN_BIT = 15;
 
 /** Application constants */
 static const int8_t PAC1720_OK = 0;
 static const int8_t PAC1720_FAILURE = -1;
-
-/** Calculation constants */
-static const uint8_t SIGN_BIT = 11;
-static const uint8_t zero_LSB = 4; 
 
 /** Type definitions */
 /*!
@@ -155,7 +158,7 @@ typedef void (*delay_fptr)(uint32_t period);
 /*!
  * @brief Sensor readings data struct. 
  */
-struct	PAC1720_channel_register_readings 
+struct	PAC1720_channel_readings 
 {
 	/*! Reading done flag */
 	bool reading_done;
@@ -170,14 +173,11 @@ struct	PAC1720_channel_register_readings
 	/*! Calculated power ratio (The value represents the percentage of maximum calculable power.) */
 	/*  Unsigned 16bit number by default */
 	uint16_t power_ratio_reg; 
-};
-
-struct PAC1720_channel_readings_results
-{
-	float sensed_diff_voltage;
-	float sensed_source_voltage;
-	float sensed_current;
-	float sensed_power_ratio;
+	/*! The actual values after conversion of the registers */
+	float res_SENSE_VOLTAGE;
+	float res_SOURCE_VOLTAGE;
+	float res_CURRENT;
+	float res_POWER;
 };
 
 /*!
@@ -185,9 +185,6 @@ struct PAC1720_channel_readings_results
  */
 struct	PAC1720_channel_config 
 {
-	/*! Specifies period of time in which 
-	 *  measurements are taken and data are updated  */
-	uint8_t conversion_cycle_period;
 	/*! Specify how often measured data are updated in active state
 	 *  update only in stdby state (disable measurements in config reg, 
 	 *  wait to conversion complete (monitor XMEAS_DIS bit in config reg, stay set to 1)) */
@@ -199,6 +196,8 @@ struct	PAC1720_channel_config
 									//11=20ms(data=11bits), Denom FULL-SCALE VOLTAGE = 2048, Denom BUS VOLTAGE = 2047
 	/*! Vsource averaging settings */
 	uint8_t source_voltage_sampling_average_reg;		//default 00=disabled, 01=2, 10=4, 11=8 
+	/*! Full Scale Voltage (FSV)  */
+	float source_voltage_FSV;
 	/*! Current-sensing averaging settings  */
 	uint8_t current_sense_sampling_average_reg;		//default 00=disabled, 01=2, 10=4, 11=8 
 	/*! Current sensing sampling time settings (Denominator BUS_CURRENT = (2^resolution) -1) */
@@ -213,10 +212,12 @@ struct	PAC1720_channel_config
 	/*! Full Scale Range (FSR): current sensing range setting */
 	/* Default: 0000 0011 = ±80 mV */
 	uint8_t current_sense_FSR_reg; 			//(FSR) 00=±10 mV, 01=±20 mV, 10=±40 mV, 11=±80 mV (default)
-	/*! Full Scale Current (FSC):  maximum current to measure*/
+	/*! Full Scale Current (FSC) */
 	float current_sense_FSC;
 	/*! Sense resistor value */
 	float current_sense_resistor_value;
+	/*! Full Scale Power (FSP) */
+	float power_sense_FSP;
 
 };
 //USB_VCC (Rsense = 0.15Ohm), MON_VCC (Rsense = 0.8Ohm)					= 100Ohm => 1001_101 = 4D
@@ -259,24 +260,21 @@ RES					RES
  */
 struct	PAC1720_device 
 {	
+	
+	/*! Sensor slave address, determined by ADDR_SEL resistor */
+	uint8_t sensor_address;
 	/*! First sensor channel in use */
 	bool channel1_active;
 	/*! Second sensor channel in use */
 	bool channel2_active;
-	/*! Sensor slave address, determined by ADDR_SEL resistor */
-	uint8_t sensor_address;
 	/*! The struct holding the config of channel 1*/
 	struct PAC1720_channel_config sensor_config_ch1;
 	/*! The struct holding the config of channel 2*/
 	struct PAC1720_channel_config sensor_config_ch2;
 	/*! The struct holding the latest readings of channel 1*/
-	struct PAC1720_channel_register_readings ch1_readings;
+	struct PAC1720_channel_readings ch1_readings;
 	/*! The struct holding the latest readings of channel 2*/
-	struct PAC1720_channel_register_readings ch2_readings;
-	/*! The struct holding the latest readings conversion of channel 1 */
-	struct PAC1720_channel_readings_results ch1_readings_results;
-	/*! The struct holding the latest readings conversion of channel 2 */
-	struct PAC1720_channel_readings_results ch2_readings_results;
+	struct PAC1720_channel_readings ch2_readings;
 	/*! Bus read function pointer */
 	PAC1720_fptr read;
 	/*! Bus write function pointer */

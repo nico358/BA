@@ -52,6 +52,6 @@ test_suite(
     name = "ALL",
     tests = [
         ":My_Test",
-        "//test/unittests:sensor_adapter_Test",
+        "//test/unittests:sensor_driver_Test",
     ],
 )

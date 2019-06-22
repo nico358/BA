@@ -4,6 +4,76 @@
 #include "PAC1720_driver.h"
 
 /*!
+ * @brief This API is used to calculate the BUS current.
+ *
+ * This function is used to calculate the BUS current through the
+ * sense resistor for both channels, if used.
+ * 
+ * @note ..
+ * @param[in] config	: Pointer to the sensor device struct.
+ *
+ * @return Status value.
+ * @retval 1 value -> OK/ 0 value -> Error
+ */
+static int8_t calculate_BUS_CURRENT(const struct PAC1720_channel_config *channel_conf, struct PAC1720_channel_readings *channel_readings);
+
+/*!
+ * @brief This API is used to check, whether the device structure is initialized.
+ *
+ * This function is used to check, whether the device structure is initialized and
+ * the contained function pointers are not NULL. 
+ * 
+ * @note ..
+ * @param[in] config	: Pointer to the device struct.
+ *
+ * @return Status value.
+ * @retval 1 value -> OK/ 0 value -> Error
+ */
+static int8_t calculate_BUS_VOLTAGE(const struct PAC1720_channel_config *channel_conf, struct PAC1720_channel_readings *channel_readings);
+
+/*!
+ * @brief This API is used to check, whether the device structure is initialized.
+ *
+ * This function is used to check, whether the device structure is initialized and
+ * the contained function pointers are not NULL. 
+ * 
+ * @note ..
+ * @param[in] config	: Pointer to the device struct.
+ *
+ * @return Status value.
+ * @retval 1 value -> OK/ 0 value -> Error
+ */
+static int8_t calculate_BUS_POWER(const struct PAC1720_channel_config *channel_conf, struct PAC1720_channel_readings *channel_readings);
+
+/*!
+ * @brief This API is used to check, whether the device structure is initialized.
+ *
+ * This function is used to check, whether the device structure is initialized and
+ * the contained function pointers are not NULL. 
+ * 
+ * @note ..
+ * @param[in] config	: Pointer to the device struct.
+ *
+ * @return Status value.
+ * @retval 1 value -> OK/ 0 value -> Error
+ */
+static float calculate_SENSED_VOLTAGE(const uint16_t *v_sense_voltage_reg_ptr, const uint8_t *current_sense_sampling_time_reg_ptr);
+
+/*!
+ * @brief This API is used to calculate the Full Scale Current (FSC)
+ *
+ * This function is used to calculate the Full Scale Current (FSC) of
+ * the actual measured channel.  
+ * 
+ * @note ..
+ * @param[in] config	: Pointer to the configuration of one channel.
+ *
+ * @return Status value.
+ * @retval 1 value -> OK/ 0 value -> Error
+ */
+static float calculate_SOURCE_VOLTAGE(const uint16_t *v_source_voltage_reg_ptr, const uint8_t *source_voltage_sampling_time_reg_ptr);
+
+/*!
  * @brief This API is used to calculate the Full Scale Current (FSC)
  *
  * This function is used to calculate the Full Scale Current (FSC) of
@@ -29,97 +99,233 @@ static int8_t calculate_FSC(struct PAC1720_channel_config *config_ptr);
  * @return Status value.
  * @retval 1 value -> OK/ 0 value -> Error
  */
-static int8_t device_null_pointer_check(const struct PAC1720_device *device_ptr);
+static int8_t calculate_FSV(struct PAC1720_channel_config *config_ptr);
 
 /*!
- * @brief This API is used to calculate the BUS current.
+ * @brief This API is used to check, whether the device structure is initialized.
  *
- * This function is used to calculate the BUS current through the
- * sense resistor for both channels, if used.
+ * This function is used to check, whether the device structure is initialized and
+ * the contained function pointers are not NULL. 
  * 
  * @note ..
- * @param[in] config	: Pointer to the sensor device struct.
+ * @param[in] config	: Pointer to the device struct.
  *
  * @return Status value.
  * @retval 1 value -> OK/ 0 value -> Error
  */
-int8_t calculate_BUS_CURRENT(struct PAC1720_device *device_ptr);
+static int8_t calculate_FSP(struct PAC1720_channel_config *config_ptr);
 
-int8_t calculate_BUS_CURRENT(struct PAC1720_device *device_ptr)
+/*!
+ * @brief This API is used to check, whether the device structure is initialized.
+ *
+ * This function is used to check, whether the device structure is initialized and
+ * the contained function pointers are not NULL. 
+ * 
+ * @note ..
+ * @param[in] config	: Pointer to the device struct.
+ *
+ * @return Status value.
+ * @retval 1 value -> OK/ 0 value -> Error
+ */
+static uint16_t twos_complement(const uint16_t *complement);
+
+/*!
+ * @brief This API is used to check, whether the device structure is initialized.
+ *
+ * This function is used to check, whether the device structure is initialized and
+ * the contained function pointers are not NULL. 
+ * 
+ * @note ..
+ * @param[in] config	: Pointer to the device struct.
+ *
+ * @return Status value.
+ * @retval 1 value -> OK/ 0 value -> Error
+ */
+static bool is_negative_value(const uint16_t *value);
+
+/*!
+ * @brief This API is used to check, whether the device structure is initialized.
+ *
+ * This function is used to check, whether the device structure is initialized and
+ * the contained function pointers are not NULL. 
+ * 
+ * @note ..
+ * @param[in] config	: Pointer to the device struct.
+ *
+ * @return Status value.
+ * @retval 1 value -> OK/ 0 value -> Error
+ */
+static uint16_t right_bit_shift(const uint16_t *doublebyte, uint8_t shift);
+
+/*!
+ * @brief This API is used to check, whether the device structure is initialized.
+ *
+ * This function is used to check, whether the device structure is initialized and
+ * the contained function pointers are not NULL. 
+ * 
+ * @note ..
+ * @param[in] config	: Pointer to the device struct.
+ *
+ * @return Status value.
+ * @retval 1 value -> OK/ 0 value -> Error
+ */
+static int8_t device_null_pointer_check(const struct PAC1720_device *device_ptr);
+
+
+
+/******************************* Function definitions *****************************************/
+
+static int8_t calculate_BUS_CURRENT(const struct PAC1720_channel_config *channel_conf, struct PAC1720_channel_readings *channel_readings)
 {   
-    int8_t success = PAC1720_FAILURE;
-    if(device_null_pointer_check(device_ptr) == PAC1720_FAILURE) return PAC1720_FAILURE;
+    if(channel_readings->reading_done && channel_conf->current_sense_FSC != 0){
 
-    if(device_ptr->channel1_active && device_ptr->ch1_readings.reading_done){
+        float FSC = channel_conf->current_sense_FSC;
+        float Vsense= calculate_SENSED_VOLTAGE(&channel_readings->v_sense_voltage_reg, &channel_conf->current_sense_sampling_time_reg);
+        float DENOMINATOR = DENOMINATOR_values_current_sense[channel_conf->current_sense_sampling_time_reg];
+        float Ibus_current = FSC * (Vsense / DENOMINATOR);
 
-        float FSC = device_ptr->sensor_config_ch1.current_sense_FSC;
-        float VSENSE= calculate_SENSED_VOLTAGE(&device_ptr->ch1_readings.v_sense_voltage_reg);
-        float DENOMINATOR = DENOMINATOR_values_current_sense[device_ptr->sensor_config_ch1.current_sense_sampling_time_reg];
-        
-        device_ptr->ch1_readings_results.sensed_current = FSC * (VSENSE / DENOMINATOR);
-        int8_t success = PAC1720_OK;
+        channel_readings->res_SENSE_VOLTAGE = Vsense;
+        channel_readings->res_CURRENT = Ibus_current;
+        return PAC1720_OK;
+    } else {
+        return PAC1720_FAILURE;
     }
-
-    if(device_ptr->channel2_active && device_ptr->ch2_readings.reading_done){
-
-        float FSC = device_ptr->sensor_config_ch2.current_sense_FSC;
-        float VSENSE= calculate_SENSED_VOLTAGE(&device_ptr->ch2_readings.v_sense_voltage_reg);
-        float DENOMINATOR = DENOMINATOR_values_current_sense[device_ptr->sensor_config_ch2.current_sense_sampling_time_reg];
-        
-        device_ptr->ch2_readings_results.sensed_current = FSC * (VSENSE / DENOMINATOR);
-        int8_t success = PAC1720_OK;
-    }
-
-    return success;
 }
 
-static float calculate_SENSED_VOLTAGE(uint16_t *v_sense_voltage_ptr)
+static int8_t calculate_BUS_VOLTAGE(const struct PAC1720_channel_config *channel_conf, struct PAC1720_channel_readings *channel_readings)
 {
-    uint16_t tmp = right_bit_shift(*v_sense_voltage_ptr, zero_LSB);
+    if(channel_readings->reading_done && channel_conf->source_voltage_FSV != 0){
 
-    if(is_negative_value(&tmp)){
+        float FSV = channel_conf->source_voltage_FSV;
+        float Vsource = calculate_SOURCE_VOLTAGE(&channel_readings->v_source_voltage_reg, &channel_conf->source_voltage_sampling_time_reg);
+        float DENOMINATOR = DENOMINATOR_values_source_voltage[channel_conf->source_voltage_sampling_time_reg] - DENOMINATOR_correction_source_voltage;
+        float VOLTAGE_source_pin = FSV * (Vsource / DENOMINATOR);
+        
+        channel_readings->res_SOURCE_VOLTAGE = VOLTAGE_source_pin;
+        return PAC1720_OK;
+    } else {
+        return PAC1720_FAILURE;
+    }
+}
 
-        float result = (float) twos_complement(&tmp);
-        return - result;
+static int8_t calculate_BUS_POWER(const struct PAC1720_channel_config *channel_conf, struct PAC1720_channel_readings *channel_readings)
+{
+    if(channel_readings->reading_done && channel_conf->power_sense_FSP != 0){
+        
+        float FSP = channel_conf->power_sense_FSP;
+        float Pratio = (float) channel_readings->power_ratio_reg;
+        float Pbus_power = FSP * (Pratio / 65535.0f);
+
+        channel_readings->res_POWER = Pbus_power;
+        
+        return PAC1720_OK;
+    } else {
+        return PAC1720_FAILURE;
+    }
+}
+
+static float calculate_SENSED_VOLTAGE(const uint16_t *v_sense_voltage_reg_ptr, const uint8_t *current_sense_sampling_time_reg_ptr)
+{
+    uint16_t tmp = right_bit_shift(v_sense_voltage_reg_ptr, CURRENT_RESOLUTION_IGNORE_BITS[*current_sense_sampling_time_reg_ptr]);
+
+    if(is_negative_value(v_sense_voltage_reg_ptr)){
+        
+        uint16_t complement = twos_complement(&tmp);
+        tmp = complement & NEGATIVE_CURRENT_RESOLUTION_MASK[*current_sense_sampling_time_reg_ptr];
+        return (float) - tmp;
 
     } else {
         return (float) tmp;
     } 
 }
 
-static uint16_t twos_complement(uint16_t *complement)
+static float calculate_SOURCE_VOLTAGE(const uint16_t *v_source_voltage_reg_ptr, const uint8_t *source_voltage_sampling_time_reg_ptr)
 {
-    uint16_t tmp = ~(*complement);
-    return tmp + 0x01;
+    return (float) right_bit_shift(v_source_voltage_reg_ptr, VSOURCE_RESOLUTION_IGNORE_BITS[*source_voltage_sampling_time_reg_ptr]);
 }
 
-static bool is_negative_value(uint16_t *value)
-{
-    uint16_t tmp = (*value >> SIGN_BIT);
-    if(tmp == 0) return false;
-    if(tmp == 1) return true;
-}
-
-static uint16_t right_bit_shift(uint16_t *doublebyte, uint8_t shift)
-{
-    return (*doublebyte >> shift);
-}   
-
-static int8_t calculate_FSC(struct PAC1720_channel_config *config_ptr)
+static int8_t calculate_FSC(struct PAC1720_channel_config *config_ptr) 
 {
     if(config_ptr != NULL && config_ptr->current_sense_resistor_value != 0){
-        config_ptr->current_sense_FSC = FSR_values[config_ptr->current_sense_FSR_reg] / config_ptr->current_sense_resistor_value;
+
+        float FSR = FSR_values[config_ptr->current_sense_FSR_reg];
+        float RESISTANCE = config_ptr->current_sense_resistor_value;
+
+        config_ptr->current_sense_FSC = FSR / RESISTANCE;
+
+        return PAC1720_OK;
+
+    } else {
+        return PAC1720_FAILURE;
+    }
+}
+
+static int8_t calculate_FSV(struct PAC1720_channel_config *config_ptr)
+{
+    if(config_ptr != NULL){
+
+        float DENOMINATOR = DENOMINATOR_values_source_voltage[config_ptr->source_voltage_sampling_time_reg];
+        config_ptr->source_voltage_FSV = 40 - (40 / DENOMINATOR);
+
         return PAC1720_OK;
     } else {
         return PAC1720_FAILURE;
     }
 }
 
+static int8_t calculate_FSP(struct PAC1720_channel_config *config_ptr)
+{
+    if(config_ptr != NULL && config_ptr->current_sense_FSC != 0 && config_ptr->source_voltage_FSV != 0){
+
+        config_ptr->power_sense_FSP = config_ptr->current_sense_FSC * config_ptr->source_voltage_FSV;
+
+        return PAC1720_OK;
+    } else {
+        return PAC1720_FAILURE;
+    }
+}
+
+static uint16_t twos_complement(const uint16_t *to_complement)
+{
+    uint16_t tmp = ~(*to_complement);
+    return tmp + 0x01;
+}
+
+static bool is_negative_value(const uint16_t *value)
+{
+    return (bool) right_bit_shift(value, SHIFT_TO_SIGN_BIT);
+}
+
+static uint16_t right_bit_shift(const uint16_t *doublebyte, const uint8_t shift)
+{
+    return (uint16_t)(*doublebyte >> shift);
+}   
+
 static int8_t device_null_pointer_check(const struct PAC1720_device *device_ptr)
 {
-    if(device_ptr != NULL || device_ptr->read != NULL || device_ptr->write != NULL || device_ptr->delay_ms != NULL){
+    if(device_ptr != NULL && device_ptr->read != NULL && device_ptr->write != NULL && device_ptr->delay_ms != NULL){
         return PAC1720_OK;
     } else {
         return PAC1720_FAILURE;
     } 
+}
+
+const PAC1720_fptr* get_TEST_FPTR_FIELD(void)
+{
+    static const PAC1720_fptr test_fptr_field[] =  {
+                                                (PAC1720_fptr) &calculate_BUS_CURRENT,
+                                                (PAC1720_fptr) &calculate_SENSED_VOLTAGE,
+                                                (PAC1720_fptr) &calculate_FSC,
+                                                (PAC1720_fptr) &twos_complement,
+                                                (PAC1720_fptr) &is_negative_value,
+                                                (PAC1720_fptr) &right_bit_shift,
+                                                (PAC1720_fptr) &device_null_pointer_check,
+                                                (PAC1720_fptr) &calculate_BUS_VOLTAGE,
+                                                (PAC1720_fptr) &calculate_SOURCE_VOLTAGE,
+                                                (PAC1720_fptr) &calculate_FSV,
+                                                (PAC1720_fptr) &calculate_BUS_POWER,
+                                                (PAC1720_fptr) &calculate_FSP 
+                                            };
+
+    return test_fptr_field;
 }

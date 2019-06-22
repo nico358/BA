@@ -6,18 +6,17 @@ load(
     "unity_test",
 )
 
-mock(
-    name = "CircBufMock",
-    srcs = ["//:lib/circular_buffer/circular_buffer.h"],
-    deps = ["//:CircularBufferLib"],
-)
+# mock(
+#     name = "CircBufMock",
+#     srcs = ["//:lib/circular_buffer/circular_buffer.h"],
+#     deps = ["//:CircularBufferLib"],
+# )
 
 unity_test(
-    file_name = "sensor_adapter_Test.c",
+    file_name = "sensor_driver_Test.c",
     deps = [
+        "//:PAC1720DriverLib",
         "@CException",
-        "//:SensorAdapterLib",
-        ":CircBufMock",
         "@CMock",
     ],
 )

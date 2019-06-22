@@ -214,7 +214,7 @@ default_embedded_binary(
 
 	deps = [
 		":DebugLib",
-        ":SensorAdapterLib",
+        ":PAC1720DriverLib",
         ":IncludeLib",
 	],
 )
@@ -223,7 +223,15 @@ cc_binary(
 	name = "calc",
 	srcs = ["src/test.c"],
 	deps = [
-		#  "PAC1720DriverLib",
+		 "PAC1720DriverLib",
+	],
+)
+
+cc_binary(
+	name = "bin",
+	srcs = ["src/test.c"],
+	deps = [
+		 "PAC1720DriverLib",
 	],
 )
 
