@@ -1,4 +1,4 @@
 #pragma once
 
-#include "sensorController.h"
+#include "lib/sensor-adapter/PAC1720_adapter.h"
 

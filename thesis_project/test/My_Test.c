@@ -1,5 +1,4 @@
 #include "unity.h"
-#include "BazelTemplate/Functions.h"
 #include "CException.h"
 
 

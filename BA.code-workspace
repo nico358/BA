@@ -2,11 +2,11 @@
 	"folders": [
 		{
 			"name": "thesis_project",
-			"path": "C:\\Users\\thesis\\wsl\\frick\\thesis_project"
+			"path": "thesis_project"
 		},
 		{
 			"name": "bazel_stage3",
-			"path": "C:\\Users\\thesis\\wsl\\bazel_examples\\cpp-tutorial\\stage3\\"
+			"path": "C:\\Users\\thesis\\wsl\\bazel_examples\\cpp-tutorial\\stage3"
 		},
 		{
 			"name": "elasticnodemonitor",
@@ -17,6 +17,7 @@
 			"path": "C:\\Users\\thesis\\wsl\\elasticnodetest"
 		},
 		{
+			"name": "elasticnodemonitor",
 			"path": "C:\\Users\\Nicolas Frick\\OneDrive\\Documents\\Eigene Dateien\\Uni\\SoSe19\\BA\\repos\\elasticnodemonitor"
 		},
 		{

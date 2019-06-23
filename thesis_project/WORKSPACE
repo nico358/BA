@@ -47,3 +47,9 @@ http_archive(
     strip_prefix = "lufa-LUFA-170418",
     urls = ["http://fourwalledcubicle.com/files/LUFA/LUFA-170418.zip"],
 )
+
+### Load mock repository ###
+local_repository(
+    name = "ExtMockLib",
+    path = "test/mocks",
+)

@@ -7,7 +7,8 @@
 * Usage:    API compatible with I2C Software Library i2cmaster.h
 **************************************************************************/
 #include <inttypes.h>
-#include <compat/twi.h>
+// #include <compat/twi.h>
+#include "compat/twi.h"
 
 #include "i2cmaster.h"
 

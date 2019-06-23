@@ -1,58 +1,13 @@
+### Loading build tools ###
 load(
     "@AvrToolchain//:helpers.bzl",
     "cpu_frequency_flag",
-    # "create_unity_library",
     "default_embedded_binary",
     "generate_hex",
     "mcu_avr_gcc_flag",
 )
 
-# load(
-#     "@EmbeddedSystemsBuildScripts//:unity.bzl",
-#     "generate_test_runner",
-#     "unity_test",
-# 	"generate_a_unity_test_for_every_file"
-# )
-
-#################################################
-filegroup(
-	name = "FPGApowerEvalSrc",
-	srcs = glob(
-		[
-			"src/*.c",
-			"src/*.h",
-		],
-	),
-)
-
-filegroup(
-    name = "BazelTemplateIncl",
-    srcs = [
-        "BazelTemplate/Functions.h",
-    ],
-)
-
-exports_files(
-    glob([
-        "BazelTemplate/*.h",
-    ]),
-    visibility = ["//visibility:public"],
-)
-
-# print("\nFlags:\n")
-# print(mcu_avr_gcc_flag())
-# print(cpu_frequency_flag())
-# print("\n\n")
-
-cc_library(
-    name = "BazelTemplate",
-    hdrs = [":BazelTemplateIncl"],
-    visibility = ["//visibility:public"],
-    linkstatic = True,
-)
-
-# #######################################################
-
+### Define compiler/ linker options and filegroups for rules ###
 commonCopts = mcu_avr_gcc_flag() + cpu_frequency_flag()
 
 LUFA_COPTS = [
@@ -60,56 +15,238 @@ LUFA_COPTS = [
     "-isystem external/LUFA/",
 ]
 
+filegroup(
+	name = "LufaSetupSrcs",
+	srcs = glob(["lib/LUFA-Setup/*.c"])
+)
+
+filegroup(
+	name = "LufaSetupHeaders",
+	srcs = glob(["lib/LUFA-Setup/*.h"])
+)
+
+### Library rules ###
+cc_library(
+	name = "DebugLib",
+	srcs = ["lib/debug/debugUsb.c", "LufaSetupSrcs"],
+	hdrs = ["lib/debug/debug.h", "LufaSetupHeaders"],
+
+	copts = commonCopts + LUFA_COPTS,
+
+	linkstatic = True,
+	
+	deps = ["@LUFA//:VirtualSerial"],
+	
+	visibility = [
+		"//test:__pkg__",
+		"//test:__subpackages__",
+		"@CMock//CMock:__pkg__",
+	],
+)
+
+cc_library(
+	name = "CircularBufferLib",
+	srcs = glob(["lib/circular_buffer/*.c"]),
+	hdrs = glob(["lib/circular_buffer/*.h"]),
+
+	copts = commonCopts,
+
+## For testing add '--define test=true ' to include MockLib ##
+	deps = select({
+
+        ":test": [
+			"@ExtMockLib",
+		],
+
+        "//conditions:default": [
+	 		":DebugLib",
+		],	
+    }),
+	visibility = [
+		"//test:__pkg__",
+		"//test:__subpackages__",
+		"@CMock//CMock:__pkg__",
+	],
+)
+
+cc_library(
+	name = "I2cLib",
+	srcs = glob(["lib/i2cmaster/*.c"]),
+	hdrs = glob(["lib/i2cmaster/*.h"]),
+
+	copts = commonCopts,
+
+## For testing add '--define test=true ' to include MockLib ##
+	deps = select({
+
+        ":test": [
+			"@ExtMockLib",
+		],
+        "//conditions:default": [],	
+    }),
+
+	visibility = [
+		"//test:__pkg__",
+		"//test:__subpackages__",
+		"@CMock//CMock:__pkg__",
+	],
+)
+
+cc_library(
+	name = "DelayLib",
+	srcs = ["lib/delay/user_delay.c"],
+	hdrs = ["lib/delay/user_delay.h"],
+
+	copts = commonCopts,
+
+## For testing add '--define test=true ' to include MockLib ##
+	deps = select({
+
+        ":test": [
+			"@ExtMockLib",
+		],
+        "//conditions:default": [],	
+    }),
+
+	visibility = [
+		"//test:__pkg__",
+		"//test:__subpackages__",
+		"@CMock//CMock:__pkg__",
+	],
+)
+
+cc_library(
+	name = "CurrentMeasurementLib",
+	srcs = ["lib/current_sense/current_measurement.c"],
+	hdrs = ["lib/current_sense/current_measurement.h"],
+
+	copts = commonCopts,
+
+    deps = [
+		":CircularBufferLib",
+	],
+	visibility = ["//test:__pkg__"],
+)
+
+cc_library(
+	name = "CurrentSenseLib",
+	srcs = ["lib/current_sense/current_sense.c"],
+	hdrs = ["lib/current_sense/current_sense.h"],
+
+	copts = commonCopts,
+
+	deps = [
+	 ":CircularBufferLib", 
+	 ":I2cLib",
+	 ":CurrentMeasurementLib", 
+	 ":DebugLib",
+	],
+	visibility = ["//test:__pkg__"],
+)
+
+cc_library(
+	name = "PAC1720DriverLib",
+	srcs = ["lib/PAC1720_driver/PAC1720_driver.c"],
+	hdrs = glob(["lib/PAC1720_driver/*.h"]),
+
+	copts = commonCopts,
+
+	deps = [],
+
+	visibility = [
+		"//test:__pkg__",
+		"//test:__subpackages__",
+		"@CMock//CMock:__pkg__",
+	],
+)
+
+cc_library(
+    name = "IncludeLib",
+	srcs = ["src/adapter_PAC1720.c"],
+    hdrs = [
+        "include/currentSenseApp.h",
+		"include/adapter_PAC1720.h",
+    ],
+
+    copts = commonCopts,
+
+    deps = [
+        ":CircularBufferLib",
+        ":PAC1720DriverLib",
+        ":I2cLib",
+		":DelayLib",
+    ],
+
+	visibility = [
+		"//test:__pkg__",
+		"//test:__subpackages__",
+		"@CMock//CMock:__pkg__",
+	],
+)
+
+### Exports lib-files to allow test-package access ###
+exports_files(
+	glob([
+		"lib/**/*.h",
+	]),
+	visibility = [
+		"//test:__pkg__",
+		"//test:__subpackages__",
+		"@CMock//CMock:__pkg__",
+	],
+	
+)
+
+exports_files(
+	glob([
+		"src/*.c",
+	]),
+	visibility = [
+		"//test:__pkg__",
+		"//test:__subpackages__",
+		"@CMock//CMock:__pkg__",
+	],
+	
+)
+
+### Create config to substitute dependencies in build process ###
+### "--define test=true" appended to test call switches the actual dependencies ###
+config_setting(
+    name = "test",
+    values = {
+        "define": "test=true",
+    },
+)
+
+### Binary rules ###
+default_embedded_binary(
+	name = "Main",
+	srcs = ["src/main.c"],
+
+	copts = commonCopts + LUFA_COPTS,
+
+	linkopts = commonCopts + LUFA_COPTS + ["-Wl,-u,vfprintf -lprintf_flt -lm"],
+
+	deps = [
+		":DebugLib",
+        ":CurrentSenseLib",
+	],
+)
+
 default_embedded_binary(
 	name = "CurrentSenseApp",
 	srcs = [
 		"src/currentSenseApp.c",
-        "src/sensorController.c"
+		"src/adapter_PAC1720.c",
     ],
+
 	copts = commonCopts + LUFA_COPTS,
+
 	linkopts = commonCopts + LUFA_COPTS + ["-Wl,-u,vfprintf -lprintf_flt -lm"],
+
 	deps = [
-		"//lib:DebugLib",
-        "//lib:CurrentSenseLib",
-        "//lib:CircularBufferLib",
-        "//lib:CurrentMeasurementLib",
-        "//lib:SensorAdapterLib",
-        "//lib:I2cLib",
-        "//include:IncludeLib"
+		":DebugLib",
+        ":PAC1720DriverLib",
+        ":IncludeLib",
 	],
-    uploader = "//:stk_upload_script"
-)
-
-# Uploading stuff
-load("//:vars.bzl", "defineProgrammer")
-
-defineProgrammer(
-  name = "programmerPort",
-  port = "/dev/tty.usbmodem142101"
-)
-
-STK_UPLOAD_SCRIPT_TEMPLATE = """
-{sudo}avrdude -v -V -p $$1 -c stk500v2 -P $(PROGPORT) -U flash:w:$$2 -e;
-"""
-
-genrule(
-    name = "stk_upload_script",
-    outs = ["stk_upload_script.sh"],
-    cmd = "echo '" +
-#    select({
-#        "@AvrToolchain//host_config:dfu_needs_sudo": UPLOAD_SCRIPT_TEMPLATE.format(
-#            export = "",
-#            sudo = "sudo ",
-#        ),
-#        "@AvrToolchain//host_config:dfu_needs_askpass": UPLOAD_SCRIPT_TEMPLATE.format(
-#            export = "export SUDO_ASKPASS=$(ASKPASS)",
-#            sudo = "sudo ",
-#        ),
-#        "//conditions:default":
-        STK_UPLOAD_SCRIPT_TEMPLATE.format(
-            sudo = "",
-        )
-#    })
-     + "' > $@",
-    toolchains = [":programmerPort"]
 )

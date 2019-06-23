@@ -1,5 +1,3 @@
-package(default_visibility = ["//visibility:public"])
-
 load(
     "@EmbeddedSystemsBuildScripts//:unity.bzl",
     "generate_a_mock_for_every_file",
@@ -9,39 +7,38 @@ load(
 )
 
 mock(
-    name = "CircularBufferMock",
-    srcs = ["//lib:circular_buffer/circular_buffer.h"],
-    deps = ["//lib:CircularBufferLib"]
+    name = "I2CMock",
+    srcs = ["//:lib/i2cmaster/i2cmaster.h"],
+    deps = ["//:I2cLib"],
 )
 
-generate_a_mock_for_every_file(
-    enforce_strict_ordering = True,
-    file_list = [
-        "//lib:sensor-adapter/sensor_adapter.h"
-    ],
-    deps = [
-        "//lib:CircularBufferLib", 
-		"//lib:I2cLib", 
-		"//lib:CurrentMeasurementLib", 
-		"//lib:DebugLib"
-    ]
+mock(
+    name = "DelayMock",
+    srcs = ["//:lib/delay/user_delay.h"],
+    deps = ["//:DelayLib"],
+)
+
+mock(
+    name = "CircBufMock",
+    srcs = ["//:lib/circular_buffer/circular_buffer.h"],
+    deps = ["//:CircularBufferLib"],
 )
 
 unity_test(
-    copts = [
-        "-Wno-unused-function",
-        "-Werror=return-type",
-        "-Werror=discarded-qualifiers",
-        "-Wno-error=incompatible-pointer-types",
-        "-funsigned-char",
-        "-std=gnu99",
-    ],
-    file_name = "first.c",
+    file_name = "sensor_driver_Test.c",
     deps = [
-        "//lib:DebugLib",
-        "//lib:CircularBufferLib",
-        "//lib:I2cLib",
-        "//lib:SensorAdapterLib",
+        "//:PAC1720DriverLib",
+        "@CException",
+    ],
+)
+
+unity_test(
+    file_name = "sensor_adapter_Test.c",
+    deps = [
+        ":I2CMock",
+        ":DelayMock",
+        ":CircBufMock",
+        "//:IncludeLib",
         "@CException",
         "@CMock",
     ],
