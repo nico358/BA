@@ -96,8 +96,13 @@
 #ifndef _AVR_IO_H_
 #define _AVR_IO_H_
 
-#define F_CPU 8000000
+#ifndef __AVR_ATmega32U4__
 #define __AVR_ATmega32U4__
+#endif
+
+#ifndef F_CPU
+#define F_CPU 8000000
+#endif
 
 // #include <avr/sfr_defs.h>
 #include "avr/sfr_defs.h"

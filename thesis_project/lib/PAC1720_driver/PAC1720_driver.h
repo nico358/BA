@@ -14,7 +14,7 @@ extern "C"
 
 #include "PAC1720_definitions.h"
 
-const PAC1720_fptr* get_TEST_FPTR_FIELD(void);
+const void* get_TEST_FPTR_FIELD(void);
 
 #ifdef __cplusplus
 }

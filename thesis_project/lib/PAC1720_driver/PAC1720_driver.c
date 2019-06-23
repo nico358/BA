@@ -1,6 +1,5 @@
 /*! @file PAC1720_driver.c
  @brief Sensor driver for PAC1720 sensor */
-#include <stdio.h>
 #include "PAC1720_driver.h"
 
 /*!
@@ -360,23 +359,23 @@ static int8_t device_null_pointer_check(const struct PAC1720_device *device_ptr)
     } 
 }
 
-const PAC1720_fptr* get_TEST_FPTR_FIELD(void)
+const void* get_TEST_FPTR_FIELD(void)
 {
-    static const PAC1720_fptr test_fptr_field[] =  {
-                                                (PAC1720_fptr) &calculate_BUS_CURRENT,
-                                                (PAC1720_fptr) &calculate_SENSED_VOLTAGE,
-                                                (PAC1720_fptr) &calculate_FSC,
-                                                (PAC1720_fptr) &twos_complement,
-                                                (PAC1720_fptr) &is_negative_value,
-                                                (PAC1720_fptr) &right_bit_shift,
-                                                (PAC1720_fptr) &device_null_pointer_check,
-                                                (PAC1720_fptr) &calculate_BUS_VOLTAGE,
-                                                (PAC1720_fptr) &calculate_SOURCE_VOLTAGE,
-                                                (PAC1720_fptr) &calculate_FSV,
-                                                (PAC1720_fptr) &calculate_BUS_POWER,
-                                                (PAC1720_fptr) &calculate_FSP,
-                                                (PAC1720_fptr) &read_registers,
-                                                (PAC1720_fptr) &write_registers
+    static const void* test_fptr_field[] =  {
+                                                 (void*) &calculate_BUS_CURRENT,
+                                                 (void*) &calculate_SENSED_VOLTAGE,
+                                                 (void*) &calculate_FSC,
+                                                 (void*) &twos_complement,
+                                                 (void*) &is_negative_value,
+                                                 (void*) &right_bit_shift,
+                                                 (void*) &device_null_pointer_check,
+                                                 (void*) &calculate_BUS_VOLTAGE,
+                                                 (void*) &calculate_SOURCE_VOLTAGE,
+                                                 (void*) &calculate_FSV,
+                                                 (void*) &calculate_BUS_POWER,
+                                                 (void*) &calculate_FSP,
+                                                 (void*) &read_registers,
+                                                 (void*) &write_registers
                                             };
 
     return test_fptr_field;

@@ -35,7 +35,8 @@
 #ifndef _AVR_INTERRUPT_H_
 #define _AVR_INTERRUPT_H_
 
-#include <avr/io.h>
+// #include <avr/io.h>
+#include "avr/io.h"
 
 #if !defined(__DOXYGEN__) && !defined(__STRINGIFY)
 /* Auxiliary macro for ISR_ALIAS(). */
@@ -78,7 +79,8 @@
 */
 #define sei()
 #else  /* !DOXYGEN */
-# define sei()  __asm__ __volatile__ ("sei" ::: "memory")
+// # define sei()  __asm__ __volatile__ ("sei" ::: "memory")
+# define sei()  __asm__ __volatile__ ("cli" ::: "memory")
 #endif /* DOXYGEN */
 
 #if defined(__DOXYGEN__)

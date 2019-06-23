@@ -81,7 +81,9 @@
 			"fuse.h": "c",
 			"lock.h": "c",
 			"sfr_defs.h": "c",
-			"iom32u6.h": "c"
+			"iom32u6.h": "c",
+			"delay_basic.h": "c",
+			"user_delay.h": "c"
 		},
 		"files.exclude": {
 			"**/.classpath": true,

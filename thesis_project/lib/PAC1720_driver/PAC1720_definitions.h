@@ -138,6 +138,8 @@ static const uint8_t SHIFT_TO_SIGN_BIT = 15;
 /** Application constants */
 static const int8_t PAC1720_OK = 0;
 static const int8_t PAC1720_FAILURE = -1;
+static const int8_t I2C_ADDRESS_SHIFT = 1;
+typedef enum {FIRST_CHANNEL=1, SECOND_CHANNEL=2, BOTH_CHANNELS=3} ACTIVE_CHANNELS;
 
 /** Type definitions */
 /*!
@@ -146,13 +148,13 @@ static const int8_t PAC1720_FAILURE = -1;
  * @param[in] y:	... .
  * @param[in/out] z: ... .
  */
-typedef int8_t (*PAC1720_fptr)(uint8_t sensor_address, uint8_t reg_address, uint8_t *data_ptr, uint16_t len);
+typedef int8_t (*PAC1720_fptr)(const uint8_t sensor_address, const uint8_t reg_address, uint8_t *data_ptr, const uint16_t len);
 
 /*!
  * Delay function pointer
  * @param[in] period: Time period in milliseconds
  */
-typedef void (*delay_fptr)(uint32_t period);
+typedef void (*delay_fptr)(const uint32_t period);
 
 /* structure definitions */
 /*!
@@ -263,10 +265,8 @@ struct	PAC1720_device
 	
 	/*! Sensor slave address, determined by ADDR_SEL resistor */
 	uint8_t sensor_address;
-	/*! First sensor channel in use */
-	bool channel1_active;
-	/*! Second sensor channel in use */
-	bool channel2_active;
+	/*! Sensor channels in use */
+	ACTIVE_CHANNELS channels;
 	/*! The struct holding the config of channel 1*/
 	struct PAC1720_channel_config sensor_config_ch1;
 	/*! The struct holding the config of channel 2*/

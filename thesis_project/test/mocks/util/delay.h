@@ -42,8 +42,15 @@
 #endif  /* __DOXYGEN__ */
 
 #include <inttypes.h>
-#include <util/delay_basic.h>
-#include <math.h>
+// #include <util/delay_basic.h>
+// #include <math.h>
+
+#ifndef F_CPU
+#define F_CPU 8000000
+#endif
+// #include "util/delay_basic.h"
+// #include "math.h"
+
 
 /** \file */
 /** \defgroup util_delay <util/delay.h>: Convenience functions for busy-wait delay loops

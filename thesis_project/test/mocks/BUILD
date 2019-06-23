@@ -1,9 +1,10 @@
 cc_library(
     name = "ExtMockLib",
-    # srcs = ["i2cmaster/Mocki2cmaster.c"],
     hdrs = [
         "compat/twi.h",
         "util/twi.h",
+        "util/delay_basic.h",
+        "util/delay.h",
         "avr/io.h",
         "avr/portpins.h",
         "avr/common.h",
@@ -12,7 +13,10 @@ cc_library(
         "avr/lock.h",
         "avr/sfr_defs.h",
         "avr/iom32u4.h",
-        # "i2cmaster/Mocki2cmaster.h",
+        "avr/interrupt.h", 
+        "inttypes.h",
+        "math.h",
+
     ],
     visibility = ["//visibility:public"],
     deps = [

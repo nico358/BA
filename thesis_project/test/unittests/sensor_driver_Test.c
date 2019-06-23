@@ -40,7 +40,7 @@ write_registers write_registers_func;
 
 void setUp(void) {
     // Get function pointers from declaration
-    const (**test_fptr_field)[]         = (PAC1720_fptr*) get_TEST_FPTR_FIELD();
+    const (**test_fptr_field)[]         = (void*) get_TEST_FPTR_FIELD();
     // Assign function pointers to instances
     calculate_BUS_CURRENT_func          = (calculate_BUS_CURRENT) test_fptr_field[0];
     calculate_SENSED_VOLTAGE_func       = (calculate_SENSED_VOLTAGE) test_fptr_field[1];
@@ -79,8 +79,9 @@ void spy_i2c_write_read(uint8_t address, uint8_t reg_address, uint8_t *data, uin
 // Reset struct values 
 void reset_values(void){
     dev.sensor_address = 0;
-    dev.read = dev.write = dev.delay_ms = NULL;
-    dev.channel1_active = false;
+    dev.read = dev.write = NULL;
+    dev.delay_ms = NULL;
+    dev.channels = 0;
     dev.ch1_readings.power_ratio_reg = 0;
     dev.ch1_readings.reading_done = false;
     dev.ch1_readings.v_sense_voltage_reg = 0;
@@ -102,9 +103,9 @@ void test_read_registers(void){
     TEST_ASSERT_EQUAL(PAC1720_FAILURE, read_registers_func(NULL, 0, NULL, 0));
     TEST_ASSERT_EQUAL(PAC1720_FAILURE, read_registers_func(&dev, 0, NULL, 0));
     // Set function pointers to spy and dummy function
-    dev.read = &spy_i2c_write_read;
-    dev.write = &spy_i2c_write_read;
-    dev.delay_ms = &dummy_func;
+    dev.read = (void*) &spy_i2c_write_read;
+    dev.write = (void*) &spy_i2c_write_read;
+    dev.delay_ms = (void*) &dummy_func;
     // Set function arguments
     dev.sensor_address = 0xF0;
     uint8_t data[3] = {0};
@@ -124,9 +125,9 @@ void test_write_registers(void){
     TEST_ASSERT_EQUAL(PAC1720_FAILURE, write_registers_func(NULL, 0, NULL, 0));
     TEST_ASSERT_EQUAL(PAC1720_FAILURE, write_registers_func(&dev, 0, NULL, 0));
     // Set function pointers to spy and dummy function
-    dev.read = &spy_i2c_write_read;
-    dev.write = &spy_i2c_write_read;
-    dev.delay_ms = &dummy_func;
+    dev.read = (void*) &spy_i2c_write_read;
+    dev.write = (void*) &spy_i2c_write_read;
+    dev.delay_ms = (void*) &dummy_func;
     // Set function arguments
     dev.sensor_address = 0xF0;
     uint8_t data[3] = {0};
@@ -270,8 +271,9 @@ void test_right_bit_shift(void) {
 void test_device_null_pointer_check(void) {
     TEST_ASSERT_EQUAL(PAC1720_FAILURE, device_null_pointer_check_func((void*)0));
     TEST_ASSERT_EQUAL(PAC1720_FAILURE, device_null_pointer_check_func(&dev));
-    dev.write = &dummy_func;
-    dev.read = &dummy_func;
-    dev.delay_ms = &dummy_func;
+    dev.write = (void*) &dummy_func;
+    dev.read = (void*) &dummy_func;
+    dev.delay_ms = (void*) &dummy_func;
     TEST_ASSERT_EQUAL(PAC1720_OK, device_null_pointer_check_func(&dev));
+    reset_values();
 }

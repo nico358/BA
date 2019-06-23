@@ -93,6 +93,29 @@ cc_library(
 )
 
 cc_library(
+	name = "DelayLib",
+	srcs = ["lib/delay/user_delay.c"],
+	hdrs = ["lib/delay/user_delay.h"],
+
+	copts = commonCopts,
+
+## For testing add '--define test=true ' to include MockLib ##
+	deps = select({
+
+        ":test": [
+			"@ExtMockLib",
+		],
+        "//conditions:default": [],	
+    }),
+
+	visibility = [
+		"//test:__pkg__",
+		"//test:__subpackages__",
+		"@CMock//CMock:__pkg__",
+	],
+)
+
+cc_library(
 	name = "CurrentMeasurementLib",
 	srcs = ["lib/current_sense/current_measurement.c"],
 	hdrs = ["lib/current_sense/current_measurement.h"],
@@ -139,21 +162,26 @@ cc_library(
 
 cc_library(
     name = "IncludeLib",
+	srcs = ["src/adapter_PAC1720.c"],
     hdrs = [
         "include/currentSenseApp.h",
+		"include/adapter_PAC1720.h",
     ],
 
     copts = commonCopts,
 
     deps = [
-        ":DebugLib",
-        ":CurrentSenseLib",
         ":CircularBufferLib",
-        ":CurrentMeasurementLib",
-        ":SensorAdapterLib",
-        ":I2cLib"
+        ":PAC1720DriverLib",
+        ":I2cLib",
+		":DelayLib",
     ],
-	visibility = ["//test:__pkg__"],
+
+	visibility = [
+		"//test:__pkg__",
+		"//test:__subpackages__",
+		"@CMock//CMock:__pkg__",
+	],
 )
 
 ### Exports lib-files to allow test-package access ###
@@ -222,12 +250,3 @@ default_embedded_binary(
         ":IncludeLib",
 	],
 )
-
-cc_binary(
-	name = "calc",
-	srcs = ["src/adapter_PAC1720.c"],
-	deps = [
-		 "PAC1720DriverLib",
-	],
-)
-
