@@ -76,7 +76,12 @@
 			"twi.h": "c",
 			"pac1720_adapter.h": "c",
 			"pac1720_driver.h": "c",
-			"pac1720_definitions.h": "c"
+			"pac1720_definitions.h": "c",
+			"mocki2cmaster.h": "c",
+			"fuse.h": "c",
+			"lock.h": "c",
+			"sfr_defs.h": "c",
+			"iom32u6.h": "c"
 		},
 		"files.exclude": {
 			"**/.classpath": true,

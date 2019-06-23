@@ -6,8 +6,11 @@
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/lib/**",
                 "${workspaceFolder}/lib/softSerial**",
+                "${workspaceFolder}/test/mocks/**",
                 "C:\\Users\\Nicolas Frick\\.platformio\\packages\\toolchain-atmelavr\\avr\\",
-                "C:\\Users\\Nicolas Frick\\.platformio\\packages\\toolchain-atmelavr\\avr\\include\\avr"
+                "C:\\Users\\Nicolas Frick\\.platformio\\packages\\toolchain-atmelavr\\avr\\include\\avr",
+                "${workspaceFolder}/test/mocks",
+                "${workspaceFolder}/lib/CMock-master/vendor/c_exception/lib"
             ],
             "defines": [
                 "_DEBUG",
@@ -25,12 +28,13 @@
                     "${workspaceFolder}/**",
                     "${workspaceFolder}/lib/**",
                     "${workspaceFolder}/lib/softSerial**",
+                    "${workspaceFolder}/test/mocks/**",
                     "C:\\Users\\Nicolas Frick\\.platformio\\packages\\toolchain-atmelavr\\avr\\",
                     "C:\\Users\\Nicolas Frick\\.platformio\\packages\\toolchain-atmelavr\\avr\\include\\avr"
                 ],
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": ""
-            }   
+            }
         }
     ],
     "version": 4

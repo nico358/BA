@@ -146,7 +146,7 @@ static const int8_t PAC1720_FAILURE = -1;
  * @param[in] y:	... .
  * @param[in/out] z: ... .
  */
-typedef int8_t (*PAC1720_fptr)(uint8_t dev_id, uint8_t reg_addr, uint8_t *data, uint16_t len);
+typedef int8_t (*PAC1720_fptr)(uint8_t sensor_address, uint8_t reg_address, uint8_t *data_ptr, uint16_t len);
 
 /*!
  * Delay function pointer

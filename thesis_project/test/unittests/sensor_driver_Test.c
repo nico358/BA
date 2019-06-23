@@ -1,6 +1,11 @@
 #include "unity.h"
 #include "lib/PAC1720_driver/PAC1720_driver.h"
 
+/** Helper function definitions */
+void dummy_func(void);
+void reset_values(void);
+void spy_i2c_write_read(uint8_t address, uint8_t reg_address, uint8_t *data, uint8_t len);
+
 /** Provide function definitions like in declaration */
 typedef int8_t (*calculate_BUS_CURRENT) (const struct PAC1720_channel_config *channel_conf, struct PAC1720_channel_readings *channel_readings);
 typedef float (*calculate_SENSED_VOLTAGE) (const uint16_t *v_sense_voltage_reg_ptr, const uint8_t *current_sense_sampling_time_reg_ptr);
@@ -14,8 +19,10 @@ typedef float (*calculate_SOURCE_VOLTAGE) (const uint16_t *v_source_voltage_reg_
 typedef int8_t (*calculate_FSV) (struct PAC1720_channel_config *config_ptr);
 typedef int8_t (*calculate_BUS_POWER) (const struct PAC1720_channel_config *channel_conf, struct PAC1720_channel_readings *channel_readings);
 typedef int8_t (*calculate_FSP) (struct PAC1720_channel_config *config_ptr);
+typedef int8_t (*read_registers) (const struct PAC1720_device *device_ptr, uint8_t reg_address, uint8_t *data_ptr, uint8_t len);
+typedef int8_t (*write_registers) (const struct PAC1720_device *device_ptr, uint8_t reg_address, uint8_t *data_ptr, uint8_t len);
 
-/** Declare instances */
+/** Declare function instances */
 calculate_BUS_CURRENT calculate_BUS_CURRENT_func;
 calculate_SENSED_VOLTAGE calculate_SENSED_VOLTAGE_func;
 calculate_FSC calculate_FSC_func;
@@ -28,10 +35,8 @@ calculate_SOURCE_VOLTAGE calculate_SOURCE_VOLTAGE_func;
 calculate_FSV calculate_FSV_func;
 calculate_BUS_POWER calculate_BUS_POWER_func;
 calculate_FSP calculate_FSP_func;
-
-struct PAC1720_device dev;
-
-void dummy_func(void){}
+read_registers read_registers_func;
+write_registers write_registers_func;
 
 void setUp(void) {
     // Get function pointers from declaration
@@ -49,10 +54,91 @@ void setUp(void) {
     calculate_FSV_func                  = (calculate_FSV) test_fptr_field[9];
     calculate_BUS_POWER_func            = (calculate_BUS_POWER) test_fptr_field[10];
     calculate_FSP_func                  = (calculate_FSP) test_fptr_field[11];
+    read_registers_func                 = (read_registers) test_fptr_field[12];
+    write_registers_func                = (write_registers) test_fptr_field[13];
 }
 
-void tearDown(void) {
-    
+void tearDown(void) {}
+
+// Declare device structure
+struct PAC1720_device dev;
+
+// Test null_pointer_check with dummy pointer
+void dummy_func(void){}
+
+// Test spy
+void spy_i2c_write_read(uint8_t address, uint8_t reg_address, uint8_t *data, uint8_t len){
+    // Push function arguments into data pointer
+    *data = address;
+    data++;
+    *data = reg_address;
+    data++;
+    *data = len;
+}
+
+// Reset struct values 
+void reset_values(void){
+    dev.sensor_address = 0;
+    dev.read = dev.write = dev.delay_ms = NULL;
+    dev.channel1_active = false;
+    dev.ch1_readings.power_ratio_reg = 0;
+    dev.ch1_readings.reading_done = false;
+    dev.ch1_readings.v_sense_voltage_reg = 0;
+    dev.ch1_readings.v_source_voltage_reg = 0;
+    dev.sensor_config_ch1.source_voltage_sampling_time_reg = 0;
+    dev.sensor_config_ch1.source_voltage_sampling_average_reg = 0;
+    dev.sensor_config_ch1.source_voltage_FSV = 0;
+    dev.sensor_config_ch1.power_sense_FSP = 0;
+    dev.sensor_config_ch1.current_sense_sampling_time_reg = 0;
+    dev.sensor_config_ch1.current_sense_sampling_average_reg = 0;
+    dev.sensor_config_ch1.current_sense_resistor_value = 0;
+    dev.sensor_config_ch1.current_sense_FSR_reg = 0;
+    dev.sensor_config_ch1.current_sense_FSC = 0;
+    dev.sensor_config_ch1.conversion_rate_reg = 0;
+}
+
+void test_read_registers(void){
+    // Test null pointer check
+    TEST_ASSERT_EQUAL(PAC1720_FAILURE, read_registers_func(NULL, 0, NULL, 0));
+    TEST_ASSERT_EQUAL(PAC1720_FAILURE, read_registers_func(&dev, 0, NULL, 0));
+    // Set function pointers to spy and dummy function
+    dev.read = &spy_i2c_write_read;
+    dev.write = &spy_i2c_write_read;
+    dev.delay_ms = &dummy_func;
+    // Set function arguments
+    dev.sensor_address = 0xF0;
+    uint8_t data[3] = {0};
+    uint8_t reg_addr = 0x11;
+    uint8_t len = 5;
+    // Call function to test
+    read_registers_func(&dev, reg_addr, data, len);
+    // Verify values
+    TEST_ASSERT_EQUAL_HEX8(0xF0, data[0]);
+    TEST_ASSERT_EQUAL_HEX8(0x11, data[1]);
+    TEST_ASSERT_EQUAL(5, data[2]);
+    reset_values();
+}
+
+void test_write_registers(void){
+    // Test null pointer check
+    TEST_ASSERT_EQUAL(PAC1720_FAILURE, write_registers_func(NULL, 0, NULL, 0));
+    TEST_ASSERT_EQUAL(PAC1720_FAILURE, write_registers_func(&dev, 0, NULL, 0));
+    // Set function pointers to spy and dummy function
+    dev.read = &spy_i2c_write_read;
+    dev.write = &spy_i2c_write_read;
+    dev.delay_ms = &dummy_func;
+    // Set function arguments
+    dev.sensor_address = 0xF0;
+    uint8_t data[3] = {0};
+    uint8_t reg_addr = 0x11;
+    uint8_t len = 5;
+    // Call function to test
+    write_registers_func(&dev, reg_addr, data, len);
+    // Verify values
+    TEST_ASSERT_EQUAL_HEX8(0xF0, data[0]);
+    TEST_ASSERT_EQUAL_HEX8(0x11, data[1]);
+    TEST_ASSERT_EQUAL(5, data[2]);
+    reset_values();
 }
 
 void test_calculate_BUS_CURRENT (void){
@@ -70,8 +156,7 @@ void test_calculate_BUS_CURRENT (void){
     // Test correct current calculation
     TEST_ASSERT_EQUAL(PAC1720_OK, calculate_BUS_CURRENT_func(&dev.sensor_config_ch1, &dev.ch1_readings));
     TEST_ASSERT_EQUAL_FLOAT(1.64924276f, dev.ch1_readings.res_CURRENT);
-    // Reset flag for next tests
-    dev.ch1_readings.reading_done = false;
+    reset_values();
 }
 
 void test_calculate_BUS_VOLTAGE(void){
@@ -84,8 +169,7 @@ void test_calculate_BUS_VOLTAGE(void){
     dev.ch1_readings.reading_done = true;
     TEST_ASSERT_EQUAL(PAC1720_OK, calculate_BUS_VOLTAGE_func(&dev.sensor_config_ch1, &dev.ch1_readings));
     TEST_ASSERT_EQUAL_FLOAT(23.9838123f, dev.ch1_readings.res_SOURCE_VOLTAGE);
-    // Reset flag for next tests
-    dev.ch1_readings.reading_done = false;
+    reset_values();
 }
 
 void test_calculate_BUS_POWER(void){
@@ -99,8 +183,7 @@ void test_calculate_BUS_POWER(void){
     dev.ch1_readings.power_ratio_reg = 0b0011100001000111;
     TEST_ASSERT_EQUAL(PAC1720_OK, calculate_BUS_POWER_func(&dev.sensor_config_ch1, &dev.ch1_readings));
     TEST_ASSERT_EQUAL_FLOAT(17.5693493f, dev.ch1_readings.res_POWER);
-    // Reset value
-    dev.sensor_config_ch1.power_sense_FSP = 0;
+    reset_values();
 }
 
 void test_calculate_SENSED_VOLTAGE (void){
@@ -112,8 +195,7 @@ void test_calculate_SENSED_VOLTAGE (void){
     // Test positive voltage return value
     dev.ch1_readings.v_sense_voltage_reg = 0b0110100110000000;
     TEST_ASSERT_EQUAL_FLOAT(1688.0f, calculate_SENSED_VOLTAGE_func(&dev.ch1_readings.v_sense_voltage_reg, &dev.sensor_config_ch1.current_sense_sampling_time_reg));
-    // Reset value
-    dev.sensor_config_ch1.source_voltage_sampling_time_reg = 0;
+    reset_values();
 }
 
 void test_calculate_SOURCE_VOLTAGE(void){
@@ -130,6 +212,7 @@ void test_calculate_SOURCE_VOLTAGE(void){
     // Test source voltage return value
     dev.ch1_readings.v_source_voltage_reg = 0b1001100110000000;
     TEST_ASSERT_EQUAL_FLOAT(614.0f, calculate_SOURCE_VOLTAGE_func(&dev.ch1_readings.v_source_voltage_reg, &dev.sensor_config_ch1.source_voltage_sampling_time_reg));
+    reset_values();
 }
 
 void test_calculate_FSC (void){
@@ -142,8 +225,7 @@ void test_calculate_FSC (void){
     dev.sensor_config_ch1.current_sense_resistor_value = 0.01f;
     calculate_FSC_func(&dev.sensor_config_ch1);
     TEST_ASSERT_EQUAL_FLOAT(2.0f, dev.sensor_config_ch1.current_sense_FSC);
-    // Reset value
-    dev.sensor_config_ch1.current_sense_FSC = 0;
+    reset_values();
 }
 
 void test_calculate_FSV(void){
@@ -151,8 +233,7 @@ void test_calculate_FSV(void){
     dev.sensor_config_ch1.source_voltage_sampling_time_reg = 0x02;
     TEST_ASSERT_EQUAL(PAC1720_OK, calculate_FSV_func(&dev.sensor_config_ch1));
     TEST_ASSERT_EQUAL_FLOAT(39.9609375, dev.sensor_config_ch1.source_voltage_FSV);
-    // Reset value
-    dev.sensor_config_ch1.source_voltage_FSV = 0;
+    reset_values();
 }
 
 void test_calculate_FSP(void){
@@ -166,6 +247,7 @@ void test_calculate_FSP(void){
     dev.sensor_config_ch1.source_voltage_FSV = 39.96f;
     TEST_ASSERT_EQUAL(PAC1720_OK, calculate_FSP_func(&dev.sensor_config_ch1));
     TEST_ASSERT_EQUAL_FLOAT(79.92f, dev.sensor_config_ch1.power_sense_FSP);
+    reset_values();
 }
 
 void test_twos_complement (void){

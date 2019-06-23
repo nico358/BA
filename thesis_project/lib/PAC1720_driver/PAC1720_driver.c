@@ -15,6 +15,34 @@
  * @return Status value.
  * @retval 1 value -> OK/ 0 value -> Error
  */
+static int8_t read_registers(const struct PAC1720_device *device_ptr, uint8_t reg_address, uint8_t *data_ptr, uint8_t len);
+
+/*!
+ * @brief This API is used to calculate the BUS current.
+ *
+ * This function is used to calculate the BUS current through the
+ * sense resistor for both channels, if used.
+ * 
+ * @note ..
+ * @param[in] config	: Pointer to the sensor device struct.
+ *
+ * @return Status value.
+ * @retval 1 value -> OK/ 0 value -> Error
+ */
+static int8_t write_registers(const struct PAC1720_device *device_ptr, uint8_t reg_address, uint8_t *data_ptr, uint8_t len);
+
+/*!
+ * @brief This API is used to calculate the BUS current.
+ *
+ * This function is used to calculate the BUS current through the
+ * sense resistor for both channels, if used.
+ * 
+ * @note ..
+ * @param[in] config	: Pointer to the sensor device struct.
+ *
+ * @return Status value.
+ * @retval 1 value -> OK/ 0 value -> Error
+ */
 static int8_t calculate_BUS_CURRENT(const struct PAC1720_channel_config *channel_conf, struct PAC1720_channel_readings *channel_readings);
 
 /*!
@@ -175,6 +203,28 @@ static int8_t device_null_pointer_check(const struct PAC1720_device *device_ptr)
 
 /******************************* Function definitions *****************************************/
 
+static int8_t read_registers(const struct PAC1720_device *device_ptr, uint8_t reg_address, uint8_t *data_ptr, uint8_t len)
+{
+    uint8_t res = PAC1720_OK;
+    if(device_null_pointer_check(device_ptr) == 0){
+        res = device_ptr->read(device_ptr->sensor_address, reg_address, data_ptr, len);   
+        return res;
+    } else {
+        return PAC1720_FAILURE;
+    }
+}
+
+static int8_t write_registers(const struct PAC1720_device *device_ptr, uint8_t reg_address, uint8_t *data_ptr, uint8_t len)
+{
+    uint8_t res = PAC1720_OK; 
+    if(device_null_pointer_check(device_ptr) == 0){
+        res = device_ptr->write(device_ptr->sensor_address, reg_address, data_ptr, len);   
+        return res;
+    } else {
+        return PAC1720_FAILURE;
+    }
+}
+
 static int8_t calculate_BUS_CURRENT(const struct PAC1720_channel_config *channel_conf, struct PAC1720_channel_readings *channel_readings)
 {   
     if(channel_readings->reading_done && channel_conf->current_sense_FSC != 0){
@@ -324,7 +374,9 @@ const PAC1720_fptr* get_TEST_FPTR_FIELD(void)
                                                 (PAC1720_fptr) &calculate_SOURCE_VOLTAGE,
                                                 (PAC1720_fptr) &calculate_FSV,
                                                 (PAC1720_fptr) &calculate_BUS_POWER,
-                                                (PAC1720_fptr) &calculate_FSP 
+                                                (PAC1720_fptr) &calculate_FSP,
+                                                (PAC1720_fptr) &read_registers,
+                                                (PAC1720_fptr) &write_registers
                                             };
 
     return test_fptr_field;

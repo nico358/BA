@@ -6,11 +6,22 @@ load(
     "unity_test",
 )
 
-# mock(
-#     name = "CircBufMock",
-#     srcs = ["//:lib/circular_buffer/circular_buffer.h"],
-#     deps = ["//:CircularBufferLib"],
-# )
+mock(
+    name = "I2CMock",
+    srcs = ["//:lib/i2cmaster/i2cmaster.h"],
+    deps = ["//:I2cLib"],
+)
+
+unity_test(
+    file_name = "sensor_adapter_Test.c",
+    deps = [
+        ":I2CMock",
+        # "@ExtMockLib",
+        "//:PAC1720DriverLib",
+        "@CException",
+        "@CMock",
+    ],
+)
 
 unity_test(
     file_name = "sensor_driver_Test.c",

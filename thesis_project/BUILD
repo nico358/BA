@@ -51,6 +51,7 @@ cc_library(
 
 	copts = commonCopts,
 
+## For testing add '--define test=true ' to include MockLib ##
 	deps = select({
 
         ":test": [
@@ -74,6 +75,15 @@ cc_library(
 	hdrs = glob(["lib/i2cmaster/*.h"]),
 
 	copts = commonCopts,
+
+## For testing add '--define test=true ' to include MockLib ##
+	deps = select({
+
+        ":test": [
+			"@ExtMockLib",
+		],
+        "//conditions:default": [],	
+    }),
 
 	visibility = [
 		"//test:__pkg__",
@@ -118,26 +128,7 @@ cc_library(
 
 	copts = commonCopts,
 
-	deps = [
-			# ":CircularBufferLib", 
-	 		# ":I2cLib", 
-	 		# ":CurrentMeasurementLib", 
-	 		# ":DebugLib",
-	],
-
-	# deps = select({
-
-    #     ":test": [
-	# 		"@ExtMockLib",
-	# 	],
-
-    #     "//conditions:default": [
-	# 		":CircularBufferLib", 
-	#  		":I2cLib", 
-	#  		":CurrentMeasurementLib", 
-	#  		":DebugLib",
-	# 	],	
-    # }),
+	deps = [],
 
 	visibility = [
 		"//test:__pkg__",
@@ -178,8 +169,20 @@ exports_files(
 	
 )
 
+exports_files(
+	glob([
+		"src/*.c",
+	]),
+	visibility = [
+		"//test:__pkg__",
+		"//test:__subpackages__",
+		"@CMock//CMock:__pkg__",
+	],
+	
+)
+
 ### Create config to substitute dependencies in build process ###
-### "--define debug=true" appended to test call switches the actual dependencies ###
+### "--define test=true" appended to test call switches the actual dependencies ###
 config_setting(
     name = "test",
     values = {
@@ -206,6 +209,7 @@ default_embedded_binary(
 	name = "CurrentSenseApp",
 	srcs = [
 		"src/currentSenseApp.c",
+		"src/adapter_PAC1720.c",
     ],
 
 	copts = commonCopts + LUFA_COPTS,
@@ -221,15 +225,7 @@ default_embedded_binary(
 
 cc_binary(
 	name = "calc",
-	srcs = ["src/test.c"],
-	deps = [
-		 "PAC1720DriverLib",
-	],
-)
-
-cc_binary(
-	name = "bin",
-	srcs = ["src/test.c"],
+	srcs = ["src/adapter_PAC1720.c"],
 	deps = [
 		 "PAC1720DriverLib",
 	],
