@@ -162,11 +162,26 @@ cc_library(
 
 cc_library(
     name = "IncludeLib",
-	srcs = ["src/adapter_PAC1720.c"],
-    hdrs = [
-        "include/currentSenseApp.h",
-		"include/adapter_PAC1720.h",
+    hdrs = ["include/currentSenseApp.h"],
+
+    copts = commonCopts,
+
+    deps = [
+        ":CircularBufferLib",
+		":DelayLib",
     ],
+
+	visibility = [
+		"//test:__pkg__",
+		"//test:__subpackages__",
+		"@CMock//CMock:__pkg__",
+	],
+)
+
+cc_library(
+    name = "AdapterLib",
+	srcs = ["src/adapter_PAC1720/adapter_PAC1720.c"],
+    hdrs = ["src/adapter_PAC1720/adapter_PAC1720.h"],
 
     copts = commonCopts,
 
@@ -237,7 +252,6 @@ default_embedded_binary(
 	name = "CurrentSenseApp",
 	srcs = [
 		"src/currentSenseApp.c",
-		"src/adapter_PAC1720.c",
     ],
 
 	copts = commonCopts + LUFA_COPTS,
@@ -245,8 +259,8 @@ default_embedded_binary(
 	linkopts = commonCopts + LUFA_COPTS + ["-Wl,-u,vfprintf -lprintf_flt -lm"],
 
 	deps = [
+		":AdapterLib",
 		":DebugLib",
-        ":PAC1720DriverLib",
         ":IncludeLib",
 	],
 )

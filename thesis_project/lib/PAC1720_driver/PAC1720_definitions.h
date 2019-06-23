@@ -14,6 +14,13 @@
 
 /*! @name PAC1720 device constants*/
 
+/** PAC1720 addresses */
+static const uint8_t PAC1720_addresses[16] = {
+											  	0x18, 
+												0x28, 0x29, 0x2A, 0x2B, 0x2C, 0x2D, 0x2E, 
+												0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F
+											 };
+
 /** PAC1720 general configuration register constants */
 static const uint8_t configuration_register_address = 0x00;
 static const uint8_t conf_reg_bit_C1VDS = 0x00; 
@@ -138,8 +145,11 @@ static const uint8_t SHIFT_TO_SIGN_BIT = 15;
 /** Application constants */
 static const int8_t PAC1720_OK = 0;
 static const int8_t PAC1720_FAILURE = -1;
+static const int8_t PAC1720_ADDRESS_ERROR = -2;
+
 static const int8_t I2C_ADDRESS_SHIFT = 1;
 typedef enum {FIRST_CHANNEL=1, SECOND_CHANNEL=2, BOTH_CHANNELS=3} ACTIVE_CHANNELS;
+static const uint8_t SENSOR_ADDRESS_SIZE = 16;
 
 /** Type definitions */
 /*!
@@ -154,9 +164,10 @@ typedef int8_t (*PAC1720_fptr)(const uint8_t sensor_address, const uint8_t reg_a
  * Delay function pointer
  * @param[in] period: Time period in milliseconds
  */
-typedef void (*delay_fptr)(const uint32_t period);
+typedef void (*delay_fptr)(uint32_t period);
 
 /* structure definitions */
+
 /*!
  * @brief Sensor readings data struct. 
  */
@@ -220,50 +231,14 @@ struct	PAC1720_channel_config
 	float current_sense_resistor_value;
 	/*! Full Scale Power (FSP) */
 	float power_sense_FSP;
-
 };
-//USB_VCC (Rsense = 0.15Ohm), MON_VCC (Rsense = 0.8Ohm)					= 100Ohm => 1001_101 = 4D
-//FPGA_VCCINT_MON (Rsense = 0.8Ohm), FPGA_VCCAUX_MON (Rsense = 0.8Ohm)	= 300Ohm => 1001_111 = 4F
-//WIRELESS_VCC (Rsense = 0.8Ohm), MCU_VCC (Rsense = 0.8Ohm)				= 2k  	 => 0101_001 = 29
-/************************************************ 
-RES					RES
-(5%) SMBus Address (5%) SMBus Address		
-0    1001_100(r/w)  1600 0101_000(r/w)
-100  1001_101(r/w)  2000 0101_001(r/w)
-180  1001_110(r/w)  2700 0101_010(r/w)
-300  1001_111(r/w)  3600 0101_011(r/w)
-430  1001_000(r/w)  5600 0101_100(r/w)
-560  1001_001(r/w)  9100 0101_101(r/w)
-750  1001_010(r/w)  20000 0101_110(r/w)
-1270 1001_011(r/w)  Open 0011_000(r/w)
-**************************************************/ 
-
-// Full scale current: FSC = FSR/ Rsense
-// Bus current: Ibus = FSC * (Vsense / Denominator)
-// e.g. I = 1.65A, R = 0.01Ohm, FSR +-0.02V, sampletime = 80ms 
-// => FSC = 2A, Vsense = 0.0165V = 16.5 mV
-// Vsense voltage registers: 69_8h (0110_1001_1000b or 1688d)
-
-// negative current in two's complement = 960h
-
-// Full scale voltage: FSV = 40 - (40/ Denominator)
-// Actual voltage at sense+: Vsource_pin = FSV * (Vsource/ Denominator)
-// e.g. 10bit resolution: Vsource_pin = 24V, Vsource reg = 9980h (1001_1001_10XX_XXXXb)
-// 
-
-// Full scale power: FSP = FSV * FSC
-// Power drawn Pbus = FSP * (Pratio/ 65.535)
-// e.g. Vsource = 10.65, Rsense = 0.01Ohm, I = 1.65A, FSR = +-0.02V, default sample time =
-// FSP = 2A * 39.96V = 79.92W, U*I=P => 1.65 * 10.65 = 17.57W => (100% / 79.92 * 17.57 = 21.98%)
-// Pratio = 14407d = 3847h = 0011_1000_0100_0111b, Pbus = 79.92 * (14,407 / 65.535) = 17.569W
 
 /*!
  * @brief PAC1720 device struct.
  */
 struct	PAC1720_device 
 {	
-	
-	/*! Sensor slave address, determined by ADDR_SEL resistor */
+	/*! Sensor slave address */
 	uint8_t sensor_address;
 	/*! Sensor channels in use */
 	ACTIVE_CHANNELS channels;
@@ -282,7 +257,6 @@ struct	PAC1720_device
 	/*! delay function pointer */
 	delay_fptr delay_ms;
 };
-
 
 /** @}*/
 /** @}*/

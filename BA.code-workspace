@@ -83,7 +83,9 @@
 			"sfr_defs.h": "c",
 			"iom32u6.h": "c",
 			"delay_basic.h": "c",
-			"user_delay.h": "c"
+			"user_delay.h": "c",
+			"adapter_pac1720.h": "c",
+			"mockcircular_buffer.h": "c"
 		},
 		"files.exclude": {
 			"**/.classpath": true,

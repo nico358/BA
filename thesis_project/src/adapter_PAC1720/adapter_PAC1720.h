@@ -1,20 +1,23 @@
-/*! @file PAC17Driver.h
- @brief Sensor driver for PAC1720 sensor */
-/*!
- * @defgroup PAC1720 driver API
- * @{*/
+/*
+ * adapter_PAC1720.h
+ *
+ */
+
+/**
+* @file	adapter_PAC1720.h
+* @brief
+*/
 
 #pragma once
+
+/** Includes **/
+#include "lib/PAC1720_driver/PAC1720_driver.h"
 
 /*! CPP guard */
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-
-/* Header includes */
-#include "PAC1720_definitions.h"
-
 
 /* function prototypes */
 
@@ -26,7 +29,7 @@ extern "C"
  *
  * @return bme680_dev
  */
-int8_t init_device_PAC1720(struct PAC1720_device *dev);
+int8_t adapter_init_PAC1720(struct PAC1720_device *dev_ptr, const uint8_t sensor_address, const ACTIVE_CHANNELS channels);
 
 /*!
  * @fn return_device_ptr_BME680
@@ -36,7 +39,10 @@ int8_t init_device_PAC1720(struct PAC1720_device *dev);
  *
  * @return bme680_dev
  */
-const void* get_TEST_FPTR_FIELD(void);
+const void* get_ADAPTER_TEST_FPTR_FIELD(void);
+
+void circular_test(void);
+
 
 #ifdef __cplusplus
 }

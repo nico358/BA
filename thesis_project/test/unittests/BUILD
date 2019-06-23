@@ -38,7 +38,7 @@ unity_test(
         ":I2CMock",
         ":DelayMock",
         ":CircBufMock",
-        "//:IncludeLib",
+        "//:AdapterLib",
         "@CException",
         "@CMock",
     ],

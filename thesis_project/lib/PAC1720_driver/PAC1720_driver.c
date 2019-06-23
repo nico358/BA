@@ -202,6 +202,18 @@ static int8_t device_null_pointer_check(const struct PAC1720_device *device_ptr)
 
 /******************************* Function definitions *****************************************/
 
+int8_t init_device_PAC1720(struct PAC1720_device *dev)
+{
+    if(device_null_pointer_check(dev) == 0){
+        
+        return PAC1720_OK;
+    } else {
+        return PAC1720_FAILURE;
+    }
+}
+
+
+
 static int8_t read_registers(const struct PAC1720_device *device_ptr, uint8_t reg_address, uint8_t *data_ptr, uint8_t len)
 {
     uint8_t res = PAC1720_OK;

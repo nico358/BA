@@ -3,7 +3,7 @@
 #define _MOCKI2CMASTER_H
 
 #include "unity.h"
-// #include "lib/i2cmaster/i2cmaster.h"
+#include "lib/i2cmaster/i2cmaster.h"
 #include "CException.h"
 
 /* Ignore the following warnings, since we are copying code */
