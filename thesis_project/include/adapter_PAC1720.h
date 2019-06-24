@@ -36,7 +36,7 @@ extern "C"
  *
  * @return bme680_dev
  */
-// int8_t adapter_i2c_write(uint8_t sensor_address, uint8_t reg_address, uint8_t *data_ptr, uint16_t len);
+int8_t adapter_i2c_write(const uint8_t sensor_address, const uint8_t reg_address, const uint8_t *data_ptr, const uint16_t len);
 
 
 #ifdef __cplusplus

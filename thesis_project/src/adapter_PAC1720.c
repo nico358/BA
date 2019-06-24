@@ -19,7 +19,7 @@
 /** Function prototypes **/
 int8_t adapter_init_PAC1720(struct PAC1720_device *dev_ptr, const uint8_t sensor_address, const ACTIVE_CHANNELS channels);
 
-int8_t adapter_i2c_write(const uint8_t sensor_address, const uint8_t reg_address, const uint8_t *data_ptr, const uint16_t len);
+// int8_t adapter_i2c_write(const uint8_t sensor_address, const uint8_t reg_address, const uint8_t *data_ptr, const uint16_t len);
 
 int8_t adapter_i2c_read(const uint8_t sensor_address, const uint8_t reg_address, uint8_t *data_ptr, const uint16_t len);
 

@@ -14,5 +14,5 @@ void test_fail(void){
 }
 
 void test_adapter_i2c_write(void){
-    // TEST_ASSERT_EQUAL(-1, adapter_i2c_write(0,0,NULL,0));
+    TEST_ASSERT_EQUAL(-1, adapter_i2c_write(0,0,NULL,0));
 }
