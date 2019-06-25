@@ -7,6 +7,7 @@
 
 #pragma once
 
+/** Header includes */
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
@@ -147,7 +148,6 @@ static const int8_t PAC1720_OK = 0;
 static const int8_t PAC1720_FAILURE = -1;
 static const int8_t PAC1720_ADDRESS_ERROR = -2;
 
-static const int8_t I2C_ADDRESS_SHIFT = 1;
 typedef enum {FIRST_CHANNEL=1, SECOND_CHANNEL=2, BOTH_CHANNELS=3} ACTIVE_CHANNELS;
 static const uint8_t SENSOR_ADDRESS_SIZE = 16;
 
@@ -198,6 +198,8 @@ struct	PAC1720_channel_readings
  */
 struct	PAC1720_channel_config 
 {
+	/*! Optional naming of channel */
+	char *name;
 	/*! Specify how often measured data are updated in active state
 	 *  update only in stdby state (disable measurements in config reg, 
 	 *  wait to conversion complete (monitor XMEAS_DIS bit in config reg, stay set to 1)) */
@@ -238,6 +240,8 @@ struct	PAC1720_channel_config
  */
 struct	PAC1720_device 
 {	
+	/*! Optional naming of device */
+	char *name;
 	/*! Sensor slave address */
 	uint8_t sensor_address;
 	/*! Sensor channels in use */

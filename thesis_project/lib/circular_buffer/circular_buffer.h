@@ -4,7 +4,7 @@
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "avr/interrupt.h"
+#include <avr/interrupt.h>
 
 typedef struct {
     uint8_t *buffer;

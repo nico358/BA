@@ -6,23 +6,23 @@ load(
     "unity_test",
 )
 
-mock(
-    name = "I2CMock",
-    srcs = ["//:lib/i2cmaster/i2cmaster.h"],
-    deps = ["//:I2cLib"],
-)
+# mock(
+#     name = "I2CMock",
+#     srcs = ["//:lib/i2cmaster/i2cmaster.h"],
+#     deps = ["//:I2cLib"],
+# )
 
-mock(
-    name = "DelayMock",
-    srcs = ["//:lib/delay/user_delay.h"],
-    deps = ["//:DelayLib"],
-)
+# mock(
+#     name = "DelayMock",
+#     srcs = ["//:lib/delay/user_delay.h"],
+#     deps = ["//:DelayLib"],
+# )
 
-mock(
-    name = "CircBufMock",
-    srcs = ["//:lib/circular_buffer/circular_buffer.h"],
-    deps = ["//:CircularBufferLib"],
-)
+# mock(
+#     name = "CircBufMock",
+#     srcs = ["//:lib/circular_buffer/circular_buffer.h"],
+#     deps = ["//:CircularBufferLib"],
+# )
 
 unity_test(
     file_name = "sensor_driver_Test.c",
@@ -35,11 +35,7 @@ unity_test(
 unity_test(
     file_name = "sensor_adapter_Test.c",
     deps = [
-        ":I2CMock",
-        ":DelayMock",
-        ":CircBufMock",
         "//:AdapterLib",
         "@CException",
-        "@CMock",
     ],
 )

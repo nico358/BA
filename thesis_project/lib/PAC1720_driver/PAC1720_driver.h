@@ -19,22 +19,22 @@ extern "C"
 /* function prototypes */
 
 /*!
- * @fn return_device_ptr_BME680
- * @brief Returns the pointer to the instance of the BME680 device structure.
+ * @fn 
+ * @brief 
  *
- * @see bme680_dev
+ * @see
  *
- * @return bme680_dev
+ * @return 
  */
 int8_t init_device_PAC1720(struct PAC1720_device *dev);
 
 /*!
- * @fn return_device_ptr_BME680
- * @brief Returns the pointer to the instance of the BME680 device structure.
+ * @fn 
+ * @brief 
  *
- * @see bme680_dev
+ * @see
  *
- * @return bme680_dev
+ * @return 
  */
 const void* get_TEST_FPTR_FIELD(void);
 

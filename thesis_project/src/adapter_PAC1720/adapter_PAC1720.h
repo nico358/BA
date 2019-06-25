@@ -19,29 +19,63 @@ extern "C"
 {
 #endif
 
-/* function prototypes */
+/** Defines the data direction (reading from I2C device) in i2c_start(),i2c_rep_start() */
+#ifndef I2C_READ
+#define I2C_READ    1
+#endif
+/** Defines the data direction (writing to I2C device) in i2c_start(),i2c_rep_start() */
+#ifndef I2C_WRITE
+#define I2C_WRITE   0
+#endif
+/** Defines the number of bits in address shift */
+#define I2C_ADDRESS_SHIFT  1
 
+static const uint8_t max_search_attempts = 10;
+
+/** Field- Bus communication struct interface define */
+struct BUS_INTERFACE_I2C
+{
+    void (*init)(void);
+    void (*stop)(void);
+    unsigned char (*start)(unsigned char address);
+    unsigned char (*repStart)(unsigned char address);
+    void (*startWait)(unsigned char address);
+    unsigned char (*write)(unsigned char data);
+    unsigned char (*readAck)(void);
+    unsigned char (*readNak)(void);
+};
+
+/** Delay functionpointer define */
+typedef void (*user_delay_fptr) (uint32_t period);
+
+
+/* Function prototypes */
 /*!
- * @fn return_device_ptr_BME680
- * @brief Returns the pointer to the instance of the BME680 device structure.
+ * @fn 
+ * @brief 
  *
- * @see bme680_dev
  *
- * @return bme680_dev
+ * @return 
  */
-int8_t adapter_init_PAC1720(struct PAC1720_device *dev_ptr, const uint8_t sensor_address, const ACTIVE_CHANNELS channels);
+int8_t adapter_init_PAC1720(struct PAC1720_device *dev_ptr, char *dev_name, char *CH1_name, char *CH2_name, const struct BUS_INTERFACE_I2C *extI2C, const user_delay_fptr delay_fptr, const uint8_t sensor_address, const ACTIVE_CHANNELS channels);
+
+/* function prototypes */
+/*!
+ * @fn
+ * @brief
+ *
+ * @return 
+ */
+uint8_t adapter_find_sensors(const struct BUS_INTERFACE_I2C *i2c_ptr, const user_delay_fptr delay_ptr, uint8_t *addresses);
 
 /*!
- * @fn return_device_ptr_BME680
- * @brief Returns the pointer to the instance of the BME680 device structure.
+ * @fn 
+ * @brief 
  *
- * @see bme680_dev
  *
- * @return bme680_dev
+ * @return 
  */
 const void* get_ADAPTER_TEST_FPTR_FIELD(void);
-
-void circular_test(void);
 
 
 #ifdef __cplusplus

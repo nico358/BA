@@ -169,6 +169,9 @@ cc_library(
     deps = [
         ":CircularBufferLib",
 		":DelayLib",
+		":AdapterLib",
+		":I2cLib",
+		":DebugLib",
     ],
 
 	visibility = [
@@ -186,10 +189,7 @@ cc_library(
     copts = commonCopts,
 
     deps = [
-        ":CircularBufferLib",
         ":PAC1720DriverLib",
-        ":I2cLib",
-		":DelayLib",
     ],
 
 	visibility = [
@@ -259,8 +259,6 @@ default_embedded_binary(
 	linkopts = commonCopts + LUFA_COPTS + ["-Wl,-u,vfprintf -lprintf_flt -lm"],
 
 	deps = [
-		":AdapterLib",
-		":DebugLib",
         ":IncludeLib",
 	],
 )

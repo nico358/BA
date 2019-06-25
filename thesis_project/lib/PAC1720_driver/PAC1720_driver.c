@@ -1,203 +1,175 @@
 /*! @file PAC1720_driver.c
- @brief Sensor driver for PAC1720 sensor */
+*   @brief Sensor driver for PAC1720 sensor 
+ */
 #include "PAC1720_driver.h"
 
 /*!
- * @brief This API is used to calculate the BUS current.
+ * @brief
  *
- * This function is used to calculate the BUS current through the
- * sense resistor for both channels, if used.
  * 
  * @note ..
- * @param[in] config	: Pointer to the sensor device struct.
+ * @param[in] config	: 
  *
- * @return Status value.
+ * @return 
  * @retval 1 value -> OK/ 0 value -> Error
  */
 static int8_t read_registers(const struct PAC1720_device *device_ptr, uint8_t reg_address, uint8_t *data_ptr, uint8_t len);
 
 /*!
- * @brief This API is used to calculate the BUS current.
+ * @brief
  *
- * This function is used to calculate the BUS current through the
- * sense resistor for both channels, if used.
  * 
  * @note ..
- * @param[in] config	: Pointer to the sensor device struct.
+ * @param[in] config	: 
  *
- * @return Status value.
+ * @return 
  * @retval 1 value -> OK/ 0 value -> Error
  */
 static int8_t write_registers(const struct PAC1720_device *device_ptr, uint8_t reg_address, uint8_t *data_ptr, uint8_t len);
 
 /*!
- * @brief This API is used to calculate the BUS current.
+ * @brief
  *
- * This function is used to calculate the BUS current through the
- * sense resistor for both channels, if used.
  * 
  * @note ..
- * @param[in] config	: Pointer to the sensor device struct.
+ * @param[in] config	: 
  *
- * @return Status value.
+ * @return 
  * @retval 1 value -> OK/ 0 value -> Error
  */
 static int8_t calculate_BUS_CURRENT(const struct PAC1720_channel_config *channel_conf, struct PAC1720_channel_readings *channel_readings);
 
 /*!
- * @brief This API is used to check, whether the device structure is initialized.
+ * @brief
  *
- * This function is used to check, whether the device structure is initialized and
- * the contained function pointers are not NULL. 
  * 
  * @note ..
- * @param[in] config	: Pointer to the device struct.
+ * @param[in] config	: 
  *
- * @return Status value.
+ * @return 
  * @retval 1 value -> OK/ 0 value -> Error
  */
 static int8_t calculate_BUS_VOLTAGE(const struct PAC1720_channel_config *channel_conf, struct PAC1720_channel_readings *channel_readings);
 
 /*!
- * @brief This API is used to check, whether the device structure is initialized.
+ * @brief
  *
- * This function is used to check, whether the device structure is initialized and
- * the contained function pointers are not NULL. 
  * 
  * @note ..
- * @param[in] config	: Pointer to the device struct.
+ * @param[in] config	: 
  *
- * @return Status value.
+ * @return 
  * @retval 1 value -> OK/ 0 value -> Error
  */
 static int8_t calculate_BUS_POWER(const struct PAC1720_channel_config *channel_conf, struct PAC1720_channel_readings *channel_readings);
 
 /*!
- * @brief This API is used to check, whether the device structure is initialized.
+ * @brief
  *
- * This function is used to check, whether the device structure is initialized and
- * the contained function pointers are not NULL. 
  * 
  * @note ..
- * @param[in] config	: Pointer to the device struct.
+ * @param[in] config	: 
  *
- * @return Status value.
+ * @return 
  * @retval 1 value -> OK/ 0 value -> Error
  */
 static float calculate_SENSED_VOLTAGE(const uint16_t *v_sense_voltage_reg_ptr, const uint8_t *current_sense_sampling_time_reg_ptr);
 
 /*!
- * @brief This API is used to calculate the Full Scale Current (FSC)
+ * @brief
  *
- * This function is used to calculate the Full Scale Current (FSC) of
- * the actual measured channel.  
  * 
  * @note ..
- * @param[in] config	: Pointer to the configuration of one channel.
+ * @param[in] config	: 
  *
- * @return Status value.
+ * @return 
  * @retval 1 value -> OK/ 0 value -> Error
  */
 static float calculate_SOURCE_VOLTAGE(const uint16_t *v_source_voltage_reg_ptr, const uint8_t *source_voltage_sampling_time_reg_ptr);
 
 /*!
- * @brief This API is used to calculate the Full Scale Current (FSC)
+ * @brief
  *
- * This function is used to calculate the Full Scale Current (FSC) of
- * the actual measured channel.  
  * 
  * @note ..
- * @param[in] config	: Pointer to the configuration of one channel.
+ * @param[in] config	: 
  *
- * @return Status value.
+ * @return 
  * @retval 1 value -> OK/ 0 value -> Error
  */
 static int8_t calculate_FSC(struct PAC1720_channel_config *config_ptr);
 
 /*!
- * @brief This API is used to check, whether the device structure is initialized.
+ * @brief
  *
- * This function is used to check, whether the device structure is initialized and
- * the contained function pointers are not NULL. 
  * 
  * @note ..
- * @param[in] config	: Pointer to the device struct.
+ * @param[in] config	: 
  *
- * @return Status value.
+ * @return 
  * @retval 1 value -> OK/ 0 value -> Error
  */
 static int8_t calculate_FSV(struct PAC1720_channel_config *config_ptr);
 
 /*!
- * @brief This API is used to check, whether the device structure is initialized.
+ * @brief
  *
- * This function is used to check, whether the device structure is initialized and
- * the contained function pointers are not NULL. 
  * 
  * @note ..
- * @param[in] config	: Pointer to the device struct.
+ * @param[in] config	: 
  *
- * @return Status value.
+ * @return 
  * @retval 1 value -> OK/ 0 value -> Error
  */
 static int8_t calculate_FSP(struct PAC1720_channel_config *config_ptr);
 
 /*!
- * @brief This API is used to check, whether the device structure is initialized.
+ * @brief
  *
- * This function is used to check, whether the device structure is initialized and
- * the contained function pointers are not NULL. 
  * 
  * @note ..
- * @param[in] config	: Pointer to the device struct.
+ * @param[in] config	: 
  *
- * @return Status value.
+ * @return 
  * @retval 1 value -> OK/ 0 value -> Error
  */
 static uint16_t twos_complement(const uint16_t *complement);
 
 /*!
- * @brief This API is used to check, whether the device structure is initialized.
+ * @brief
  *
- * This function is used to check, whether the device structure is initialized and
- * the contained function pointers are not NULL. 
  * 
  * @note ..
- * @param[in] config	: Pointer to the device struct.
+ * @param[in] config	: 
  *
- * @return Status value.
+ * @return 
  * @retval 1 value -> OK/ 0 value -> Error
  */
 static bool is_negative_value(const uint16_t *value);
 
 /*!
- * @brief This API is used to check, whether the device structure is initialized.
+ * @brief
  *
- * This function is used to check, whether the device structure is initialized and
- * the contained function pointers are not NULL. 
  * 
  * @note ..
- * @param[in] config	: Pointer to the device struct.
+ * @param[in] config	: 
  *
- * @return Status value.
+ * @return 
  * @retval 1 value -> OK/ 0 value -> Error
  */
 static uint16_t right_bit_shift(const uint16_t *doublebyte, uint8_t shift);
 
 /*!
- * @brief This API is used to check, whether the device structure is initialized.
+ * @brief
  *
- * This function is used to check, whether the device structure is initialized and
- * the contained function pointers are not NULL. 
  * 
  * @note ..
- * @param[in] config	: Pointer to the device struct.
+ * @param[in] config	: 
  *
- * @return Status value.
+ * @return 
  * @retval 1 value -> OK/ 0 value -> Error
  */
 static int8_t device_null_pointer_check(const struct PAC1720_device *device_ptr);
-
 
 
 /******************************* Function definitions *****************************************/
@@ -211,8 +183,6 @@ int8_t init_device_PAC1720(struct PAC1720_device *dev)
         return PAC1720_FAILURE;
     }
 }
-
-
 
 static int8_t read_registers(const struct PAC1720_device *device_ptr, uint8_t reg_address, uint8_t *data_ptr, uint8_t len)
 {

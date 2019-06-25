@@ -1,87 +1,160 @@
 /**
- * File		adapter_BME680.c
- * @date	20 Mai 2018
- * @version	1.0
+ * File		
  *
  */
 
-/*! @file adapter_bme680.c
- *  @brief Adapter for BME680 sensor API
+/*! @file 
+ *  @brief
  */
 
 /** Header includes **/
 #include "adapter_PAC1720.h"
-#include "lib/i2cmaster/i2cmaster.h"
-#include "lib/circular_buffer/circular_buffer.h"
-#include "lib/delay/user_delay.h"
+
 
 /** Function prototypes **/
 
 /*!
- * @fn user_delay_ms
- * @brief This internal API provides the platform dependend delay functionality.
+ * @fn 
+ * @brief
  *
- * @note Required as used in the BME680 API (e.g. sensor read) and passed by pointer to the adapter device.
+ * @note 
  *
- * @param period	: 32bit integer. Defined in sensor settings and provided by sensor device struct.
+ * @param .
+ *
+ */
+uint8_t poll_i2c(const struct BUS_INTERFACE_I2C *i2c_ptr, uint8_t loop_var, uint8_t *addresses);
+
+/*!
+ * @fn 
+ * @brief
+ *
+ * @note 
+ *
+ * @param .
  *
  */
 int8_t adapter_i2c_write(const uint8_t sensor_address, const uint8_t reg_address, uint8_t *data_ptr, const uint16_t len);
 
 /*!
- * @fn user_delay_ms
- * @brief This internal API provides the platform dependend delay functionality.
+ * @fn 
+ * @brief
  *
- * @note Required as used in the BME680 API (e.g. sensor read) and passed by pointer to the adapter device.
+ * @note 
  *
- * @param period	: 32bit integer. Defined in sensor settings and provided by sensor device struct.
+ * @param .
  *
  */
 int8_t adapter_i2c_read(const uint8_t sensor_address, const uint8_t reg_address, uint8_t *data_ptr, const uint16_t len);
 
 /*!
- * @fn user_delay_ms
- * @brief This internal API provides the platform dependend delay functionality.
+ * @fn 
+ * @brief
  *
- * @note Required as used in the BME680 API (e.g. sensor read) and passed by pointer to the adapter device.
+ * @note 
  *
- * @param period	: 32bit integer. Defined in sensor settings and provided by sensor device struct.
+ * @param .
  *
  */
 void adapter_delay(uint32_t period);
 
 /*!
- * @fn user_delay_ms
- * @brief This internal API provides the platform dependend delay functionality.
+ * @fn 
+ * @brief
  *
- * @note Required as used in the BME680 API (e.g. sensor read) and passed by pointer to the adapter device.
+ * @note 
  *
- * @param period	: 32bit integer. Defined in sensor settings and provided by sensor device struct.
+ * @param .
  *
  */
-int8_t sensor_address_out_of_range(const uint8_t address);
+bool sensor_address_out_of_range(const uint8_t address);
 
 /*!
- * @fn user_delay_ms
- * @brief This internal API provides the platform dependend delay functionality.
+ * @fn 
+ * @brief
  *
- * @note Required as used in the BME680 API (e.g. sensor read) and passed by pointer to the adapter device.
+ * @note 
  *
- * @param period	: 32bit integer. Defined in sensor settings and provided by sensor device struct.
+ * @param .
  *
  */
-int8_t channels_out_of_range(const ACTIVE_CHANNELS channels);
+bool channels_out_of_range(const ACTIVE_CHANNELS channels);
 
 
-/** Function definitions **/
-int8_t adapter_init_PAC1720(struct PAC1720_device *dev_ptr, const uint8_t sensor_address, const ACTIVE_CHANNELS channels)
+/** Internal I2C Field-Bus interface  */
+const struct BUS_INTERFACE_I2C *i2c = NULL;
+/** Internal delay fptr */
+user_delay_fptr user_delay = NULL;
+
+
+/** Function definitions */
+
+uint8_t adapter_find_sensors(const struct BUS_INTERFACE_I2C *i2c_ptr, const user_delay_fptr delay_ptr, uint8_t *addresses)
 {
-        if(dev_ptr != NULL && !sensor_address_out_of_range(sensor_address) && !channels_out_of_range(channels)){
+    uint8_t no_match = 1;
+    uint8_t count = 0;
+    uint8_t res = 0;
+
+    for (uint8_t loop_var = 0; loop_var < SENSOR_ADDRESS_SIZE; loop_var++)
+    {
+        while (no_match && count < max_search_attempts)
+        {
+            no_match = poll_i2c(i2c_ptr, loop_var, addresses);
+
+            if (no_match){
+                count++;
+                delay_ptr(10);
+            } 
+        }
+
+        if(!no_match){
+            res++;
+        }
+        no_match = 1;
+        count = 0;
+    }
+    return res;
+}
+
+uint8_t poll_i2c(const struct BUS_INTERFACE_I2C *i2c_ptr, uint8_t loop_var, uint8_t *addresses)
+{
+    uint8_t sensor_addr = PAC1720_addresses[loop_var];
+
+    uint8_t no_match = i2c_ptr->start((sensor_addr << I2C_ADDRESS_SHIFT) + I2C_WRITE);
+    i2c_ptr->stop();
+
+    if(!no_match){
+        uint8_t *offset = addresses + loop_var;
+        *offset = sensor_addr;
+    }
+    return no_match;
+}
+
+int8_t adapter_init_PAC1720( 
+                             struct PAC1720_device *dev_ptr, 
+                             char *dev_name, 
+                             char *CH1_name, 
+                             char *CH2_name,
+                             const struct BUS_INTERFACE_I2C *ext_I2C, 
+                             const user_delay_fptr ext_delay_fptr, 
+                             const uint8_t sensor_address, 
+                             const ACTIVE_CHANNELS channels 
+                           )
+{
+        if ( dev_ptr != NULL && ext_I2C != NULL && ext_delay_fptr != NULL 
+             && !sensor_address_out_of_range(sensor_address) 
+             && !channels_out_of_range(channels) 
+           )
+        {
+            i2c = ext_I2C;
+            user_delay = ext_delay_fptr;
             dev_ptr->sensor_address = sensor_address;
             dev_ptr->channels = channels;
             dev_ptr->read = &adapter_i2c_read;
             dev_ptr->write = &adapter_i2c_write;
             dev_ptr->delay_ms = &adapter_delay;
+            dev_ptr->name = dev_name;
+            dev_ptr->sensor_config_ch1.name = CH1_name;
+            dev_ptr->sensor_config_ch2.name = CH2_name;
 
             return init_device_PAC1720(dev_ptr);
         } else {
@@ -89,63 +162,79 @@ int8_t adapter_init_PAC1720(struct PAC1720_device *dev_ptr, const uint8_t sensor
         }
 }
 
-int8_t adapter_i2c_write(const uint8_t sensor_address, const uint8_t reg_address, uint8_t *data_ptr, const uint16_t len)
+int8_t adapter_i2c_write( 
+                          const uint8_t sensor_address, 
+                          const uint8_t reg_address, 
+                          uint8_t *data_ptr, 
+                          const uint16_t len 
+                        )
 {
     uint8_t result = PAC1720_OK;
-    i2c_start_wait((sensor_address << I2C_ADDRESS_SHIFT) + I2C_WRITE); 
-    result = i2c_write(reg_address);
+    i2c->startWait((sensor_address << I2C_ADDRESS_SHIFT) + I2C_WRITE); 
+    result = i2c->write(reg_address);
+
     if(result != PAC1720_OK) return result;
+
     /* Write to #len registers, increase the address #len times */
     for(uint16_t i = 0; i < len; i++){
-        result = i2c_write(*data_ptr);
+        result = i2c->write(*data_ptr);
             if(result != PAC1720_OK) return result;
             data_ptr++;
     }
-    i2c_stop();
+
+    i2c->stop();
     return result;
 }
 
-int8_t adapter_i2c_read(const uint8_t sensor_address, const uint8_t reg_address, uint8_t *data_ptr, const uint16_t len)
+int8_t adapter_i2c_read ( 
+                          const uint8_t sensor_address, 
+                          const uint8_t reg_address, 
+                          uint8_t *data_ptr, 
+                          const uint16_t len 
+                        )
 {
     uint8_t result = PAC1720_OK;
-    i2c_start_wait((sensor_address << I2C_ADDRESS_SHIFT) + I2C_WRITE);
-    result = i2c_write(reg_address);
+    i2c->startWait((sensor_address << I2C_ADDRESS_SHIFT) + I2C_WRITE);
+    result = i2c->write(reg_address); 
+
     /* Repeat start in read mode */
-    result = i2c_rep_start((sensor_address << I2C_ADDRESS_SHIFT) + I2C_READ);
+    result = i2c->repStart((sensor_address << I2C_ADDRESS_SHIFT) + I2C_READ);
+
     /* Read from #len registers, increase the address #len times */
     for(uint16_t i = 0; i < len; i++){
         if(i < len -1){
-            *data_ptr = i2c_readAck();
+            *data_ptr = i2c->readAck();
         }else{
             /* After the last read send NACK */
-            *data_ptr = i2c_readNak(); 
+            *data_ptr = i2c->readNak(); 
         }
         data_ptr++;
     }
-    i2c_stop();
+
+    i2c->stop();
     return result;
 }
 
 void adapter_delay(uint32_t period)
 {
     /* External delay function */
-    user_delay_ms(period);
+    user_delay(period);
 }
 
-int8_t sensor_address_out_of_range(const uint8_t address)
+bool sensor_address_out_of_range(const uint8_t address)
 {
     if(address == 0x18 || (address > 0x27 && address < 0x2F) || (address > 0x47 && address < 0x50)){
-        return PAC1720_OK;
+        return false;
     }
-    return PAC1720_ADDRESS_ERROR;
+    return true;
 }
 
-int8_t channels_out_of_range(const ACTIVE_CHANNELS channels)
+bool channels_out_of_range(const ACTIVE_CHANNELS channels)
 {
     if(channels >= FIRST_CHANNEL && channels <= BOTH_CHANNELS){
-        return PAC1720_OK;
+        return false;
     }
-    return PAC1720_ADDRESS_ERROR;
+    return true;
 }
 
 const void* get_ADAPTER_TEST_FPTR_FIELD(void)
@@ -159,13 +248,4 @@ const void* get_ADAPTER_TEST_FPTR_FIELD(void)
                                             };
 
     return test_fptr_field;
-}
-
-//USB_VCC (Rsense = 0.15Ohm), MON_VCC (Rsense = 0.8Ohm)					= 100Ohm => 1001_101 = 4D
-//FPGA_VCCINT_MON (Rsense = 0.8Ohm), FPGA_VCCAUX_MON (Rsense = 0.8Ohm)	= 300Ohm => 1001_111 = 4F
-//WIRELESS_VCC (Rsense = 0.8Ohm), MCU_VCC (Rsense = 0.8Ohm)				= 2k  	 => 0101_001 = 29
-
-void circular_test(void){
-    circularBuffer buf;
-    circBufInit(&buf, 200);
 }
