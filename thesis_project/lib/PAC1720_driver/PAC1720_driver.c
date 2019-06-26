@@ -221,7 +221,6 @@ int8_t init_device_PAC1720(struct PAC1720_device *device_ptr)
         if(res == PAC1720_OK){
             assign_config_register_values(device_ptr, register_field);
         }
-        
     }
     return res;
 }
@@ -420,7 +419,7 @@ static int8_t device_null_pointer_check(const struct PAC1720_device *device_ptr)
     } 
 }
 
-const void** get_TEST_FPTR_FIELD(void)
+const void* get_TEST_DRIVER_FPTR_FIELD(void)
 {
     static const void* test_fptr_field[] =  {
                                                  (void*) &calculate_BUS_CURRENT,
@@ -442,5 +441,5 @@ const void** get_TEST_FPTR_FIELD(void)
                                                  (void*) &combine_bytes
                                             };
 
-    return test_fptr_field;
+    return &test_fptr_field;
 }

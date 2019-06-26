@@ -51,8 +51,7 @@ combine_bytes                           combine_bytes_func;
 /* Unity stuff */
 void setUp(void) {
     // Get function pointers from declaration
-    // const void* test_fptr_field[]       = (void*) get_TEST_FPTR_FIELD();
-    const void* (**test_fptr_field)[]         = (void*) get_TEST_FPTR_FIELD();
+    const void* (**test_fptr_field)[]   = (void*) get_TEST_DRIVER_FPTR_FIELD();
     // Assign function pointers to instances
     calculate_BUS_CURRENT_func          = (calculate_BUS_CURRENT)               test_fptr_field[0];
     calculate_SENSED_VOLTAGE_func       = (calculate_SENSED_VOLTAGE)            test_fptr_field[1];

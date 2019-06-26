@@ -36,7 +36,7 @@ int8_t init_device_PAC1720(struct PAC1720_device *device_ptr);
  *
  * @return 
  */
-const void** get_TEST_FPTR_FIELD(void);
+const void* get_TEST_DRIVER_FPTR_FIELD(void);
 
 #ifdef __cplusplus
 }

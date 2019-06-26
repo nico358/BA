@@ -2,6 +2,9 @@
 #include "src/adapter_PAC1720/adapter_PAC1720.h"
 #include <stdio.h>
 
+/** Sensor test- device struct  */
+struct PAC1720_device dev;
+
 /** Helper function prototypes */
 void reset_values(void);
 
@@ -81,36 +84,32 @@ struct BUS_INTERFACE_I2C dummy_i2c = {
     .readNak    = &mock_i2c_readNak
 };
 
-/** Sensor device struct  */
-struct PAC1720_device dev;
-
 /** Provide function pointers */
-typedef int8_t (*adapter_i2c_write) (const uint8_t sensor_address, const uint8_t reg_address, uint8_t *data_ptr, const uint16_t len);
-typedef int8_t (*adapter_i2c_read) (const uint8_t sensor_address, const uint8_t reg_address, uint8_t *data_ptr, const uint16_t len);
-typedef void (*adapter_delay) (uint32_t period);
-typedef bool (*sensor_address_out_of_range) (const uint8_t address);
-typedef bool (*channels_out_of_range) (const ACTIVE_CHANNELS channels);
-typedef uint8_t (*poll_i2c) (const struct BUS_INTERFACE_I2C *i2c_ptr, uint8_t loop_var, uint8_t *addresses);
+typedef int8_t      (*adapter_i2c_write)            (const uint8_t sensor_address, const uint8_t reg_address, uint8_t *data_ptr, const uint16_t len);
+typedef int8_t      (*adapter_i2c_read)             (const uint8_t sensor_address, const uint8_t reg_address, uint8_t *data_ptr, const uint16_t len);
+typedef void        (*adapter_delay)                (uint32_t period);
+typedef bool        (*sensor_address_out_of_range)  (const uint8_t address);
+typedef bool        (*channels_out_of_range)        (const ACTIVE_CHANNELS channels);
+typedef uint8_t     (*poll_i2c)                     (const struct BUS_INTERFACE_I2C *i2c_ptr, uint8_t loop_var, uint8_t *addresses);
 
 /** Declare functions */
-adapter_i2c_write adapter_i2c_write_func;
-adapter_i2c_read adapter_i2c_read_func;
-adapter_delay adapter_delay_func;
-sensor_address_out_of_range sensor_address_out_of_range_func;
-channels_out_of_range channels_out_of_range_func;
-poll_i2c poll_i2c_func;
+adapter_i2c_write               adapter_i2c_write_func;
+adapter_i2c_read                adapter_i2c_read_func;
+adapter_delay                   adapter_delay_func;
+sensor_address_out_of_range     sensor_address_out_of_range_func;
+channels_out_of_range           channels_out_of_range_func;
+poll_i2c                        poll_i2c_func;
 
 void setUp(void) {
     // Get function pointers from declaration
-    // const void* test_fptr_field[]       = (void*) get_ADAPTER_TEST_FPTR_FIELD();
-    const (**test_fptr_field)[]         = (void*)  get_ADAPTER_TEST_FPTR_FIELD();
+    const void* (**test_fptr_field)[]   = (void*) get_ADAPTER_TEST_FPTR_FIELD();
     // Assign function pointers function declares
-    adapter_i2c_write_func              = (adapter_i2c_write) test_fptr_field[0];
-    adapter_i2c_read_func               = (adapter_i2c_read) test_fptr_field[1];
-    adapter_delay_func                  = (adapter_delay) test_fptr_field[2];
-    sensor_address_out_of_range_func    = (sensor_address_out_of_range) test_fptr_field[3];
-    channels_out_of_range_func          = (channels_out_of_range) test_fptr_field[4];
-    poll_i2c_func                       = (poll_i2c) test_fptr_field[5];
+    adapter_i2c_write_func              = (adapter_i2c_write)               test_fptr_field[0];
+    adapter_i2c_read_func               = (adapter_i2c_read)                test_fptr_field[1];
+    adapter_delay_func                  = (adapter_delay)                   test_fptr_field[2];
+    sensor_address_out_of_range_func    = (sensor_address_out_of_range)     test_fptr_field[3];
+    channels_out_of_range_func          = (channels_out_of_range)           test_fptr_field[4];
+    poll_i2c_func                       = (poll_i2c)                        test_fptr_field[5];
     // Reset values to default first time
     reset_values();
 }
@@ -138,6 +137,14 @@ void reset_values(void){
     mock_i2c_readNak_call    = 0;
     mock_delay_arg           = 0;
     mock_delay_call          = 0;
+}
+
+void test_adapter_find_sensors(void){
+
+}
+
+void test_poll_i2c(void){
+
 }
 
 void test_adapter_init_PAC1720(void){
@@ -241,14 +248,6 @@ void test_channels_out_of_range(void){
      TEST_ASSERT_FALSE(channels_out_of_range_func(BOTH_CHANNELS));
      TEST_ASSERT_TRUE(channels_out_of_range_func(0));
      TEST_ASSERT_TRUE(channels_out_of_range_func(4));
-}
-
-void test_adapter_find_sensors(void){
-
-}
-
-void test_poll_i2c(void){
-
 }
 
 void test_fail(void){
