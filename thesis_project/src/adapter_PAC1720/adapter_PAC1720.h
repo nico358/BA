@@ -57,7 +57,18 @@ typedef void (*user_delay_fptr) (uint32_t period);
  *
  * @return 
  */
-int8_t adapter_init_PAC1720(struct PAC1720_device *dev_ptr, char *dev_name, char *CH1_name, char *CH2_name, const struct BUS_INTERFACE_I2C *extI2C, const user_delay_fptr delay_fptr, const uint8_t sensor_address, const ACTIVE_CHANNELS channels);
+int8_t adapter_init_PAC1720(
+                            struct PAC1720_device *dev_ptr, 
+                            char *dev_name, 
+                            char *CH1_name, 
+                            char *CH2_name, 
+                            const struct BUS_INTERFACE_I2C *extI2C, 
+                            const user_delay_fptr delay_fptr, 
+                            const uint8_t sensor_address, 
+                            const float CH1_sense_resistance,
+                            const float CH2_sense_resistance,
+                            const ACTIVE_CHANNELS channels
+                           );
 
 /* function prototypes */
 /*!

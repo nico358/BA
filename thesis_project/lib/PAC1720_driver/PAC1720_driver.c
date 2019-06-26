@@ -267,7 +267,7 @@ uint16_t combine_bytes(uint8_t lsb, uint8_t msb)
 static int8_t read_registers(const struct PAC1720_device *device_ptr, uint8_t reg_address, uint8_t *data_ptr, uint8_t len)
 {
     uint8_t res = PAC1720_OK;
-    if(device_null_pointer_check(device_ptr) == 0){
+    if(device_null_pointer_check(device_ptr) == PAC1720_OK){
         res = device_ptr->read(device_ptr->sensor_address, reg_address, data_ptr, len);   
         return res;
     } else {
@@ -278,7 +278,7 @@ static int8_t read_registers(const struct PAC1720_device *device_ptr, uint8_t re
 static int8_t write_registers(const struct PAC1720_device *device_ptr, uint8_t reg_address, uint8_t *data_ptr, uint8_t len)
 {
     uint8_t res = PAC1720_OK; 
-    if(device_null_pointer_check(device_ptr) == 0){
+    if(device_null_pointer_check(device_ptr) == PAC1720_OK){
         res = device_ptr->write(device_ptr->sensor_address, reg_address, data_ptr, len);   
         return res;
     } else {

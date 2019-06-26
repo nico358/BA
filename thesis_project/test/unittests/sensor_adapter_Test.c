@@ -110,19 +110,54 @@ void setUp(void) {
     sensor_address_out_of_range_func    = (sensor_address_out_of_range)     test_fptr_field[3];
     channels_out_of_range_func          = (channels_out_of_range)           test_fptr_field[4];
     poll_i2c_func                       = (poll_i2c)                        test_fptr_field[5];
-    // Reset values to default first time
-    reset_values();
 }
 
 void tearDown(void) {}
 
 /* Reset values after test */
 void reset_values(void){
-    /* Reset struct values after test */
-    dev.channels            = 0;
-    dev.sensor_address      = 0;
-    dev.write = dev.read    = NULL;
-    dev.delay_ms            = NULL;
+    /* Reset struct values */
+    dev.name = NULL;
+    dev.sensor_address = 0;
+    dev.channels = 0;
+    dev.configuration_reg = 0;
+    dev.conversion_rate_reg = 0;
+    dev.one_shot_reg = 0;
+    dev.channel_mask_reg = 0;
+    dev.high_limit_status_reg = 0;
+    dev.low_limit_status_reg = 0;
+    dev.source_voltage_sampling_config_reg = 0;
+    dev.ch1_current_sense_sampling_config_reg = 0;
+    dev.ch2_current_sense_sampling_config_reg = 0;
+    dev.sensor_product_id = 0;
+    dev.sensor_manufact_id = 0;
+    dev.sensor_revision = 0;
+    dev.read = dev.write = NULL;                   
+    dev.delay_ms = NULL;
+
+    dev.sensor_config_ch1.name = NULL;
+    dev.sensor_config_ch1.current_sense_resistor_value = 0;
+    dev.sensor_config_ch1.current_sense_sampling_time_reg = 0;
+    dev.sensor_config_ch1.current_sense_sampling_average_reg = 0;
+    dev.sensor_config_ch1.current_sense_FSR_reg = 0;
+    dev.sensor_config_ch1.current_sense_FSC = 0;
+    dev.sensor_config_ch1.source_voltage_sampling_time_reg = 0;
+    dev.sensor_config_ch1.source_voltage_sampling_average_reg = 0;
+    dev.sensor_config_ch1.source_voltage_FSV = 0;
+    dev.sensor_config_ch1.power_sense_FSP = 0;
+    dev.sensor_config_ch1.current_sense_limit_reg = 0;
+    dev.sensor_config_ch1.source_voltage_limit_reg = 0;
+    
+    dev.ch1_readings.reading_done = false;
+    dev.ch1_readings.status = 0;
+    dev.ch1_readings.v_sense_voltage_reg = 0;
+    dev.ch1_readings.v_source_voltage_reg = 0;
+    dev.ch1_readings.power_ratio_reg = 0;
+    dev.ch1_readings.res_CURRENT = 0;
+    dev.ch1_readings.res_POWER = 0;
+    dev.ch1_readings.res_SENSE_VOLTAGE = 0;
+    dev.ch1_readings.res_SOURCE_VOLTAGE = 0;
+
     /* Reset verification parameters set by spies */
     mock_i2c_start_call      = 0;
     mock_i2c_start_arg       = 0;
@@ -151,26 +186,33 @@ void test_adapter_init_PAC1720(void){
     reset_values();
     /* Set up dummy inputs */
     uint8_t dummy_address = 0x28;
+    float dummy_resistance_ch1 = 0.8f;
+    float dummy_resistance_ch2 = 1600.0f;
     ACTIVE_CHANNELS dummy_channels = BOTH_CHANNELS;
     char *dummy_name = "DEV";
     char *dummy_CH1_name = "CH1DEV";
     char *dummy_CH2_name = "CH2DEV";
     /* Test nullpointer failure */
-    TEST_ASSERT_EQUAL(PAC1720_FAILURE, adapter_init_PAC1720(NULL, dummy_name, dummy_CH1_name, dummy_CH2_name, &dummy_i2c, &mock_user_delay, dummy_address, dummy_channels));
-    TEST_ASSERT_EQUAL(PAC1720_FAILURE, adapter_init_PAC1720(&dev, dummy_name, dummy_CH1_name, dummy_CH2_name, NULL, &mock_user_delay, dummy_address, dummy_channels));
-    TEST_ASSERT_EQUAL(PAC1720_FAILURE, adapter_init_PAC1720(&dev, dummy_name, dummy_CH1_name, dummy_CH2_name, &dummy_i2c, NULL, dummy_address, dummy_channels));
+    TEST_ASSERT_EQUAL(PAC1720_FAILURE, adapter_init_PAC1720(NULL, dummy_name, dummy_CH1_name, dummy_CH2_name, &dummy_i2c, &mock_user_delay, dummy_address, dummy_resistance_ch1, dummy_resistance_ch2, dummy_channels));
+    TEST_ASSERT_EQUAL(PAC1720_FAILURE, adapter_init_PAC1720(&dev, dummy_name, dummy_CH1_name, dummy_CH2_name, NULL, &mock_user_delay, dummy_address, dummy_resistance_ch1, dummy_resistance_ch2, dummy_channels));
+    TEST_ASSERT_EQUAL(PAC1720_FAILURE, adapter_init_PAC1720(&dev, dummy_name, dummy_CH1_name, dummy_CH2_name, &dummy_i2c, NULL, dummy_address, dummy_resistance_ch1, dummy_resistance_ch2, dummy_channels));
     /* Test naming */
-    TEST_ASSERT_EQUAL(PAC1720_OK, adapter_init_PAC1720(&dev, NULL, NULL, NULL, &dummy_i2c, &mock_user_delay, dummy_address, dummy_channels));
-    TEST_ASSERT_EQUAL(PAC1720_OK, adapter_init_PAC1720(&dev, NULL, dummy_CH1_name, NULL, &dummy_i2c, &mock_user_delay, dummy_address, dummy_channels));
+    TEST_ASSERT_EQUAL(PAC1720_OK, adapter_init_PAC1720(&dev, NULL, NULL, NULL, &dummy_i2c, &mock_user_delay, dummy_address, dummy_resistance_ch1, dummy_resistance_ch2, dummy_channels));
+    TEST_ASSERT_EQUAL(PAC1720_OK, adapter_init_PAC1720(&dev, NULL, dummy_CH1_name, NULL, &dummy_i2c, &mock_user_delay, dummy_address, dummy_resistance_ch1, dummy_resistance_ch2, dummy_channels));
     /* Test address out of range */
-    TEST_ASSERT_EQUAL(PAC1720_FAILURE, adapter_init_PAC1720(&dev, dummy_name, dummy_CH1_name, dummy_CH2_name, &dummy_i2c, &mock_user_delay, 0x17, dummy_channels));
-    TEST_ASSERT_EQUAL(PAC1720_FAILURE, adapter_init_PAC1720(&dev, dummy_name, dummy_CH1_name, dummy_CH2_name, &dummy_i2c, &mock_user_delay, 0x2F, dummy_channels));
+    TEST_ASSERT_EQUAL(PAC1720_FAILURE, adapter_init_PAC1720(&dev, dummy_name, dummy_CH1_name, dummy_CH2_name, &dummy_i2c, &mock_user_delay, 0x17, dummy_resistance_ch1, dummy_resistance_ch2, dummy_channels));
+    TEST_ASSERT_EQUAL(PAC1720_FAILURE, adapter_init_PAC1720(&dev, dummy_name, dummy_CH1_name, dummy_CH2_name, &dummy_i2c, &mock_user_delay, 0x2F, dummy_resistance_ch1, dummy_resistance_ch2, dummy_channels));
+    /* Test resistance value == 0 */
+    TEST_ASSERT_EQUAL(PAC1720_FAILURE, adapter_init_PAC1720(&dev, dummy_name, dummy_CH1_name, dummy_CH2_name, &dummy_i2c, &mock_user_delay, dummy_address, 0, dummy_resistance_ch2, dummy_channels));
+    TEST_ASSERT_EQUAL(PAC1720_FAILURE, adapter_init_PAC1720(&dev, dummy_name, dummy_CH1_name, dummy_CH2_name, &dummy_i2c, &mock_user_delay, dummy_address, dummy_resistance_ch1, 0, dummy_channels));
     /* Test channels out of range */
-    TEST_ASSERT_EQUAL(PAC1720_FAILURE, adapter_init_PAC1720(&dev, dummy_name, dummy_CH1_name, dummy_CH2_name, &dummy_i2c, &mock_user_delay, dummy_address, 0));
-    TEST_ASSERT_EQUAL(PAC1720_FAILURE, adapter_init_PAC1720(&dev, dummy_name, dummy_CH1_name, dummy_CH2_name, &dummy_i2c, &mock_user_delay, dummy_address, 4));
-    /* Validate init function */
-    TEST_ASSERT_EQUAL(PAC1720_OK, adapter_init_PAC1720(&dev, dummy_name, dummy_CH1_name, dummy_CH2_name, &dummy_i2c, &mock_user_delay, dummy_address, dummy_channels));
+    TEST_ASSERT_EQUAL(PAC1720_FAILURE, adapter_init_PAC1720(&dev, dummy_name, dummy_CH1_name, dummy_CH2_name, &dummy_i2c, &mock_user_delay, dummy_address, dummy_resistance_ch1, dummy_resistance_ch2, 0));
+    TEST_ASSERT_EQUAL(PAC1720_FAILURE, adapter_init_PAC1720(&dev, dummy_name, dummy_CH1_name, dummy_CH2_name, &dummy_i2c, &mock_user_delay, dummy_address, dummy_resistance_ch1, dummy_resistance_ch2, 4));
+    /* Verify init function */
+    TEST_ASSERT_EQUAL(PAC1720_OK, adapter_init_PAC1720(&dev, dummy_name, dummy_CH1_name, dummy_CH2_name, &dummy_i2c, &mock_user_delay, dummy_address, dummy_resistance_ch1, dummy_resistance_ch2, dummy_channels));
     TEST_ASSERT_EQUAL_HEX8(dummy_address, dev.sensor_address);
+    TEST_ASSERT_EQUAL_FLOAT(dummy_resistance_ch1, dev.sensor_config_ch1.current_sense_resistor_value);
+    TEST_ASSERT_EQUAL_FLOAT(dummy_resistance_ch2, dev.sensor_config_ch2.current_sense_resistor_value);
     TEST_ASSERT_EQUAL_STRING(dummy_name, dev.name);
     TEST_ASSERT_EQUAL_STRING(dummy_CH1_name, dev.sensor_config_ch1.name);
     TEST_ASSERT_EQUAL_STRING(dummy_CH2_name, dev.sensor_config_ch2.name);

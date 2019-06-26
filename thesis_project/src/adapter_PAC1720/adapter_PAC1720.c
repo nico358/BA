@@ -96,10 +96,13 @@ int8_t adapter_init_PAC1720(
                              const struct BUS_INTERFACE_I2C *ext_I2C, 
                              const user_delay_fptr ext_delay_fptr, 
                              const uint8_t sensor_address, 
+                             const float CH1_sense_resistance,
+                             const float CH2_sense_resistance,
                              const ACTIVE_CHANNELS channels 
                            )
 {
-        if ( dev_ptr != NULL && ext_I2C != NULL && ext_delay_fptr != NULL 
+        if ( dev_ptr != NULL && ext_I2C != NULL && ext_delay_fptr != NULL
+             && CH1_sense_resistance != 0 && CH2_sense_resistance != 0
              && !sensor_address_out_of_range(sensor_address) 
              && !channels_out_of_range(channels) 
            )
@@ -107,6 +110,8 @@ int8_t adapter_init_PAC1720(
             i2c = ext_I2C;
             user_delay = ext_delay_fptr;
             dev_ptr->sensor_address = sensor_address;
+            dev_ptr->sensor_config_ch1.current_sense_resistor_value = CH1_sense_resistance;
+            dev_ptr->sensor_config_ch2.current_sense_resistor_value = CH2_sense_resistance;
             dev_ptr->channels = channels;
             dev_ptr->read = &adapter_i2c_read;
             dev_ptr->write = &adapter_i2c_write;

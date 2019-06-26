@@ -213,11 +213,14 @@ struct	PAC1720_device
 	/* Low limit status register */
 	uint8_t low_limit_status_reg;
 
-	/*! Vsource sampling config settings, contains different registers for ch1 & ch2 */
+	/*! Vsource sampling config settings, 
+	*   contains different registers for ch1 & ch2 */
 	uint8_t source_voltage_sampling_config_reg;
-	/*! Vsense sampling config settings, contains different registers for ch1 */
+	/*! Vsense sampling config settings, 
+	*	contains different registers for ch1 */
 	uint8_t ch1_current_sense_sampling_config_reg;
-	/*! Vsense sampling config settings, contains different registers for ch2 */
+	/*! Vsense sampling config settings, 
+	*	contains different registers for ch2 */
 	uint8_t ch2_current_sense_sampling_config_reg;
 
 	/* Sensor product id */
