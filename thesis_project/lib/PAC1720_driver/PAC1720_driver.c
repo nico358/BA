@@ -13,6 +13,42 @@
  * @return 
  * @retval 1 value -> OK/ 0 value -> Error
  */
+void assign_config_register_values(struct PAC1720_device *device_ptr, uint8_t register_field[32]);
+
+/*!
+ * @brief
+ *
+ * 
+ * @note ..
+ * @param[in] config	: 
+ *
+ * @return 
+ * @retval 1 value -> OK/ 0 value -> Error
+ */
+void assign_reading_register_values(struct PAC1720_device *device_ptr, uint8_t register_field[12]);
+
+/*!
+ * @brief
+ *
+ * 
+ * @note ..
+ * @param[in] config	: 
+ *
+ * @return 
+ * @retval 1 value -> OK/ 0 value -> Error
+ */
+uint16_t combine_bytes(uint8_t lsb, uint8_t msb);
+
+/*!
+ * @brief
+ *
+ * 
+ * @note ..
+ * @param[in] config	: 
+ *
+ * @return 
+ * @retval 1 value -> OK/ 0 value -> Error
+ */
 static int8_t read_registers(const struct PAC1720_device *device_ptr, uint8_t reg_address, uint8_t *data_ptr, uint8_t len);
 
 /*!
@@ -172,16 +208,59 @@ static uint16_t right_bit_shift(const uint16_t *doublebyte, uint8_t shift);
 static int8_t device_null_pointer_check(const struct PAC1720_device *device_ptr);
 
 
+
 /******************************* Function definitions *****************************************/
 
-int8_t init_device_PAC1720(struct PAC1720_device *dev)
+int8_t init_device_PAC1720(struct PAC1720_device *device_ptr)
 {
-    if(device_null_pointer_check(dev) == 0){
+    int8_t res = device_null_pointer_check(device_ptr);
+    if(res == PAC1720_OK){
+        /* Local array representation of device registers */
+        uint8_t register_field[32] = {0};
+        res = read_registers(device_ptr, configuration_register_address, register_field, SENSOR_REGISTERS_NUMBER);
+        if(res == PAC1720_OK){
+            assign_config_register_values(device_ptr, register_field);
+        }
         
-        return PAC1720_OK;
-    } else {
-        return PAC1720_FAILURE;
     }
+    return res;
+}
+
+void assign_config_register_values(struct PAC1720_device *device_ptr, uint8_t register_field[32]) 
+{
+    device_ptr->configuration_reg                                  = register_field[0];
+    device_ptr->conversion_rate_reg                                = register_field[1];    
+    device_ptr->one_shot_reg                                       = register_field[2];
+    device_ptr->channel_mask_reg                                   = register_field[3];
+    device_ptr->high_limit_status_reg                              = register_field[4];
+    device_ptr->low_limit_status_reg                               = register_field[5];
+    device_ptr->source_voltage_sampling_time_reg                   = register_field[6];
+    device_ptr->sensor_config_ch1.current_sense_sampling_time_reg  = register_field[7];
+    device_ptr->sensor_config_ch2.current_sense_sampling_time_reg  = register_field[8];
+    device_ptr->sensor_config_ch1.current_sense_limit_reg          = combine_bytes(register_field[23], register_field[21]);
+    device_ptr->sensor_config_ch2.current_sense_limit_reg          = combine_bytes(register_field[24], register_field[22]);
+    device_ptr->sensor_config_ch1.source_voltage_limit_reg         = combine_bytes(register_field[27], register_field[25]);
+    device_ptr->sensor_config_ch1.source_voltage_limit_reg         = combine_bytes(register_field[28], register_field[26]);
+    device_ptr->sensor_product_id                                  = register_field[29];
+    device_ptr->sensor_manufact_id                                 = register_field[30];
+    device_ptr->sensor_revision                                    = register_field[31];
+
+    assign_reading_register_values(device_ptr, &register_field[READING_REGISTER_OFFSET]);
+}
+
+void assign_reading_register_values(struct PAC1720_device *device_ptr, uint8_t register_field[12]) 
+{
+    device_ptr->ch1_readings.v_sense_voltage_reg                   = combine_bytes(register_field[1], register_field[0]);
+    device_ptr->ch2_readings.v_sense_voltage_reg                   = combine_bytes(register_field[3], register_field[2]);
+    device_ptr->ch1_readings.v_source_voltage_reg                  = combine_bytes(register_field[5], register_field[4]);
+    device_ptr->ch2_readings.v_source_voltage_reg                  = combine_bytes(register_field[7], register_field[6]);
+    device_ptr->ch1_readings.power_ratio_reg                       = combine_bytes(register_field[9], register_field[8]);
+    device_ptr->ch2_readings.power_ratio_reg                       = combine_bytes(register_field[11], register_field[10]);
+}
+
+uint16_t combine_bytes(uint8_t lsb, uint8_t msb)
+{
+    return (msb << SHIFT_IN_BYTES_OFFSET) + lsb;
 }
 
 static int8_t read_registers(const struct PAC1720_device *device_ptr, uint8_t reg_address, uint8_t *data_ptr, uint8_t len)
@@ -341,7 +420,7 @@ static int8_t device_null_pointer_check(const struct PAC1720_device *device_ptr)
     } 
 }
 
-const void* get_TEST_FPTR_FIELD(void)
+const void** get_TEST_FPTR_FIELD(void)
 {
     static const void* test_fptr_field[] =  {
                                                  (void*) &calculate_BUS_CURRENT,
@@ -357,7 +436,10 @@ const void* get_TEST_FPTR_FIELD(void)
                                                  (void*) &calculate_BUS_POWER,
                                                  (void*) &calculate_FSP,
                                                  (void*) &read_registers,
-                                                 (void*) &write_registers
+                                                 (void*) &write_registers,
+                                                 (void*) &assign_config_register_values,
+                                                 (void*) &assign_reading_register_values,
+                                                 (void*) &combine_bytes
                                             };
 
     return test_fptr_field;

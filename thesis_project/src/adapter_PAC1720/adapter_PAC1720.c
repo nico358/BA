@@ -186,7 +186,7 @@ uint8_t adapter_find_sensors(const struct BUS_INTERFACE_I2C *i2c_ptr, const user
     uint8_t count = 0;
     uint8_t res = 0;
 
-    for (uint8_t loop_var = 0; loop_var < SENSOR_ADDRESS_SIZE; loop_var++)
+    for (uint8_t loop_var = 0; loop_var < SENSOR_ADDRESS_NUMBER; loop_var++)
     {
         while (no_match && count < max_search_attempts)
         {
@@ -248,5 +248,5 @@ const void* get_ADAPTER_TEST_FPTR_FIELD(void)
                                                  (void*) &poll_i2c
                                             };
 
-    return test_fptr_field;
+    return &test_fptr_field;
 }

@@ -12,9 +12,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 
-
 /*! @name PAC1720 device constants*/
-
 /** PAC1720 addresses */
 static const uint8_t PAC1720_addresses[16] = {
 											  	0x18, 
@@ -149,7 +147,10 @@ static const int8_t PAC1720_FAILURE = -1;
 static const int8_t PAC1720_ADDRESS_ERROR = -2;
 
 typedef enum {FIRST_CHANNEL=1, SECOND_CHANNEL=2, BOTH_CHANNELS=3} ACTIVE_CHANNELS;
-static const uint8_t SENSOR_ADDRESS_SIZE = 16;
+static const uint8_t SENSOR_ADDRESS_NUMBER = 16;
+static const uint8_t SENSOR_REGISTERS_NUMBER = 32;
+static const uint8_t READING_REGISTER_OFFSET = 9;
+static const uint8_t SHIFT_IN_BYTES_OFFSET = 8;
 
 /** Type definitions */
 /*!
@@ -200,10 +201,6 @@ struct	PAC1720_channel_config
 {
 	/*! Optional naming of channel */
 	char *name;
-	/*! Specify how often measured data are updated in active state
-	 *  update only in stdby state (disable measurements in config reg, 
-	 *  wait to conversion complete (monitor XMEAS_DIS bit in config reg, stay set to 1)) */
-	uint8_t conversion_rate_reg; 	//00=1/s, 01=2/s, 10=4/s, 11=continious(default)
 	/*! Vsource sampling time settings */
 	uint8_t source_voltage_sampling_time_reg;  //00=2.5ms (data=8bits) Denom FULL-SCALE VOLTAGE = 256, Denom BUS VOLTAGE = 255, 
 									//01=5ms (data=9bits), Denom FULL-SCALE VOLTAGE = 512, Denom BUS VOLTAGE = 511, 
@@ -233,6 +230,10 @@ struct	PAC1720_channel_config
 	float current_sense_resistor_value;
 	/*! Full Scale Power (FSP) */
 	float power_sense_FSP;
+	/* Sense voltage limit register */
+	uint16_t current_sense_limit_reg;
+	/* Source voltage limit register */
+	uint16_t source_voltage_limit_reg;
 };
 
 /*!
@@ -246,6 +247,25 @@ struct	PAC1720_device
 	uint8_t sensor_address;
 	/*! Sensor channels in use */
 	ACTIVE_CHANNELS channels;
+	/* Configuration register */
+	uint8_t configuration_reg;
+	/*! Specify how often measured data are updated in active state
+	 *  update only in stdby state (disable measurements in config reg, 
+	 *  wait to conversion complete (monitor XMEAS_DIS bit in config reg, stay set to 1)) */
+	uint8_t conversion_rate_reg; 				//00=1/s, 01=2/s, 10=4/s, 11=continious(default)
+	/* One shot register */
+	uint8_t one_shot_reg;
+	/* Channel mask register */
+	uint8_t channel_mask_reg;
+	/* High limit status register */
+	uint8_t high_limit_status_reg;
+	/* Low limit status register */
+	uint8_t low_limit_status_reg;
+	/*! Vsource sampling time settings */
+	uint8_t source_voltage_sampling_time_reg;  	//00=2.5ms (data=8bits) Denom FULL-SCALE VOLTAGE = 256, Denom BUS VOLTAGE = 255, 
+												//01=5ms (data=9bits), Denom FULL-SCALE VOLTAGE = 512, Denom BUS VOLTAGE = 511, 
+								    			//default 10=10ms (data=10bits), Denom FULL-SCALE VOLTAGE = 1024, Denom BUS VOLTAGE = 1023, 
+												//11=20ms(data=11bits), Denom FULL-SCALE VOLTAGE = 2048, Denom BUS VOLTAGE = 2047
 	/*! The struct holding the config of channel 1*/
 	struct PAC1720_channel_config sensor_config_ch1;
 	/*! The struct holding the config of channel 2*/
@@ -260,6 +280,13 @@ struct	PAC1720_device
 	PAC1720_fptr write;
 	/*! delay function pointer */
 	delay_fptr delay_ms;
+	/* Sensor product id */
+	uint8_t sensor_product_id;
+	/* Sensor manufacturer id */
+	uint8_t sensor_manufact_id;
+	/* Sensor revision */
+	uint8_t sensor_revision;
+
 };
 
 /** @}*/

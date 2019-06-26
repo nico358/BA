@@ -262,3 +262,8 @@ default_embedded_binary(
         ":IncludeLib",
 	],
 )
+
+cc_binary(
+	name = "calc",
+	srcs = ["src/calc.c"],
+)

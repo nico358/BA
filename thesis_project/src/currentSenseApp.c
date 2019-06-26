@@ -52,7 +52,7 @@ int main(void)
 
         sprintf(msg, "Found sensors: %d, ", res);
 
-        for(uint8_t i = 0; i < SENSOR_ADDRESS_SIZE; i++){
+        for(uint8_t i = 0; i < SENSOR_ADDRESS_NUMBER; i++){
             if(addr[i]){
                 sprintf(msg + strlen(msg), "found addr: [%x], ", addr[i]);
             }

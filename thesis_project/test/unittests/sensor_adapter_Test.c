@@ -102,6 +102,7 @@ poll_i2c poll_i2c_func;
 
 void setUp(void) {
     // Get function pointers from declaration
+    // const void* test_fptr_field[]       = (void*) get_ADAPTER_TEST_FPTR_FIELD();
     const (**test_fptr_field)[]         = (void*)  get_ADAPTER_TEST_FPTR_FIELD();
     // Assign function pointers function declares
     adapter_i2c_write_func              = (adapter_i2c_write) test_fptr_field[0];
@@ -160,8 +161,6 @@ void test_adapter_init_PAC1720(void){
     /* Test channels out of range */
     TEST_ASSERT_EQUAL(PAC1720_FAILURE, adapter_init_PAC1720(&dev, dummy_name, dummy_CH1_name, dummy_CH2_name, &dummy_i2c, &mock_user_delay, dummy_address, 0));
     TEST_ASSERT_EQUAL(PAC1720_FAILURE, adapter_init_PAC1720(&dev, dummy_name, dummy_CH1_name, dummy_CH2_name, &dummy_i2c, &mock_user_delay, dummy_address, 4));
-    /* Test false name parameters */
-    TEST_ASSERT_EQUAL(PAC1720_OK, adapter_init_PAC1720(&dev, &dummy_address, NULL, NULL, &dummy_i2c, &mock_user_delay, dummy_address, dummy_channels));
     /* Validate init function */
     TEST_ASSERT_EQUAL(PAC1720_OK, adapter_init_PAC1720(&dev, dummy_name, dummy_CH1_name, dummy_CH2_name, &dummy_i2c, &mock_user_delay, dummy_address, dummy_channels));
     TEST_ASSERT_EQUAL_HEX8(dummy_address, dev.sensor_address);
