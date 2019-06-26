@@ -86,7 +86,9 @@
 			"user_delay.h": "c",
 			"adapter_pac1720.h": "c",
 			"mockcircular_buffer.h": "c",
-			"stdlib.h": "c"
+			"stdlib.h": "c",
+			"stddef.h": "c",
+			"stdint.h": "c"
 		},
 		"files.exclude": {
 			"**/.classpath": true,

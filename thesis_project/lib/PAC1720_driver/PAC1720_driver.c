@@ -233,13 +233,15 @@ void assign_config_register_values(struct PAC1720_device *device_ptr, uint8_t re
     device_ptr->channel_mask_reg                                   = register_field[3];
     device_ptr->high_limit_status_reg                              = register_field[4];
     device_ptr->low_limit_status_reg                               = register_field[5];
-    device_ptr->source_voltage_sampling_time_reg                   = register_field[6];
-    device_ptr->sensor_config_ch1.current_sense_sampling_time_reg  = register_field[7];
-    device_ptr->sensor_config_ch2.current_sense_sampling_time_reg  = register_field[8];
+
+    device_ptr->source_voltage_sampling_config_reg                 = register_field[6];
+    device_ptr->ch1_current_sense_sampling_config_reg              = register_field[7];
+    device_ptr->ch2_current_sense_sampling_config_reg              = register_field[8];
+
     device_ptr->sensor_config_ch1.current_sense_limit_reg          = combine_bytes(register_field[23], register_field[21]);
     device_ptr->sensor_config_ch2.current_sense_limit_reg          = combine_bytes(register_field[24], register_field[22]);
     device_ptr->sensor_config_ch1.source_voltage_limit_reg         = combine_bytes(register_field[27], register_field[25]);
-    device_ptr->sensor_config_ch1.source_voltage_limit_reg         = combine_bytes(register_field[28], register_field[26]);
+    device_ptr->sensor_config_ch2.source_voltage_limit_reg         = combine_bytes(register_field[28], register_field[26]);
     device_ptr->sensor_product_id                                  = register_field[29];
     device_ptr->sensor_manufact_id                                 = register_field[30];
     device_ptr->sensor_revision                                    = register_field[31];
