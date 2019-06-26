@@ -123,7 +123,7 @@ void test_combine_bytes(void){
 }     
 
 void test_init_device_PAC1720(void){
-    /* TODO */
+    
 } 
 
 void test_read_registers(void){

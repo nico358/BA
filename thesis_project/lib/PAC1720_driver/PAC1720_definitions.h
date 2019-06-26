@@ -179,15 +179,12 @@ struct	PAC1720_channel_readings
 	/*! Sensor status byte */
 	uint8_t status;
 	/*! The sensed voltage across the resistor (Sense+ and Sense-) */
-	/*  Signed 11bit number by default, two's complement */
 	uint16_t v_sense_voltage_reg; 
 	/*! The sensed voltage on input pin (Sense +) */
-	/*  Unsigned 11bit number by default */
 	uint16_t v_source_voltage_reg; 
-	/*! Calculated power ratio (The value represents the percentage of maximum calculable power.) */
-	/*  Unsigned 16bit number by default */
+	/*! The determined power ratio */
 	uint16_t power_ratio_reg; 
-	/*! The actual values after conversion of the registers */
+	/*! The calculated measurements */
 	float res_SENSE_VOLTAGE;
 	float res_SOURCE_VOLTAGE;
 	float res_CURRENT;
@@ -195,7 +192,7 @@ struct	PAC1720_channel_readings
 };
 
 /*!
- * @brief PAC1720 configuration struct
+ * @brief PAC1720 channel configuration struct
  */
 struct	PAC1720_channel_config 
 {
@@ -237,6 +234,14 @@ struct	PAC1720_channel_config
 };
 
 /*!
+ * @brief PAC1720 global configuration struct
+ */
+struct	PAC1720_global_config 
+{
+
+};
+
+/*!
  * @brief PAC1720 device struct.
  */
 struct	PAC1720_device 
@@ -266,6 +271,8 @@ struct	PAC1720_device
 												//01=5ms (data=9bits), Denom FULL-SCALE VOLTAGE = 512, Denom BUS VOLTAGE = 511, 
 								    			//default 10=10ms (data=10bits), Denom FULL-SCALE VOLTAGE = 1024, Denom BUS VOLTAGE = 1023, 
 												//11=20ms(data=11bits), Denom FULL-SCALE VOLTAGE = 2048, Denom BUS VOLTAGE = 2047
+	/*! The struct holding the global sensor config*/
+	struct	PAC1720_global_config sensor_config_global;
 	/*! The struct holding the config of channel 1*/
 	struct PAC1720_channel_config sensor_config_ch1;
 	/*! The struct holding the config of channel 2*/
