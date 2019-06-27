@@ -2,11 +2,6 @@
 #include "src/adapter_PAC1720/adapter_PAC1720.h"
 #include <stdio.h>
 
-/** Sensor test- device struct  */
-struct PAC1720_device dev;
-
-/** Helper function prototypes */
-void reset_values(void);
 
 /* Verification parameters set by spies */
 uint8_t mock_i2c_start_call;
@@ -25,10 +20,6 @@ uint32_t mock_delay_arg;
 uint8_t  mock_delay_call;
 
 /** Field- Bus communication spies */
-void mock_i2c_init(void){
-
-}
-
 unsigned char mock_i2c_start(unsigned char address){
     mock_i2c_start_call++;
     mock_i2c_start_arg = address;
@@ -74,7 +65,6 @@ void mock_user_delay(uint32_t period){
 
 /** Field- Bus communication struct from external */
 struct BUS_INTERFACE_I2C dummy_i2c = {
-    .init       = &mock_i2c_init,
     .stop       = &mock_i2c_stop,
     .start      = &mock_i2c_start,
     .repStart   = &mock_i2c_rep_start,
@@ -112,66 +102,21 @@ void setUp(void) {
     poll_i2c_func                       = (poll_i2c)                        test_fptr_field[5];
 }
 
-void tearDown(void) {}
-
-/* Reset values after test */
-void reset_values(void){
-    /* Reset struct values */
-    dev.name = NULL;
-    dev.sensor_address = 0;
-    dev.channels = 0;
-    dev.configuration_reg = 0;
-    dev.conversion_rate_reg = 0;
-    dev.one_shot_reg = 0;
-    dev.channel_mask_reg = 0;
-    dev.high_limit_status_reg = 0;
-    dev.low_limit_status_reg = 0;
-    dev.source_voltage_sampling_config_reg = 0;
-    dev.ch1_current_sense_sampling_config_reg = 0;
-    dev.ch2_current_sense_sampling_config_reg = 0;
-    dev.sensor_product_id = 0;
-    dev.sensor_manufact_id = 0;
-    dev.sensor_revision = 0;
-    dev.read = dev.write = NULL;                   
-    dev.delay_ms = NULL;
-
-    dev.sensor_config_ch1.name = NULL;
-    dev.sensor_config_ch1.current_sense_resistor_value = 0;
-    dev.sensor_config_ch1.current_sense_sampling_time_reg = 0;
-    dev.sensor_config_ch1.current_sense_sampling_average_reg = 0;
-    dev.sensor_config_ch1.current_sense_FSR_reg = 0;
-    dev.sensor_config_ch1.current_sense_FSC = 0;
-    dev.sensor_config_ch1.source_voltage_sampling_time_reg = 0;
-    dev.sensor_config_ch1.source_voltage_sampling_average_reg = 0;
-    dev.sensor_config_ch1.source_voltage_FSV = 0;
-    dev.sensor_config_ch1.power_sense_FSP = 0;
-    dev.sensor_config_ch1.current_sense_limit_reg = 0;
-    dev.sensor_config_ch1.source_voltage_limit_reg = 0;
-    
-    dev.ch1_readings.reading_done = false;
-    dev.ch1_readings.status = 0;
-    dev.ch1_readings.v_sense_voltage_reg = 0;
-    dev.ch1_readings.v_source_voltage_reg = 0;
-    dev.ch1_readings.power_ratio_reg = 0;
-    dev.ch1_readings.res_CURRENT = 0;
-    dev.ch1_readings.res_POWER = 0;
-    dev.ch1_readings.res_SENSE_VOLTAGE = 0;
-    dev.ch1_readings.res_SOURCE_VOLTAGE = 0;
-
-    /* Reset verification parameters set by spies */
-    mock_i2c_start_call      = 0;
-    mock_i2c_start_arg       = 0;
-    mock_i2c_rep_start_call  = 0;
+void tearDown(void) {
+    mock_i2c_start_call = 0;
+    mock_i2c_start_arg = 0;
     mock_i2c_start_wait_call = 0;
-    mock_i2c_start_wait_arg  = 0;
-    mock_i2c_rep_start_arg   = 0;
-    mock_i2c_stop_call       = 0;
-    mock_i2c_write_call      = 0;
-    mock_i2c_write_arg       = 0;
-    mock_i2c_readAck_call    = 0;
-    mock_i2c_readNak_call    = 0;
-    mock_delay_arg           = 0;
-    mock_delay_call          = 0;
+    mock_i2c_start_wait_arg = 0;
+    mock_i2c_rep_start_call = 0;
+    mock_i2c_rep_start_arg = 0;
+    mock_i2c_stop_call = 0;
+    mock_i2c_write_call = 0;
+    mock_i2c_write_arg = 0;
+    mock_i2c_readAck_call = 0;
+    mock_i2c_readNak_call = 0;
+
+    mock_delay_arg = 0;
+    mock_delay_call = 0;
 }
 
 void test_adapter_find_sensors(void){
@@ -183,7 +128,8 @@ void test_poll_i2c(void){
 }
 
 void test_adapter_init_PAC1720(void){
-    reset_values();
+    /** Sensor test- device struct  */
+    static struct PAC1720_device dev;
     /* Set up dummy inputs */
     uint8_t dummy_address = 0x28;
     float dummy_resistance_ch1 = 0.8f;
@@ -223,7 +169,6 @@ void test_adapter_init_PAC1720(void){
 }
 
 void test_adapter_i2c_write(void){
-    reset_values();
     /* Set up dummy inputs */
     uint8_t dummy_address = 0x28;
     uint8_t dummy_address_return = (dummy_address << I2C_ADDRESS_SHIFT) + I2C_WRITE;
@@ -241,7 +186,6 @@ void test_adapter_i2c_write(void){
 }   
 
 void test_adapter_i2c_read(void){
-    reset_values();
     /* Set up dummy inputs */
     uint8_t dummy_address = 0x28;
     uint8_t dummy_address_write_return = (dummy_address << I2C_ADDRESS_SHIFT) + I2C_WRITE;
@@ -293,8 +237,8 @@ void test_channels_out_of_range(void){
 }
 
 void test_fail(void){
-    char msg[500];
-    uint8_t x = 0;
-    sprintf(msg, "Test: %x\n", x);
+    // struct PAC1720_device dev;
+    // char msg[500];
+    // sprintf(msg, "Test: %d", cnt);
     // TEST_FAIL_MESSAGE(msg);
 }

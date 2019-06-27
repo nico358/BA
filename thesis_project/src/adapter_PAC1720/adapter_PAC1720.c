@@ -93,7 +93,7 @@ int8_t adapter_init_PAC1720(
                              char *dev_name, 
                              char *CH1_name, 
                              char *CH2_name,
-                             const struct BUS_INTERFACE_I2C *ext_I2C, 
+                             const struct BUS_INTERFACE_I2C *ext_I2C,  
                              const user_delay_fptr ext_delay_fptr, 
                              const uint8_t sensor_address, 
                              const float CH1_sense_resistance,
@@ -101,7 +101,8 @@ int8_t adapter_init_PAC1720(
                              const ACTIVE_CHANNELS channels 
                            )
 {
-        if ( dev_ptr != NULL && ext_I2C != NULL && ext_delay_fptr != NULL
+        if ( 
+             dev_ptr != NULL && ext_I2C != NULL && ext_delay_fptr != NULL
              && CH1_sense_resistance != 0 && CH2_sense_resistance != 0
              && !sensor_address_out_of_range(sensor_address) 
              && !channels_out_of_range(channels) 
@@ -121,7 +122,8 @@ int8_t adapter_init_PAC1720(
             dev_ptr->sensor_config_ch2.name = CH2_name;
 
             return init_device_PAC1720(dev_ptr);
-        } else {
+        } else 
+        {
             return PAC1720_FAILURE;
         }
 }
@@ -140,9 +142,13 @@ int8_t adapter_i2c_write(
     if(result != PAC1720_OK) return result;
 
     /* Write to #len registers, increase the address #len times */
-    for(uint16_t i = 0; i < len; i++){
+    for(uint16_t i = 0; i < len; i++)
+    {
         result = i2c->write(*data_ptr);
-            if(result != PAC1720_OK) return result;
+            if(result != PAC1720_OK)
+            { 
+                return result;
+            }
             data_ptr++;
     }
 
@@ -165,11 +171,14 @@ int8_t adapter_i2c_read (
     result = i2c->repStart((sensor_address << I2C_ADDRESS_SHIFT) + I2C_READ);
 
     /* Read from #len registers, increase the address #len times */
-    for(uint16_t i = 0; i < len; i++){
-        if(i < len -1){
+    for(uint16_t i = 0; i < len; i++)
+    {
+        if(i < len -1)
+        {
             *data_ptr = i2c->readAck();
-        }else{
-            /* After the last read send NACK */
+        }
+        else
+        {  /* After the last read send NACK */
             *data_ptr = i2c->readNak(); 
         }
         data_ptr++;
@@ -197,13 +206,15 @@ uint8_t adapter_find_sensors(const struct BUS_INTERFACE_I2C *i2c_ptr, const user
         {
             no_match = poll_i2c(i2c_ptr, loop_var, addresses);
 
-            if (no_match){
+            if (no_match)
+            {
                 count++;
                 delay_ptr(10);
             } 
         }
 
-        if(!no_match){
+        if(!no_match)
+        {
             res++;
         }
         no_match = 1;
@@ -219,7 +230,8 @@ uint8_t poll_i2c(const struct BUS_INTERFACE_I2C *i2c_ptr, uint8_t loop_var, uint
     uint8_t no_match = i2c_ptr->start((sensor_addr << I2C_ADDRESS_SHIFT) + I2C_WRITE);
     i2c_ptr->stop();
 
-    if(!no_match){
+    if(!no_match)
+    {
         uint8_t *offset = addresses + loop_var;
         *offset = sensor_addr;
     }
@@ -228,7 +240,8 @@ uint8_t poll_i2c(const struct BUS_INTERFACE_I2C *i2c_ptr, uint8_t loop_var, uint
 
 bool sensor_address_out_of_range(const uint8_t address)
 {
-    if(address == 0x18 || (address > 0x27 && address < 0x2F) || (address > 0x47 && address < 0x50)){
+    if(address == 0x18 || (address > 0x27 && address < 0x2F) || (address > 0x47 && address < 0x50))
+    {
         return false;
     }
     return true;
@@ -236,7 +249,8 @@ bool sensor_address_out_of_range(const uint8_t address)
 
 bool channels_out_of_range(const ACTIVE_CHANNELS channels)
 {
-    if(channels >= FIRST_CHANNEL && channels <= BOTH_CHANNELS){
+    if(channels >= FIRST_CHANNEL && channels <= BOTH_CHANNELS)
+    {
         return false;
     }
     return true;

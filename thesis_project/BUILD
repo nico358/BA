@@ -266,4 +266,5 @@ default_embedded_binary(
 cc_binary(
 	name = "calc",
 	srcs = ["src/calc.c"],
+	deps = [":PAC1720DriverLib"],
 )

@@ -114,13 +114,13 @@ static const uint8_t 	SHIFT_IN_BYTES_OFFSET 										= 8;
  * @param[in] y:	... .
  * @param[in/out] z: ... .
  */
-typedef int8_t 			(*PAC1720_fptr)		(const uint8_t sensor_address, const uint8_t reg_address, uint8_t *data_ptr, const uint16_t len);
+typedef int8_t (*PAC1720_fptr) (const uint8_t sensor_address, const uint8_t reg_address, uint8_t *data_ptr, const uint16_t len);
 
 /*!
  * Delay function pointer
  * @param[in] period: Time period in milliseconds
  */
-typedef void 			(*delay_fptr)		(uint32_t period);
+typedef void (*delay_fptr) (uint32_t period);
 
 
 /* Structure definitions */

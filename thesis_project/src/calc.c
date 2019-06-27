@@ -1,17 +1,25 @@
 #include <stdio.h>
 #include <stdint.h>
+#include "lib/PAC1720_driver/PAC1720_driver.h"
+
+typedef void (*fptr)(void);
+
+struct x {
+fptr y;
+uint8_t z;
+};
+
 
 int main(void){
 
-uint8_t arr[5] = {1,2,3,4,5};
-uint8_t *ptr = arr;
-print(*ptr, *ptr++);
+static struct PAC1720_device dev;
 
+struct x x;
 
-}
-
-void print(uint8_t a, uint8_t b){
 char msg[128];
-sprintf(msg, "a: %d b: %d \r\n", a, b);
+sprintf(msg, "%p %d\r\n", x.y, x.z);
+printf(msg);
+
+sprintf(msg, "%p %p %p %p\r\n", &dev, dev.write, dev.read, dev.delay_ms);
 printf(msg);
 }
