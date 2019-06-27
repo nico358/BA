@@ -13,6 +13,18 @@
  * @return 
  * @retval 1 value -> OK/ 0 value -> Error
  */
+void cut_up_sampling_registers(struct PAC1720_device *device_ptr);
+
+/*!
+ * @brief
+ *
+ * 
+ * @note ..
+ * @param[in] config	: 
+ *
+ * @return 
+ * @retval 1 value -> OK/ 0 value -> Error
+ */
 void assign_config_register_values(struct PAC1720_device *device_ptr, uint8_t register_field[32]);
 
 /*!
@@ -217,12 +229,33 @@ int8_t init_device_PAC1720(struct PAC1720_device *device_ptr)
     if(res == PAC1720_OK){
         /* Local array representation of device registers */
         uint8_t register_field[32] = {0};
+        /* Read all registers */
         res = read_registers(device_ptr, configuration_register_address, register_field, SENSOR_REGISTERS_NUMBER);
         if(res == PAC1720_OK){
+            /* Assign local register representation */
             assign_config_register_values(device_ptr, register_field);
+            /* Cut up sample configuration registers on to channel configurations */
+            cut_up_sampling_registers(device_ptr);
+            /* Do calculate and set  */
         }
     }
     return res;
+}
+
+void cut_up_sampling_registers(struct PAC1720_device *device_ptr)
+{
+    device_ptr->sensor_config_ch2.source_voltage_sampling_time_reg      = (device_ptr->source_voltage_sampling_config_reg    & BITMASK_FIRST_TWO)          >> SHIFT_SIX_BITS;
+    device_ptr->sensor_config_ch2.source_voltage_sampling_average_reg   = (device_ptr->source_voltage_sampling_config_reg    & BITMASK_SECOND_TWO)         >> SHIFT_FOUR_BITS;
+    device_ptr->sensor_config_ch1.source_voltage_sampling_time_reg      = (device_ptr->source_voltage_sampling_config_reg    & BITMASK_THIRD_TWO)          >> SHIFT_TWO_BITS;
+    device_ptr->sensor_config_ch1.current_sense_sampling_average_reg    = device_ptr->source_voltage_sampling_config_reg     & BITMASK_FOURTH_TWO;
+
+    device_ptr->sensor_config_ch1.current_sense_sampling_time_reg       = (device_ptr->ch1_current_sense_sampling_config_reg & BITMASK_MSB_CURRENT_SAMPLE) >> SHIFT_FOUR_BITS;
+    device_ptr->sensor_config_ch1.current_sense_sampling_average_reg    = (device_ptr->ch1_current_sense_sampling_config_reg & BITMASK_THIRD_TWO)          >> SHIFT_TWO_BITS;
+    device_ptr->sensor_config_ch1.current_sense_FSR_reg                 = device_ptr->ch1_current_sense_sampling_config_reg  & BITMASK_FOURTH_TWO;
+    
+    device_ptr->sensor_config_ch2.current_sense_sampling_time_reg       = (device_ptr->ch2_current_sense_sampling_config_reg & BITMASK_MSB_CURRENT_SAMPLE) >> SHIFT_FOUR_BITS;
+    device_ptr->sensor_config_ch2.current_sense_sampling_average_reg    = (device_ptr->ch2_current_sense_sampling_config_reg & BITMASK_THIRD_TWO)          >> SHIFT_TWO_BITS;
+    device_ptr->sensor_config_ch2.current_sense_FSR_reg                 = device_ptr->ch2_current_sense_sampling_config_reg  & BITMASK_FOURTH_TWO;
 }
 
 void assign_config_register_values(struct PAC1720_device *device_ptr, uint8_t register_field[32]) 
@@ -440,7 +473,8 @@ const void* get_TEST_DRIVER_FPTR_FIELD(void)
                                                  (void*) &write_registers,
                                                  (void*) &assign_config_register_values,
                                                  (void*) &assign_reading_register_values,
-                                                 (void*) &combine_bytes
+                                                 (void*) &combine_bytes,
+                                                 (void*) &cut_up_sampling_registers
                                             };
 
     return &test_fptr_field;

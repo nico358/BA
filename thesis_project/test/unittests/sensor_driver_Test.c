@@ -25,6 +25,7 @@ typedef int8_t      (*write_registers)                  (const struct PAC1720_de
 typedef void        (*assign_config_register_values)    (struct PAC1720_device *device_ptr, uint8_t register_field[32]);
 typedef void        (*assign_reading_register_values)   (struct PAC1720_device *device_ptr, uint8_t register_field[12]);
 typedef uint16_t    (*combine_bytes)                    (uint8_t lsb, uint8_t msb);
+typedef void (*cut_up_sampling_registers) (struct PAC1720_device *device_ptr);
 
 /** Declare function instances */
 calculate_BUS_CURRENT                   calculate_BUS_CURRENT_func;
@@ -44,6 +45,7 @@ write_registers                         write_registers_func;
 assign_config_register_values           assign_config_register_values_func;
 assign_reading_register_values          assign_reading_register_values_func;
 combine_bytes                           combine_bytes_func;
+cut_up_sampling_registers               cut_up_sampling_registers_func;               
 
 /* Unity stuff */
 void setUp(void) {
@@ -67,6 +69,8 @@ void setUp(void) {
     assign_config_register_values_func  = (assign_config_register_values)       test_fptr_field[14];
     assign_reading_register_values_func = (assign_reading_register_values)      test_fptr_field[15];
     combine_bytes_func                  = (combine_bytes)                       test_fptr_field[16];
+    cut_up_sampling_registers_func      = (cut_up_sampling_registers)          test_fptr_field[17];
+
 }
 
 void tearDown(void) {}
@@ -86,17 +90,95 @@ int8_t spy_i2c_write_read(uint8_t address, uint8_t reg_address, uint8_t *data, u
     return PAC1720_OK;
 }
 
+void test_cut_up_sampling_registers(void){
+    // Declare test- device struct
+    static struct PAC1720_device dev;
+    // Setup dummy values
+    uint8_t dummy_Vsource_reg = 0b11011000;
+    uint8_t dummy_Vsense_reg  = 0b11011001;
+    dev.source_voltage_sampling_config_reg = dummy_Vsource_reg;
+    dev.ch1_current_sense_sampling_config_reg = dummy_Vsense_reg;
+    dev.ch2_current_sense_sampling_config_reg = dummy_Vsense_reg;
+    // Verify function
+    cut_up_sampling_registers_func(&dev);
+    TEST_ASSERT_EQUAL(0b00000011, dev.sensor_config_ch2.source_voltage_sampling_time_reg);
+    TEST_ASSERT_EQUAL(0b00000001, dev.sensor_config_ch2.source_voltage_sampling_average_reg);
+    TEST_ASSERT_EQUAL(0b00000010, dev.sensor_config_ch1.source_voltage_sampling_time_reg);
+    TEST_ASSERT_EQUAL(0b00000000, dev.sensor_config_ch1.source_voltage_sampling_average_reg);
+
+    TEST_ASSERT_EQUAL(0b00000101, dev.sensor_config_ch1.current_sense_sampling_time_reg);
+    TEST_ASSERT_EQUAL(0b00000010, dev.sensor_config_ch1.current_sense_sampling_average_reg);
+    TEST_ASSERT_EQUAL(0b00000001, dev.sensor_config_ch1.current_sense_FSR_reg);
+    
+    TEST_ASSERT_EQUAL(0b00000101, dev.sensor_config_ch2.current_sense_sampling_time_reg);
+    TEST_ASSERT_EQUAL(0b00000010, dev.sensor_config_ch2.current_sense_sampling_average_reg);
+    TEST_ASSERT_EQUAL(0b00000001, dev.sensor_config_ch2.current_sense_FSR_reg);
+}
+
 void test_assign_config_register_values(void){
     // Declare test- device struct
-    // struct PAC1720_device dev;
+    static struct PAC1720_device dev;
+    uint8_t test_reg_field[32];
+    // Fill test array
+    for(int i = 0; i < 32; i++){
+        test_reg_field[i] = i;
+    }
+    // Verify assignment function
+    assign_config_register_values_func(&dev, test_reg_field);
+    TEST_ASSERT_EQUAL(test_reg_field[0], dev.configuration_reg); 
+    TEST_ASSERT_EQUAL(test_reg_field[1], dev.conversion_rate_reg);   
+    TEST_ASSERT_EQUAL(test_reg_field[2], dev.one_shot_reg);                              
+    TEST_ASSERT_EQUAL(test_reg_field[3], dev.channel_mask_reg);                          
+    TEST_ASSERT_EQUAL(test_reg_field[4], dev.high_limit_status_reg);                              
+    TEST_ASSERT_EQUAL(test_reg_field[5], dev.low_limit_status_reg);                              
+    TEST_ASSERT_EQUAL(test_reg_field[6], dev.source_voltage_sampling_config_reg);       
+    TEST_ASSERT_EQUAL(test_reg_field[7], dev.ch1_current_sense_sampling_config_reg);      
+    TEST_ASSERT_EQUAL(test_reg_field[8], dev.ch2_current_sense_sampling_config_reg);  
 
-    /* TODO */
+    uint16_t dummy_curr_lim1 = (test_reg_field[21] << SHIFT_IN_BYTES_OFFSET) | test_reg_field[23];
+    TEST_ASSERT_EQUAL(dummy_curr_lim1, dev.sensor_config_ch1.current_sense_limit_reg);
+    uint16_t dummy_curr_lim2 = (test_reg_field[22] << SHIFT_IN_BYTES_OFFSET) | test_reg_field[24];       
+    TEST_ASSERT_EQUAL(dummy_curr_lim2, dev.sensor_config_ch2.current_sense_limit_reg);    
+    uint16_t dummy_src_vlt1 = (test_reg_field[25] << SHIFT_IN_BYTES_OFFSET) | test_reg_field[27];
+    TEST_ASSERT_EQUAL(dummy_src_vlt1, dev.sensor_config_ch1.source_voltage_limit_reg); 
+    uint16_t dummy_src_vlt2 = (test_reg_field[26] << SHIFT_IN_BYTES_OFFSET) | test_reg_field[28];
+    TEST_ASSERT_EQUAL(dummy_src_vlt2, dev.sensor_config_ch2.source_voltage_limit_reg);
+
+    TEST_ASSERT_EQUAL(test_reg_field[29], dev.sensor_product_id);                                 
+    TEST_ASSERT_EQUAL(test_reg_field[30], dev.sensor_manufact_id);                             
+    TEST_ASSERT_EQUAL(test_reg_field[31], dev.sensor_revision);  
+
+    uint16_t dummy_src_vlt_fail = (test_reg_field[27] << SHIFT_IN_BYTES_OFFSET) | test_reg_field[27];
+    TEST_ASSERT_NOT_EQUAL(dummy_src_vlt_fail, dev.sensor_config_ch1.source_voltage_limit_reg); 
+    TEST_ASSERT_NOT_EQUAL(test_reg_field[6], dev.ch2_current_sense_sampling_config_reg);  
 }           
 
 void test_assign_reading_register_values(void){
     // Declare test- device struct
-    // struct PAC1720_device dev;
-    /* TODO */
+    static struct PAC1720_device dev;
+    uint8_t test_reg_field[32];
+    // Fill test array
+    for(int i = 0; i < 32; i++){
+        test_reg_field[i] = i;
+    }
+    // Verify assignment function
+    assign_reading_register_values_func(&dev, &test_reg_field[READING_REGISTER_OFFSET]);
+
+    uint16_t dummy_curr_vlt1 = (test_reg_field[9] << SHIFT_IN_BYTES_OFFSET) | test_reg_field[10];
+    TEST_ASSERT_EQUAL(dummy_curr_vlt1, dev.ch1_readings.v_sense_voltage_reg);     
+    uint16_t dummy_curr_vlt2 = (test_reg_field[11] << SHIFT_IN_BYTES_OFFSET) | test_reg_field[12];
+    TEST_ASSERT_EQUAL(dummy_curr_vlt2, dev.ch2_readings.v_sense_voltage_reg);   
+    uint16_t dummy_src_vlt1 = (test_reg_field[13] << SHIFT_IN_BYTES_OFFSET) | test_reg_field[14];              
+    TEST_ASSERT_EQUAL(dummy_src_vlt1, dev.ch1_readings.v_source_voltage_reg);  
+    uint16_t dummy_src_vlt2 = (test_reg_field[15] << SHIFT_IN_BYTES_OFFSET) | test_reg_field[16];               
+    TEST_ASSERT_EQUAL(dummy_src_vlt2, dev.ch2_readings.v_source_voltage_reg); 
+    uint16_t dummy_pwr1 = (test_reg_field[17] << SHIFT_IN_BYTES_OFFSET) | test_reg_field[18];                 
+    TEST_ASSERT_EQUAL(dummy_pwr1, dev.ch1_readings.power_ratio_reg);  
+    uint16_t dummy_pwr2 = (test_reg_field[19] << SHIFT_IN_BYTES_OFFSET) | test_reg_field[20];                  
+    TEST_ASSERT_EQUAL(dummy_pwr2, dev.ch2_readings.power_ratio_reg);  
+
+    uint16_t dummy_pwr_fail = (test_reg_field[20] << SHIFT_IN_BYTES_OFFSET) | test_reg_field[21];                  
+    TEST_ASSERT_NOT_EQUAL(dummy_pwr_fail, dev.ch2_readings.power_ratio_reg);
 }   
 
 void test_combine_bytes(void){

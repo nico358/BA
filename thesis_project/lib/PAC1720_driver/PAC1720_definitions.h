@@ -104,8 +104,17 @@ typedef enum 			{FIRST_CHANNEL=1, SECOND_CHANNEL=2, BOTH_CHANNELS=3} 		ACTIVE_CH
 static const uint8_t 	SENSOR_ADDRESS_NUMBER 										= 16;
 static const uint8_t 	SENSOR_REGISTERS_NUMBER 									= 32;
 static const uint8_t 	READING_REGISTER_OFFSET 									= 9;
-static const uint8_t 	SHIFT_IN_BYTES_OFFSET 										= 8;
 
+static const uint8_t 	BITMASK_MSB_CURRENT_SAMPLE									= 0x70;
+static const uint8_t 	BITMASK_FIRST_TWO											= 0xC0;
+static const uint8_t 	BITMASK_SECOND_TWO											= 0x30;
+static const uint8_t    BITMASK_THIRD_TWO											= 0x0C;
+static const uint8_t    BITMASK_FOURTH_TWO 											= 0x03;
+
+static const uint8_t 	SHIFT_IN_BYTES_OFFSET 										= 8;
+static const uint8_t 	SHIFT_SIX_BITS												= 6;
+static const uint8_t 	SHIFT_FOUR_BITS												= 4;
+static const uint8_t 	SHIFT_TWO_BITS												= 2;
 
 /** Type definitions */
 /*!
