@@ -128,6 +128,11 @@ int8_t adapter_init_PAC1720(
         }
 }
 
+int8_t get_measurements( struct PAC1720_device *dev_ptr )
+{
+    return get_measurement_registers(dev_ptr);
+}
+
 int8_t adapter_i2c_write( 
                           const uint8_t sensor_address, 
                           const uint8_t reg_address, 

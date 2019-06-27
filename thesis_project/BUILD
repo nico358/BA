@@ -151,7 +151,8 @@ cc_library(
 
 	copts = commonCopts,
 
-	deps = [],
+	deps = [
+	],
 
 	visibility = [
 		"//test:__pkg__",

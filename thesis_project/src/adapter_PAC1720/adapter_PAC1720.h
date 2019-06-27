@@ -70,6 +70,8 @@ int8_t adapter_init_PAC1720(
                             const ACTIVE_CHANNELS channels
                            );
 
+int8_t get_measurements( struct PAC1720_device *dev_ptr );
+
 /* function prototypes */
 /*!
  * @fn

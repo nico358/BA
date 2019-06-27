@@ -303,7 +303,7 @@ int8_t init_device_PAC1720(struct PAC1720_device *device_ptr)
             assign_reading_register_values(device_ptr, &register_field[READING_REGISTERS_OFFSET]);
             /* Cut up sample configuration registers on to channel configurations */
             cut_up_sampling_registers(device_ptr);
-            /* Cut up limit registers and set conversion complete bit */
+            /* Cut up limit registers and check conversion complete bit */
             cut_up_limit_registers(device_ptr);
             /* Do calculate and set FULL SCALE values. NEED TO BE DONE AT LEAST ONCE after config changes */
             res = set_all_FSx_coefficients(device_ptr);
@@ -311,16 +311,31 @@ int8_t init_device_PAC1720(struct PAC1720_device *device_ptr)
             if(device_ptr->conversion_cycle_complete){
                 // /* Do calculation of measurements */
                 res = calculate_all_measurements(device_ptr);
+                device_ptr->conversion_cycle_complete = false;
             }
         }
     }
     return res;
 }
 
-// int8_t get_measurements(struct PAC1720_device *device_ptr)
-// {
-
-// }
+int8_t get_measurement_registers(struct PAC1720_device *device_ptr)
+{
+    device_ptr->conversion_cycle_complete = false;
+    uint8_t register_field[12] = {0};
+    uint8_t res = PAC1720_FAILURE;
+    res = read_registers(device_ptr, ch1_sense_voltage_high_register_address, register_field, READING_REGISTERS_LENGTH);
+    if(res != PAC1720_OK) return res;
+    assign_reading_register_values(device_ptr, register_field);
+    res = read_registers(device_ptr, high_limit_status_register_address, &device_ptr->high_limit_status_reg, 1);
+    cut_up_limit_registers(device_ptr);
+    if(device_ptr->conversion_cycle_complete){
+    // /* Do calculation of measurements */
+        res = calculate_all_measurements(device_ptr);
+        device_ptr->conversion_cycle_complete = false;
+        return res;
+    } 
+    return res;
+}
 
 int8_t calculate_all_measurements(struct PAC1720_device *device_ptr)
 {
@@ -333,12 +348,10 @@ int8_t calculate_all_measurements(struct PAC1720_device *device_ptr)
     { 
         return calculate_channel_measurements(&device_ptr->sensor_config_ch2, &device_ptr->ch2_readings);
     } 
-    if ( device_ptr->channels  == BOTH_CHANNELS )
-    {
-        res = calculate_channel_measurements(&device_ptr->sensor_config_ch1, &device_ptr->ch1_readings);
-        if(res != PAC1720_OK) return res;
-        return calculate_channel_measurements(&device_ptr->sensor_config_ch2, &device_ptr->ch2_readings);
-    }
+        
+    res = calculate_channel_measurements(&device_ptr->sensor_config_ch1, &device_ptr->ch1_readings);
+    if(res != PAC1720_OK) return res;
+    return calculate_channel_measurements(&device_ptr->sensor_config_ch2, &device_ptr->ch2_readings);
 }
 
 int8_t calculate_channel_measurements(const struct PAC1720_channel_config *channel_conf, struct PAC1720_channel_readings *channel_readings)
@@ -363,12 +376,10 @@ int8_t set_all_FSx_coefficients(struct PAC1720_device *device_ptr)
     { 
         return set_channel_FSx_coefficients(&device_ptr->sensor_config_ch2);
     } 
-    if ( device_ptr->channels  == BOTH_CHANNELS )
-    {
-        res =  set_channel_FSx_coefficients(&device_ptr->sensor_config_ch1);
-        if(res != PAC1720_OK) return res;
-        return set_channel_FSx_coefficients(&device_ptr->sensor_config_ch2);
-    }
+
+    res =  set_channel_FSx_coefficients(&device_ptr->sensor_config_ch1);
+    if(res != PAC1720_OK) return res;
+    return set_channel_FSx_coefficients(&device_ptr->sensor_config_ch2);
 }
 
 int8_t set_channel_FSx_coefficients(struct PAC1720_channel_config *config_ptr)
@@ -475,7 +486,7 @@ int8_t calculate_BUS_CURRENT(const struct PAC1720_channel_config *channel_conf, 
         return PAC1720_FAILURE;
     }
 }
-
+ 
 int8_t calculate_BUS_VOLTAGE(const struct PAC1720_channel_config *channel_conf, struct PAC1720_channel_readings *channel_readings)
 {
     if(channel_conf->source_voltage_FSV != 0){
@@ -513,11 +524,12 @@ float calculate_SENSED_VOLTAGE(const uint16_t *v_sense_voltage_reg_ptr, const ui
     uint16_t tmp = right_bit_shift(v_sense_voltage_reg_ptr, CURRENT_RESOLUTION_IGNORE_BITS[*current_sense_sampling_time_reg_ptr]);
 
     if(is_negative_value(v_sense_voltage_reg_ptr)){
-        
+
         uint16_t complement = twos_complement(&tmp);
         tmp = complement & NEGATIVE_CURRENT_RESOLUTION_MASK[*current_sense_sampling_time_reg_ptr];
-        return (float) - tmp;
+        float res = (float) tmp;
 
+        return - res;
     } else {
         return (float) tmp;
     } 

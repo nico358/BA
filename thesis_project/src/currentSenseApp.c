@@ -66,11 +66,29 @@ int main(void)
     char msg[256];
 
     for(;;){
-        debugWriteLine("HELLO\r\n");
-        print_USB_MON();
-        print_FPGA_VCC();
-        print_WIREL_MCU();
-        ext_delay_func(1000);
+
+        get_measurements(&dev_USB_MON);
+        get_measurements(&dev_FPGA_VCC);
+        get_measurements(&dev_WIREL_MCU);
+
+        debugWriteLine("{\r\n");
+        sprintf(msg, "[%s: current %fA voltage %fV power %fW]\r\n", dev_USB_MON.sensor_config_ch1.name, dev_USB_MON.ch1_readings.res_CURRENT, dev_USB_MON.ch1_readings.res_SOURCE_VOLTAGE, dev_USB_MON.ch1_readings.res_POWER);
+        debugWriteLine(msg);
+        sprintf(msg, "[%s: current %fA voltage %fV power %fW]\r\n", dev_USB_MON.sensor_config_ch2.name, dev_USB_MON.ch2_readings.res_CURRENT, dev_USB_MON.ch2_readings.res_SOURCE_VOLTAGE, dev_USB_MON.ch2_readings.res_POWER);
+        debugWriteLine(msg);
+
+        sprintf(msg, "[%s: current %fA voltage %fV power %fW]\r\n", dev_FPGA_VCC.sensor_config_ch1.name, dev_FPGA_VCC.ch1_readings.res_CURRENT, dev_FPGA_VCC.ch1_readings.res_SOURCE_VOLTAGE, dev_FPGA_VCC.ch1_readings.res_POWER);
+        debugWriteLine(msg);
+        sprintf(msg, "[%s: current %fA voltage %fV power %fW]\r\n", dev_FPGA_VCC.sensor_config_ch2.name, dev_FPGA_VCC.ch2_readings.res_CURRENT, dev_FPGA_VCC.ch2_readings.res_SOURCE_VOLTAGE, dev_FPGA_VCC.ch2_readings.res_POWER);
+        debugWriteLine(msg);
+
+        sprintf(msg, "[%s: current %fA voltage %fV power %fW]\r\n", dev_WIREL_MCU.sensor_config_ch1.name, dev_WIREL_MCU.ch1_readings.res_CURRENT, dev_WIREL_MCU.ch1_readings.res_SOURCE_VOLTAGE, dev_WIREL_MCU.ch1_readings.res_POWER);
+        debugWriteLine(msg);
+        sprintf(msg, "[%s: current %fA voltage %fV power %fW]\r\n", dev_WIREL_MCU.sensor_config_ch2.name, dev_WIREL_MCU.ch2_readings.res_CURRENT, dev_WIREL_MCU.ch2_readings.res_SOURCE_VOLTAGE, dev_WIREL_MCU.ch2_readings.res_POWER);
+        debugWriteLine(msg);
+        debugWriteLine("}\r\n\r\n\r\n");
+
+        ext_delay_func(500);
     }
 
 }

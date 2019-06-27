@@ -296,6 +296,8 @@ void test_calculate_SENSED_VOLTAGE (void){
     // Test negative voltage return value
     dev.ch1_readings.v_sense_voltage_reg = 0b1001011010000000;
     TEST_ASSERT_EQUAL_FLOAT(-1688.0f, calculate_SENSED_VOLTAGE_func(&dev.ch1_readings.v_sense_voltage_reg, &dev.sensor_config_ch1.current_sense_sampling_time_reg));
+    dev.ch1_readings.v_sense_voltage_reg = 0xEBC0;
+    TEST_ASSERT_EQUAL_FLOAT(-324.0f, calculate_SENSED_VOLTAGE_func(&dev.ch1_readings.v_sense_voltage_reg, &dev.sensor_config_ch1.current_sense_sampling_time_reg));
     // Test positive voltage return value
     dev.ch1_readings.v_sense_voltage_reg = 0b0110100110000000;
     TEST_ASSERT_EQUAL_FLOAT(1688.0f, calculate_SENSED_VOLTAGE_func(&dev.ch1_readings.v_sense_voltage_reg, &dev.sensor_config_ch1.current_sense_sampling_time_reg));
@@ -365,13 +367,13 @@ void test_twos_complement (void){
 void test_is_negative_value (void){
     uint16_t int_to_test = 0x7FFF;
     TEST_ASSERT_FALSE(is_negative_value_func(&int_to_test));
-    int_to_test = 0x8000;
+    int_to_test = 0x8089;
     TEST_ASSERT_TRUE(is_negative_value_func(&int_to_test));
 }
 
 void test_right_bit_shift(void) {
     uint16_t int_to_shift = 0x8000;
-    TEST_ASSERT_EQUAL_UINT16(0x01, right_bit_shift_func(&int_to_shift, 15));
+    TEST_ASSERT_EQUAL_UINT16(0x01, right_bit_shift_func(&int_to_shift, SHIFT_TO_SIGN_BIT));
 }
 
 void test_device_null_pointer_check(void) {

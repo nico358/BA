@@ -24,7 +24,7 @@ class StorageController:
         self.fileStorageAdapter.openFile(path='readings.txt')
         try:
             while True:
-                self.serialAdapter.writeToSerial('C')
+                # self.serialAdapter.writeToSerial('C')
                 self.fileStorageAdapter.writeToOpenFile(
                                                         self.serialAdapter.readFromSerialWithDelay(0.1)
                                                         )

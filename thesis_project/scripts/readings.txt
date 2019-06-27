@@ -1,144 +1,460 @@
-Config: 0b01010011 1248
-Current USB:		(0EE8) 72.95 mA
-Current MONITOR:	(00FB) 12.26 mA
-Current WIRELESS:	(01FA) 24.72 mA
-Current MCU:		(00AC) 8.40 mA
-Current FPGA VCCINT:	(0000) 0.00 mA
-Current FPGA VCCAUX:	(00D3) 10.31 mA
+{
 
-Config: 0b01010011 1248
-Current USB:		(0EE8) 72.95 mA
-Current MONITOR:	(00FD) 12.36 mA
-Current WIRELESS:	(01FA) 24.72 mA
-Current MCU:		(00AC) 8.40 mA
-Current FPGA VCCINT:	(0000) 0.00 mA
-Current FPGA VCCAUX:	(00D3) 10.31 mA
+[FPGA_VCCAUX_MON: current 0.005667A voltage 1.171875V power 0.006585W]
 
-Config: 0b01010011 1248
-Current USB:		(0EE8) 72.95 mA
-Current MONITOR:	(00FD) 12.36 mA
-Current WIRELESS:	(01F9) 24.67 mA
-Current MCU:		(00AC) 8.40 mA
-Current FPGA VCCINT:	(0000) 0.00 mA
-Current FPGA VCCAUX:	(00D3) 10.31 mA
+[WIRELESS_VCC: current 0.026820A voltage 3.320313V power 0.088904W]
 
-Config: 0b01010011 1248
-Current USB:		(0EE8) 72.95 mA
-Current MONITOR:	(00FD) 12.36 mA
-Current WIRELESS:	(01FA) 24.72 mA
-Current MCU:		(00AC) 8.40 mA
-Current FPGA VCCINT:	(0000) 0.00 mA
-Current FPGA VCCAUX:	(00D3) 10.31 mA
+[MCU_VCC: current 0.051881A voltage 3.320313V power 0.171954W]
 
-Config: 0b01010011 1248
-Current USB:		(0EE8) 72.95 mA
-Current MONITOR:	(00FD) 12.36 mA
-Current WIRELESS:	(01FA) 24.72 mA
-Current MCU:		(00AC) 8.40 mA
-Current FPGA VCCINT:	(0000) 0.00 mA
-Current FPGA VCCAUX:	(00D3) 10.31 mA
+}
 
-Config: 0b01010011 1248
-Current USB:		(0EE8) 72.95 mA
-Current MONITOR:	(00FD) 12.36 mA
-Current WIRELESS:	(01FA) 24.72 mA
-Current MCU:		(00AC) 8.40 mA
-Current FPGA VCCINT:	(0000) 0.00 mA
-Current FPGA VCCAUX:	(00D3) 10.31 mA
 
-Config: 0b01010011 1248
-Current USB:		(0EE8) 72.95 mA
-Current MONITOR:	(00FD) 12.36 mA
-Current WIRELESS:	(01F9) 24.67 mA
-Current MCU:		(00AC) 8.40 mA
-Current FPGA VCCINT:	(0000) 0.00 mA
-Current FPGA VCCAUX:	(00D3) 10.31 mA
 
-Config: 0b01010011 1248
-Current USB:		(0EE8) 72.95 mA
-Current MONITOR:	(00FD) 12.36 mA
-Current WIRELESS:	(01F9) 24.67 mA
-Current MCU:		(00AC) 8.40 mA
-Current FPGA VCCINT:	(0000) 0.00 mA
-Current FPGA VCCAUX:	(00D3) 10.31 mA
+{
 
-Config: 0b01010011 1248
-Current USB:		(0EE8) 72.95 mA
-Current MONITOR:	(00FD) 12.36 mA
-Current WIRELESS:	(01F9) 24.67 mA
-Current MCU:		(00AC) 8.40 mA
-Current FPGA VCCINT:	(0000) 0.00 mA
-Current FPGA VCCAUX:	(00D3) 10.31 mA
+[USB_VCC: current -0.112555A voltage 5.000000V power 0.561959W]
 
-Config: 0b01010011 1248
-Current USB:		(0EE8) 72.95 mA
-Current MONITOR:	(00FD) 12.36 mA
-Current WIRELESS:	(01F9) 24.67 mA
-Current MCU:		(00AC) 8.40 mA
-Current FPGA VCCINT:	(0000) 0.00 mA
-Current FPGA VCCAUX:	(00D3) 10.31 mA
+[MON_VCC: current 0.011773A voltage 3.320313V power 0.039025W]
 
-Config: 0b01010011 1248
-Current USB:		(0EE8) 72.95 mA
-Current MONITOR:	(00FD) 12.36 mA
-Current WIRELESS:	(01F9) 24.67 mA
-Current MCU:		(00AC) 8.40 mA
-Current FPGA VCCINT:	(0000) 0.00 mA
-Current FPGA VCCAUX:	(00D3) 10.31 mA
+[FPGA_VCCINT_MON: current 0.016170A voltage 3.320313V power 0.053598W]
 
-Config: 0b01010011 1248
-Current USB:		(0EE8) 72.95 mA
-Current MONITOR:	(00FD) 12.36 mA
-Current WIRELESS:	(01FA) 24.72 mA
-Current MCU:		(00AC) 8.40 mA
-Current FPGA VCCINT:	(0000) 0.00 mA
-Current FPGA VCCAUX:	(00D3) 10.31 mA
+[FPGA_VCCAUX_MON: current 0.005667A voltage 1.171875V power 0.006585W]
 
-Config: 0b01010011 1248
-Current USB:		(0EE8) 72.95 mA
-Current MONITOR:	(00FD) 12.36 mA
-Current WIRELESS:	(01F9) 24.67 mA
-Current MCU:		(00AC) 8.40 mA
-Current FPGA VCCINT:	(0000) 0.00 mA
-Current FPGA VCCAUX:	(00D3) 10.31 mA
+[WIRELESS_VCC: current 0.026820A voltage 3.320313V power 0.088904W]
 
-Config: 0b01010011 1248
-Current USB:		(0EE8) 72.95 mA
-Current MONITOR:	(00FD) 12.36 mA
-Current WIRELESS:	(01FA) 24.72 mA
-Current MCU:		(00AC) 8.40 mA
-Current FPGA VCCINT:	(0000) 0.00 mA
-Current FPGA VCCAUX:	(00D3) 10.31 mA
+[MCU_VCC: current 0.051881A voltage 3.320313V power 0.171954W]
 
-Config: 0b01010011 1248
-Current USB:		(0EE8) 72.95 mA
-Current MONITOR:	(00FD) 12.36 mA
-Current WIRELESS:	(01F9) 24.67 mA
-Current MCU:		(00AC) 8.40 mA
-Current FPGA VCCINT:	(0000) 0.00 mA
-Current FPGA VCCAUX:	(00D3) 10.31 mA
+}
 
-Config: 0b01010011 1248
-Current USB:		(0EE8) 72.95 mA
-Current MONITOR:	(00FD) 12.36 mA
-Current WIRELESS:	(01FA) 24.72 mA
-Current MCU:		(00AC) 8.40 mA
-Current FPGA VCCINT:	(0000) 0.00 mA
-Current FPGA VCCAUX:	(00D3) 10.31 mA
 
-Config: 0b01010011 1248
-Current USB:		(0EE8) 72.95 mA
-Current MONITOR:	(00FD) 12.36 mA
-Current WIRELESS:	(01FA) 24.72 mA
-Current MCU:		(00AC) 8.40 mA
-Current FPGA VCCINT:	(0000) 0.00 mA
-Current FPGA VCCAUX:	(00D3) 10.31 mA
 
-Config: 0b01010011 1248
-Current USB:		(0EE8) 72.95 mA
-Current MONITOR:	(00FD) 12.36 mA
-Current WIRELESS:	(01F9) 24.67 mA
-Current MCU:		(00AC) 8.40 mA
-Current FPGA VCCINT:	(0000) 0.00 mA
-Current FPGA VCCAUX:	(00D3) 10.31 mA
+{
+
+[USB_VCC: current -0.112555A voltage 5.000000V power 0.561959W]
+
+[MON_VCC: current 0.011724A voltage 3.320313V power 0.038842W]
+
+[FPGA_VCCINT_MON: current 0.016072A voltage 3.320313V power 0.053232W]
+
+[FPGA_VCCAUX_MON: current 0.005667A voltage 1.171875V power 0.006585W]
+
+[WIRELESS_VCC: current 0.026820A voltage 3.281250V power 0.087867W]
+
+[MCU_VCC: current 0.051832A voltage 3.320313V power 0.171832W]
+
+}
+
+
+
+{
+
+[USB_VCC: current -0.112555A voltage 5.000000V power 0.561959W]
+
+[MON_VCC: current 0.011724A voltage 3.320313V power 0.038842W]
+
+[FPGA_VCCINT_MON: current 0.016072A voltage 3.320313V power 0.053232W]
+
+[FPGA_VCCAUX_MON: current 0.005667A voltage 1.171875V power 0.006585W]
+
+[WIRELESS_VCC: current 0.026771A voltage 3.281250V power 0.087684W]
+
+[MCU_VCC: current 0.051832A voltage 3.320313V power 0.171832W]
+
+}
+
+
+
+{
+
+[USB_VCC: current -0.112555A voltage 5.000000V power 0.561959W]
+
+[MON_VCC: current 0.011724A voltage 3.320313V power 0.038842W]
+[FPGA_VCCINT_MON: current 0.016072A voltage 3.320313V power 0.053232W]
+
+[FPGA_VCCAUX_MON: current 0.005667A voltage 1.171875V power 0.006585W]
+
+[WIRELESS_VCC: current 0.026771A voltage 3.281250V power 0.087684W]
+
+[MCU_VCC: current 0.051881A voltage 3.320313V power 0.171954W]
+
+}
+
+
+
+{
+
+[USB_VCC: current -0.112294A voltage 5.000000V power 0.560658W]
+
+[MON_VCC: current 0.011724A voltage 3.320313V power 0.038842W]
+
+[FPGA_VCCINT_MON: current 0.016072A voltage 3.320313V power 0.053232W]
+
+[FPGA_VCCAUX_MON: current 0.005716A voltage 1.171875V power 0.006646W]
+
+[WIRELESS_VCC: current 0.026820A voltage 3.281250V power 0.087867W]
+
+[MCU_VCC: current 0.051832A voltage 3.320313V power 0.171832W]
+
+}
+
+
+
+{
+
+[USB_VCC: current -0.112555A voltage 5.000000V power 0.561959W]
+
+[MON_VCC: current 0.011724A voltage 3.320313V power 0.038842W]
+
+[FPGA_VCCINT_MON: current 0.016072A voltage 3.320313V power 0.053232W]
+
+[FPGA_VCCAUX_MON: current 0.005716A voltage 1.171875V power 0.006646W]
+
+[WIRELESS_VCC: current 0.026820A voltage 3.320313V power 0.088904W]
+
+[MCU_VCC: current 0.051832A voltage 3.320313V power 0.171832W]
+
+}
+
+
+
+{
+
+[USB_VCC: current -0.112555A voltage 5.000000V power 0.561959W]
+
+[MON_VCC: current 0.011724A voltage 3.320313V power 0.038842W]
+
+[FPGA_VCCINT_MON: current 0.016170A voltage 3.320313V power 0.053598W]
+
+[FPGA_VCCAUX_MON: current 0.005765A voltage 1.171875V power 0.006707W]
+
+[WIRELESS_VCC: current 0.026820A voltage 3.320313V power 0.088904W]
+
+[MCU_VCC: current 0.051832A voltage 3.320313V power 0.171832W]
+
+}
+
+
+
+{
+
+[USB_VCC: current -0.112555A voltage 4.960938V power 0.557406W]
+
+[MON_VCC: current 0.011724A voltage 3.320313V power 0.038842W]
+
+[FPGA_VCCINT_MON: current 0.016121A voltage 3.320313V power 0.053415W]
+
+[FPGA_VCCAUX_MON: current 0.005716A voltage 1.171875V power 0.006646W]
+
+[WIRELESS_VCC: current 0.026771A voltage 3.320313V power 0.088721W]
+
+[MCU_VCC: current 0.051881A voltage 3.320313V power 0.171954W]
+
+}
+
+
+
+{
+
+[USB_VCC: current -0.112555A voltage 4.960938V power 0.557406W]
+
+[MON_VCC: current 0.011724A voltage 3.320313V power 0.038842W]
+
+[FPGA_VCCINT_MON: current 0.016072A voltage 3.320313V power 0.053232W]
+
+[FPGA_VCCAUX_MON: current 0.005716A voltage 1.171875V power 0.006646W]
+
+[WIRELESS_VCC: current 0.026820A voltage 3.320313V power 0.088904W]
+
+[MCU_VCC: current 0.051881A voltage 3.320313V power 0.171954W]
+
+}
+
+
+
+{
+
+[USB_VCC: current -0.112555A voltage 5.000000V power 0.561959W]
+
+[MON_VCC: current 0.011724A voltage 3.320313V power 0.038842W]
+
+[FPGA_VCCINT_MON: current 0.016121A voltage 3.320313V power 0.053415W]
+
+[FPGA_VCCAUX_MON: current 0.005667A voltage 1.171875V power 0.006585W]
+
+[WIRELESS_VCC: current 0.026820A voltage 3.320313V power 0.088904W]
+
+[MCU_VCC: current 0.051832A voltage 3.320313V power 0.171832W]
+
+}
+
+
+
+{
+
+[USB_VCC: current -0.112294A voltage 4.960938V power 0.556105W]
+
+[MON_VCC: current 0.011773A voltage 3.320313V power 0.039025W]
+
+[FPGA_VCCINT_MON: current 0.016170A voltage 3.320313V power 0.053598W]
+
+[FPGA_VCCAUX_MON: current 0.005716A voltage 1.171875V power 0.006646W]
+
+[WIRELESS_VCC: current 0.026820A voltage 3.320313V power 0.088904W]
+
+[MCU_VCC: current 0.051832A voltage 3.320313V power 0.171832W]
+
+}
+
+
+
+{
+
+[USB_VCC: current -0.112294A voltage 4.960938V power 0.556105W]
+
+[MON_VCC: current 0.011724A voltage 3.320313V power 0.038842W]
+
+[FPGA_VCCINT_MON: current 0.016170A voltage 3.320313V power 0.053598W]
+
+[FPGA_VCCAUX_MON: current 0.005667A voltage 1.171875V power 0.006585W]
+
+[WIRELESS_VCC: current 0.026771A voltage 3.320313V power 0.088721W]
+
+[MCU_VCC: current 0.051832A voltage 3.320313V power 0.171832W]
+
+}
+
+
+
+{
+
+[USB_VCC: current -0.112294A voltage 4.960938V power 0.556105W]
+
+[MON_VCC: current 0.011773A voltage 3.320313V power 0.039025W]
+
+[FPGA_VCCINT_MON: current 0.016072A voltage 3.320313V power 0.053232W]
+
+[FPGA_VCCAUX_MON: current 0.005667A voltage 1.171875V power 0.006585W]
+
+[WIRELESS_VCC: current 0.026820A voltage 3.320313V power 0.088904W]
+
+[MCU_VCC: current 0.051881A voltage 3.320313V power 0.171954W]
+
+}
+
+
+
+{
+
+[USB_VCC: current -0.112555A voltage 4.960938V power 0.557406W]
+
+[MON_VCC: current 0.011724A voltage 3.320313V power 0.038842W]
+
+[FPGA_VCCINT_MON: current 0.016121A voltage 3.320313V power 0.053415W]
+
+[FPGA_VCCAUX_MON: current 0.005716A voltage 1.171875V power 0.006646W]
+
+[WIRELESS_VCC: current 0.026820A voltage 3.320313V power 0.088904W]
+
+[MCU_VCC: current 0.051832A voltage 3.320313V power 0.171832W]
+
+}
+
+
+
+{
+
+[USB_VCC: current -0.112555A voltage 4.960938V power 0.557406W]
+
+[MON_VCC: current 0.011773A voltage 3.281250V power 0.038537W]
+
+[FPGA_VCCINT_MON: current 0.016121A voltage 3.320313V power 0.053415W]
+
+[FPGA_VCCAUX_MON: current 0.005716A voltage 1.171875V power 0.006646W]
+
+[WIRELESS_VCC: current 0.026820A voltage 3.320313V power 0.088904W]
+
+[MCU_VCC: current 0.051881A voltage 3.320313V power 0.171954W]
+
+}
+
+
+
+{
+
+[USB_VCC: current -0.112815A voltage 4.960938V power 0.558707W]
+
+[MON_VCC: current 0.011724A voltage 3.320313V power 0.038842W]
+
+[FPGA_VCCINT_MON: current 0.016121A voltage 3.320313V power 0.053415W]
+
+[FPGA_VCCAUX_MON: current 0.005716A voltage 1.171875V power 0.006646W]
+
+[WIRELESS_VCC: current 0.026820A voltage 3.320313V power 0.088904W]
+
+[MCU_VCC: current 0.051832A voltage 3.320313V power 0.171832W]
+
+}
+
+
+
+{
+
+[USB_VCC: current -0.112555A voltage 4.960938V power 0.557406W]
+
+[MON_VCC: current 0.011773A voltage 3.281250V power 0.038537W]
+
+[FPGA_VCCINT_MON: current 0.016072A voltage 3.320313V power 0.053232W]
+
+[FPGA_VCCAUX_MON: current 0.005667A voltage 1.171875V power 0.006585W]
+
+[WIRELESS_VCC: current 0.026820A voltage 3.320313V power 0.088904W]
+
+[MCU_VCC: current 0.051832A voltage 3.320313V power 0.171832W]
+
+}
+
+
+
+{
+
+[USB_VCC: current -0.112294A voltage 4.960938V power 0.556105W]
+
+[MON_VCC: current 0.011724A voltage 3.281250V power 0.038415W]
+
+[FPGA_VCCINT_MON: current 0.016170A voltage 3.320313V power 0.053598W]
+
+[FPGA_VCCAUX_MON: current 0.005716A voltage 1.171875V power 0.006646W]
+
+[WIRELESS_VCC: current 0.026820A voltage 3.320313V power 0.088904W]
+
+[MCU_VCC: current 0.051832A voltage 3.320313V power 0.171832W]
+
+}
+
+
+
+{
+
+[USB_VCC: current -0.112555A voltage 4.960938V power 0.557406W]
+
+[MON_VCC: current 0.011724A voltage 3.281250V power 0.038415W]
+
+[FPGA_VCCINT_MON: current 0.016023A voltage 3.320313V power 0.053111W]
+
+[FPGA_VCCAUX_MON: current 0.005618A voltage 1.171875V power 0.006524W]
+
+[WIRELESS_VCC: current 0.026820A voltage 3.320313V power 0.088904W]
+
+[MCU_VCC: current 0.051832A voltage 3.320313V power 0.171832W]
+
+}
+
+
+
+{
+
+[USB_VCC: current -0.112555A voltage 4.960938V power 0.557406W]
+
+[MON_VCC: current 0.011724A voltage 3.320313V power 0.038842W]
+
+[FPGA_VCCINT_MON: current 0.016121A voltage 3.320313V power 0.053415W]
+
+[FPGA_VCCAUX_MON: current 0.005667A voltage 1.171875V power 0.006585W]
+
+[WIRELESS_VCC: current 0.026820A voltage 3.320313V power 0.088904W]
+
+[MCU_VCC: current 0.051832A voltage 3.320313V power 0.171832W]
+
+}
+
+
+
+{
+
+[USB_VCC: current -0.112555A voltage 4.960938V power 0.557406W]
+
+[MON_VCC: current 0.011724A voltage 3.320313V power 0.038842W]
+
+[FPGA_VCCINT_MON: current 0.016121A voltage 3.320313V power 0.053415W]
+
+[FPGA_VCCAUX_MON: current 0.005716A voltage 1.171875V power 0.006646W]
+
+[WIRELESS_VCC: current 0.026820A voltage 3.281250V power 0.087867W]
+
+[MCU_VCC: current 0.051832A voltage 3.320313V power 0.171832W]
+
+}
+
+
+
+{
+
+[USB_VCC: current -0.112555A voltage 4.960938V power 0.557406W]
+
+[MON_VCC: current 0.011724A voltage 3.320313V power 0.038842W]
+
+[FPGA_VCCINT_MON: current 0.016170A voltage 3.320313V power 0.053598W]
+
+[FPGA_VCCAUX_MON: current 0.005716A voltage 1.171875V power 0.006646W]
+
+[WIRELESS_VCC: current 0.026820A voltage 3.320313V power 0.088904W]
+
+[MCU_VCC: current 0.051832A voltage 3.320313V power 0.171832W]
+
+}
+
+
+
+{
+
+[USB_VCC: current -0.112555A voltage 4.960938V power 0.557406W]
+
+[MON_VCC: current 0.011724A voltage 3.320313V power 0.038842W]
+
+[FPGA_VCCINT_MON: current 0.016121A voltage 3.320313V power 0.053415W]
+
+[FPGA_VCCAUX_MON: current 0.005667A voltage 1.171875V power 0.006585W]
+
+[WIRELESS_VCC: current 0.026820A voltage 3.281250V power 0.087867W]
+
+[MCU_VCC: current 0.051881A voltage 3.320313V power 0.171954W]
+
+}
+
+
+
+{
+
+[USB_VCC: current -0.112555A voltage 4.960938V power 0.557406W]
+
+[MON_VCC: current 0.011773A voltage 3.281250V power 0.038537W]
+[FPGA_VCCINT_MON: current 0.016072A voltage 3.320313V power 0.053415W]
+
+[FPGA_VCCAUX_MON: current 0.005716A voltage 1.171875V power 0.006646W]
+
+[WIRELESS_VCC: current 0.026820A voltage 3.320313V power 0.088904W]
+
+[MCU_VCC: current 0.051832A voltage 3.320313V power 0.171832W]
+
+}
+
+
+
+{
+
+[USB_VCC: current -0.112555A voltage 4.960938V power 0.557406W]
+
+[MON_VCC: current 0.011773A voltage 3.281250V power 0.038537W]
+
+[FPGA_VCCINT_MON: current 0.016121A voltage 3.320313V power 0.053415W]
+
+[FPGA_VCCAUX_MON: current 0.005667A voltage 1.171875V power 0.006585W]
+
+[WIRELESS_VCC: current 0.026820A voltage 3.281250V power 0.087867W]
+
+[MCU_VCC: current 0.051832A voltage 3.320313V power 0.171832W]
+
+}
+
+
 

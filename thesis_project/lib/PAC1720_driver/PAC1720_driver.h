@@ -28,6 +28,8 @@ extern "C"
  */
 int8_t init_device_PAC1720(struct PAC1720_device *device_ptr);
 
+int8_t get_measurement_registers(struct PAC1720_device *device_ptr);
+
 /*!
  * @fn 
  * @brief 
