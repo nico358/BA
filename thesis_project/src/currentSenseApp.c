@@ -3,6 +3,9 @@
 #include <string.h>
 
 int8_t init_platform(void);
+void print_USB_MON(void);
+void print_FPGA_VCC(void);
+void print_WIREL_MCU(void);
 
 
 struct PAC1720_device                    dev_USB_MON;
@@ -59,11 +62,14 @@ int main(void)
         }
     }
 
-    char addr[16] = {0};
-    char msg[248];
+
+    char msg[256];
 
     for(;;){
-
+        debugWriteLine("HELLO\r\n");
+        print_USB_MON();
+        print_FPGA_VCC();
+        print_WIREL_MCU();
         ext_delay_func(1000);
     }
 
@@ -80,4 +86,126 @@ int8_t init_platform(void)
     res = adapter_init_PAC1720(&dev_FPGA_VCC, name_FPGA_VCC, name_CH1_FPGA_VCC, name_CH2_FPGA_VCC, &i2c_interface, ext_delay_func , addr_FPGA_VCC, resistance_CH1_FPGA_VCC, resistance_CH2_FPGA_VCC, channels_FPGA_VCC);
     if(res != PAC1720_OK) return res;
     return adapter_init_PAC1720(&dev_WIREL_MCU, name_WIREL_MCU, name_CH1_WIREL_MCU, name_CH2_WIREL_MCU, &i2c_interface, ext_delay_func, addr_WIREL_MCU, resistance_CH1_WIREL_MCU, resistance_CH2_WIREL_MCU, channels_WIREL_MCU);
+}
+
+void print_USB_MON(void){
+        char msg[512];
+        sprintf(msg, "Name: %s, addr: %x, channels: %x\r\n", dev_USB_MON.name,  dev_USB_MON.sensor_address,  dev_USB_MON.channels); 
+        debugWriteLine(msg);
+        sprintf(msg, "conf_reg: %x, conv_rate: %x, oneshot: %x,\r\n",  dev_USB_MON.configuration_reg,  dev_USB_MON.conversion_rate_reg,  dev_USB_MON.one_shot_reg); 
+        debugWriteLine(msg);
+        sprintf(msg, "mask: %x, high_l: %x, low_l: %x, source_sample: %x,\r\n", dev_USB_MON.channel_mask_reg,  dev_USB_MON.high_limit_status_reg,  dev_USB_MON.low_limit_status_reg,  dev_USB_MON.source_voltage_sampling_config_reg);
+        debugWriteLine(msg);
+        sprintf(msg, "sense_sample1: %x, sense_sample2: %x, id: %x, man: %x, rev: %x\r\n\r\n", dev_USB_MON.ch1_current_sense_sampling_config_reg,  dev_USB_MON.ch2_current_sense_sampling_config_reg, dev_USB_MON.sensor_product_id,  dev_USB_MON.sensor_manufact_id,  dev_USB_MON.sensor_revision);
+        debugWriteLine(msg);
+
+        sprintf(msg, "Conf1: %s, res: %f, curr_sampl: %x,\r\n", dev_USB_MON.sensor_config_ch1.name, dev_USB_MON.sensor_config_ch1.current_sense_resistor_value, dev_USB_MON.sensor_config_ch1.current_sense_sampling_time_reg);
+        debugWriteLine(msg);
+        sprintf(msg, "curr_avrg: %x, FSR: %x, FSC: %f\r\n", dev_USB_MON.sensor_config_ch1.current_sense_sampling_average_reg, dev_USB_MON.sensor_config_ch1.current_sense_FSR_reg, dev_USB_MON.sensor_config_ch1.current_sense_FSC);
+        debugWriteLine(msg);
+        sprintf(msg, "src_sampl: %x, src_avrg: %x, FSV: %f\r\n", dev_USB_MON.sensor_config_ch1.source_voltage_sampling_time_reg, dev_USB_MON.sensor_config_ch1.source_voltage_sampling_average_reg, dev_USB_MON.sensor_config_ch1.source_voltage_FSV);
+        debugWriteLine(msg);
+        sprintf(msg, "FSP: %f, curr_lim: %x, srcvlt_lim: %x\r\n\r\n", dev_USB_MON.sensor_config_ch1.power_sense_FSP, dev_USB_MON.sensor_config_ch1.current_sense_limit_reg, dev_USB_MON.sensor_config_ch1.source_voltage_limit_reg);
+        debugWriteLine(msg);
+
+        sprintf(msg, "Conf2: %s, res: %f, curr_sampl: %x,\r\n\r\n", dev_USB_MON.sensor_config_ch2.name, dev_USB_MON.sensor_config_ch2.current_sense_resistor_value, dev_USB_MON.sensor_config_ch2.current_sense_sampling_time_reg);
+        debugWriteLine(msg);
+        sprintf(msg, "curr_avrg: %x, FSR: %x, FSC: %f\r\n", dev_USB_MON.sensor_config_ch2.current_sense_sampling_average_reg, dev_USB_MON.sensor_config_ch2.current_sense_FSR_reg, dev_USB_MON.sensor_config_ch2.current_sense_FSC);
+        debugWriteLine(msg);
+        sprintf(msg, "src_sampl: %x, src_avrg: %x, FSV: %f\r\n", dev_USB_MON.sensor_config_ch2.source_voltage_sampling_time_reg, dev_USB_MON.sensor_config_ch2.source_voltage_sampling_average_reg, dev_USB_MON.sensor_config_ch2.source_voltage_FSV);
+        debugWriteLine(msg);
+        sprintf(msg, "FSP: %f, curr_lim: %x, srcvlt_lim: %x\r\n\r\n", dev_USB_MON.sensor_config_ch2.power_sense_FSP, dev_USB_MON.sensor_config_ch2.current_sense_limit_reg, dev_USB_MON.sensor_config_ch2.source_voltage_limit_reg);
+        debugWriteLine(msg);
+
+        sprintf(msg, "CH1 sensevolt: %x, srcvolt: %x, pwrratio: %x\r\n", dev_USB_MON.ch1_readings.v_sense_voltage_reg, dev_USB_MON.ch1_readings.v_source_voltage_reg, dev_USB_MON.ch1_readings.power_ratio_reg);
+        debugWriteLine(msg);
+        sprintf(msg, "current: %f, voltage: %f, power: %f, sensevoltage: %f\r\n\r\n", dev_USB_MON.ch1_readings.res_CURRENT, dev_USB_MON.ch1_readings.res_SOURCE_VOLTAGE, dev_USB_MON.ch1_readings.res_POWER, dev_USB_MON.ch1_readings.res_SENSE_VOLTAGE);
+        debugWriteLine(msg);
+
+        sprintf(msg, "CH2 sensevolt: %x, srcvolt: %x, pwrratio: %x\r\n", dev_USB_MON.ch2_readings.v_sense_voltage_reg, dev_USB_MON.ch2_readings.v_source_voltage_reg, dev_USB_MON.ch2_readings.power_ratio_reg);
+        debugWriteLine(msg);
+        sprintf(msg, "current: %f, voltage: %f, power: %f, sensevoltage: %f\r\n\r\n\r\n\r\n", dev_USB_MON.ch2_readings.res_CURRENT, dev_USB_MON.ch2_readings.res_SOURCE_VOLTAGE, dev_USB_MON.ch2_readings.res_POWER, dev_USB_MON.ch2_readings.res_SENSE_VOLTAGE);
+        debugWriteLine(msg);
+}
+
+void print_FPGA_VCC(void)
+{
+        char msg[512];
+        sprintf(msg, "Name: %s, addr: %x, channels: %x\r\n", dev_FPGA_VCC.name,  dev_FPGA_VCC.sensor_address,  dev_FPGA_VCC.channels); 
+        debugWriteLine(msg);
+        sprintf(msg, "conf_reg: %x, conv_rate: %x, oneshot: %x,\r\n",  dev_FPGA_VCC.configuration_reg,  dev_FPGA_VCC.conversion_rate_reg,  dev_FPGA_VCC.one_shot_reg); 
+        debugWriteLine(msg);
+        sprintf(msg, "mask: %x, high_l: %x, low_l: %x, source_sample: %x,\r\n", dev_FPGA_VCC.channel_mask_reg,  dev_FPGA_VCC.high_limit_status_reg,  dev_FPGA_VCC.low_limit_status_reg,  dev_FPGA_VCC.source_voltage_sampling_config_reg);
+        debugWriteLine(msg);
+        sprintf(msg, "sense_sample1: %x, sense_sample2: %x, id: %x, man: %x, rev: %x\r\n\r\n", dev_FPGA_VCC.ch1_current_sense_sampling_config_reg,  dev_FPGA_VCC.ch2_current_sense_sampling_config_reg, dev_FPGA_VCC.sensor_product_id,  dev_FPGA_VCC.sensor_manufact_id,  dev_FPGA_VCC.sensor_revision);
+        debugWriteLine(msg);
+
+        sprintf(msg, "Conf1: %s, res: %f, curr_sampl: %x,\r\n", dev_FPGA_VCC.sensor_config_ch1.name, dev_FPGA_VCC.sensor_config_ch1.current_sense_resistor_value, dev_FPGA_VCC.sensor_config_ch1.current_sense_sampling_time_reg);
+        debugWriteLine(msg);
+        sprintf(msg, "curr_avrg: %x, FSR: %x, FSC: %f\r\n", dev_FPGA_VCC.sensor_config_ch1.current_sense_sampling_average_reg, dev_FPGA_VCC.sensor_config_ch1.current_sense_FSR_reg, dev_FPGA_VCC.sensor_config_ch1.current_sense_FSC);
+        debugWriteLine(msg);
+        sprintf(msg, "src_sampl: %x, src_avrg: %x, FSV: %f\r\n", dev_FPGA_VCC.sensor_config_ch1.source_voltage_sampling_time_reg, dev_FPGA_VCC.sensor_config_ch1.source_voltage_sampling_average_reg, dev_FPGA_VCC.sensor_config_ch1.source_voltage_FSV);
+        debugWriteLine(msg);
+        sprintf(msg, "FSP: %f, curr_lim: %x, srcvlt_lim: %x\r\n\r\n", dev_FPGA_VCC.sensor_config_ch1.power_sense_FSP, dev_FPGA_VCC.sensor_config_ch1.current_sense_limit_reg, dev_FPGA_VCC.sensor_config_ch1.source_voltage_limit_reg);
+        debugWriteLine(msg);
+
+        sprintf(msg, "Conf2: %s, res: %f, curr_sampl: %x,\r\n\r\n", dev_FPGA_VCC.sensor_config_ch2.name, dev_FPGA_VCC.sensor_config_ch2.current_sense_resistor_value, dev_FPGA_VCC.sensor_config_ch2.current_sense_sampling_time_reg);
+        debugWriteLine(msg);
+        sprintf(msg, "curr_avrg: %x, FSR: %x, FSC: %f\r\n", dev_FPGA_VCC.sensor_config_ch2.current_sense_sampling_average_reg, dev_FPGA_VCC.sensor_config_ch2.current_sense_FSR_reg, dev_FPGA_VCC.sensor_config_ch2.current_sense_FSC);
+        debugWriteLine(msg);
+        sprintf(msg, "src_sampl: %x, src_avrg: %x, FSV: %f\r\n", dev_FPGA_VCC.sensor_config_ch2.source_voltage_sampling_time_reg, dev_FPGA_VCC.sensor_config_ch2.source_voltage_sampling_average_reg, dev_FPGA_VCC.sensor_config_ch2.source_voltage_FSV);
+        debugWriteLine(msg);
+        sprintf(msg, "FSP: %f, curr_lim: %x, srcvlt_lim: %x\r\n\r\n", dev_FPGA_VCC.sensor_config_ch2.power_sense_FSP, dev_FPGA_VCC.sensor_config_ch2.current_sense_limit_reg, dev_FPGA_VCC.sensor_config_ch2.source_voltage_limit_reg);
+        debugWriteLine(msg);
+
+        sprintf(msg, "CH1 sensevolt: %x, srcvolt: %x, pwrratio: %x\r\n", dev_FPGA_VCC.ch1_readings.v_sense_voltage_reg, dev_FPGA_VCC.ch1_readings.v_source_voltage_reg, dev_FPGA_VCC.ch1_readings.power_ratio_reg);
+        debugWriteLine(msg);
+        sprintf(msg, "current: %f, voltage: %f, power: %f, sensevoltage: %f\r\n\r\n", dev_FPGA_VCC.ch1_readings.res_CURRENT, dev_FPGA_VCC.ch1_readings.res_SOURCE_VOLTAGE, dev_FPGA_VCC.ch1_readings.res_POWER, dev_FPGA_VCC.ch1_readings.res_SENSE_VOLTAGE);
+        debugWriteLine(msg);
+
+        sprintf(msg, "CH2 sensevolt: %x, srcvolt: %x, pwrratio: %x\r\n", dev_FPGA_VCC.ch2_readings.v_sense_voltage_reg, dev_FPGA_VCC.ch2_readings.v_source_voltage_reg, dev_FPGA_VCC.ch2_readings.power_ratio_reg);
+        debugWriteLine(msg);
+        sprintf(msg, "current: %f, voltage: %f, power: %f, sensevoltage: %f\r\n\r\n\r\n\r\n", dev_FPGA_VCC.ch2_readings.res_CURRENT, dev_FPGA_VCC.ch2_readings.res_SOURCE_VOLTAGE, dev_FPGA_VCC.ch2_readings.res_POWER, dev_FPGA_VCC.ch2_readings.res_SENSE_VOLTAGE);
+        debugWriteLine(msg);
+}
+
+void print_WIREL_MCU(void)
+{
+        char msg[512];
+        sprintf(msg, "Name: %s, addr: %x, channels: %x\r\n", dev_WIREL_MCU.name,  dev_WIREL_MCU.sensor_address,  dev_WIREL_MCU.channels); 
+        debugWriteLine(msg);
+        sprintf(msg, "conf_reg: %x, conv_rate: %x, oneshot: %x,\r\n",  dev_WIREL_MCU.configuration_reg,  dev_WIREL_MCU.conversion_rate_reg,  dev_WIREL_MCU.one_shot_reg); 
+        debugWriteLine(msg);
+        sprintf(msg, "mask: %x, high_l: %x, low_l: %x, source_sample: %x,\r\n", dev_WIREL_MCU.channel_mask_reg,  dev_WIREL_MCU.high_limit_status_reg,  dev_WIREL_MCU.low_limit_status_reg,  dev_WIREL_MCU.source_voltage_sampling_config_reg);
+        debugWriteLine(msg);
+        sprintf(msg, "sense_sample1: %x, sense_sample2: %x, id: %x, man: %x, rev: %x\r\n\r\n", dev_WIREL_MCU.ch1_current_sense_sampling_config_reg,  dev_WIREL_MCU.ch2_current_sense_sampling_config_reg, dev_WIREL_MCU.sensor_product_id,  dev_WIREL_MCU.sensor_manufact_id,  dev_WIREL_MCU.sensor_revision);
+        debugWriteLine(msg);
+
+        sprintf(msg, "Conf1: %s, res: %f, curr_sampl: %x,\r\n", dev_WIREL_MCU.sensor_config_ch1.name, dev_WIREL_MCU.sensor_config_ch1.current_sense_resistor_value, dev_WIREL_MCU.sensor_config_ch1.current_sense_sampling_time_reg);
+        debugWriteLine(msg);
+        sprintf(msg, "curr_avrg: %x, FSR: %x, FSC: %f\r\n", dev_WIREL_MCU.sensor_config_ch1.current_sense_sampling_average_reg, dev_WIREL_MCU.sensor_config_ch1.current_sense_FSR_reg, dev_WIREL_MCU.sensor_config_ch1.current_sense_FSC);
+        debugWriteLine(msg);
+        sprintf(msg, "src_sampl: %x, src_avrg: %x, FSV: %f\r\n", dev_WIREL_MCU.sensor_config_ch1.source_voltage_sampling_time_reg, dev_WIREL_MCU.sensor_config_ch1.source_voltage_sampling_average_reg, dev_WIREL_MCU.sensor_config_ch1.source_voltage_FSV);
+        debugWriteLine(msg);
+        sprintf(msg, "FSP: %f, curr_lim: %x, srcvlt_lim: %x\r\n\r\n", dev_WIREL_MCU.sensor_config_ch1.power_sense_FSP, dev_WIREL_MCU.sensor_config_ch1.current_sense_limit_reg, dev_WIREL_MCU.sensor_config_ch1.source_voltage_limit_reg);
+        debugWriteLine(msg);
+
+        sprintf(msg, "Conf2: %s, res: %f, curr_sampl: %x,\r\n\r\n", dev_WIREL_MCU.sensor_config_ch2.name, dev_WIREL_MCU.sensor_config_ch2.current_sense_resistor_value, dev_WIREL_MCU.sensor_config_ch2.current_sense_sampling_time_reg);
+        debugWriteLine(msg);
+        sprintf(msg, "curr_avrg: %x, FSR: %x, FSC: %f\r\n", dev_WIREL_MCU.sensor_config_ch2.current_sense_sampling_average_reg, dev_WIREL_MCU.sensor_config_ch2.current_sense_FSR_reg, dev_WIREL_MCU.sensor_config_ch2.current_sense_FSC);
+        debugWriteLine(msg);
+        sprintf(msg, "src_sampl: %x, src_avrg: %x, FSV: %f\r\n", dev_WIREL_MCU.sensor_config_ch2.source_voltage_sampling_time_reg, dev_WIREL_MCU.sensor_config_ch2.source_voltage_sampling_average_reg, dev_WIREL_MCU.sensor_config_ch2.source_voltage_FSV);
+        debugWriteLine(msg);
+        sprintf(msg, "FSP: %f, curr_lim: %x, srcvlt_lim: %x\r\n\r\n", dev_WIREL_MCU.sensor_config_ch2.power_sense_FSP, dev_WIREL_MCU.sensor_config_ch2.current_sense_limit_reg, dev_WIREL_MCU.sensor_config_ch2.source_voltage_limit_reg);
+        debugWriteLine(msg);
+
+        sprintf(msg, "CH1 sensevolt: %x, srcvolt: %x, pwrratio: %x\r\n", dev_WIREL_MCU.ch1_readings.v_sense_voltage_reg, dev_WIREL_MCU.ch1_readings.v_source_voltage_reg, dev_WIREL_MCU.ch1_readings.power_ratio_reg);
+        debugWriteLine(msg);
+        sprintf(msg, "current: %f, voltage: %f, power: %f, sensevoltage: %f\r\n\r\n", dev_WIREL_MCU.ch1_readings.res_CURRENT, dev_WIREL_MCU.ch1_readings.res_SOURCE_VOLTAGE, dev_WIREL_MCU.ch1_readings.res_POWER, dev_WIREL_MCU.ch1_readings.res_SENSE_VOLTAGE);
+        debugWriteLine(msg);
+
+        sprintf(msg, "CH2 sensevolt: %x, srcvolt: %x, pwrratio: %x\r\n", dev_WIREL_MCU.ch2_readings.v_sense_voltage_reg, dev_WIREL_MCU.ch2_readings.v_source_voltage_reg, dev_WIREL_MCU.ch2_readings.power_ratio_reg);
+        debugWriteLine(msg);
+        sprintf(msg, "current: %f, voltage: %f, power: %f, sensevoltage: %f\r\n\r\n\r\n\r\n", dev_WIREL_MCU.ch2_readings.res_CURRENT, dev_WIREL_MCU.ch2_readings.res_SOURCE_VOLTAGE, dev_WIREL_MCU.ch2_readings.res_POWER, dev_WIREL_MCU.ch2_readings.res_SENSE_VOLTAGE);
+        debugWriteLine(msg);
 }

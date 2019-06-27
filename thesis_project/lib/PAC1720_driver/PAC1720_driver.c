@@ -292,11 +292,15 @@ int8_t init_device_PAC1720(struct PAC1720_device *device_ptr)
         /* Temporary array representation of device registers */
         uint8_t register_field[32] = {0};
         /* Read all registers */
-        res = read_registers(device_ptr, configuration_register_address, register_field, SENSOR_REGISTERS_NUMBER);
+        res = read_registers(device_ptr, configuration_register_address, register_field, GLOBAL_CONFIG_REGISTERS_LENGTH);
+        if(res != PAC1720_OK) return res;
+        res = read_registers(device_ptr, v_source_sampling_configuration_register_address, &register_field[VSOURCE_SAMPLING_REGISTER_OFFSET], CONFIG_READINGS_LIMITS_REGISTERS_LENGTH);
+        if(res != PAC1720_OK) return res;
+        res = read_registers(device_ptr, product_id_register_address, &register_field[SENSOR_INFO_REGISTER_OFFSET], SENSOR_INFO_REGISTER_LENGHT);
         if(res == PAC1720_OK){
             /* Assign local register representation */
             assign_config_register_values(device_ptr, register_field);
-            assign_reading_register_values(device_ptr, &register_field[READING_REGISTER_OFFSET]);
+            assign_reading_register_values(device_ptr, &register_field[READING_REGISTERS_OFFSET]);
             /* Cut up sample configuration registers on to channel configurations */
             cut_up_sampling_registers(device_ptr);
             /* Cut up limit registers and set conversion complete bit */
@@ -312,6 +316,11 @@ int8_t init_device_PAC1720(struct PAC1720_device *device_ptr)
     }
     return res;
 }
+
+// int8_t get_measurements(struct PAC1720_device *device_ptr)
+// {
+
+// }
 
 int8_t calculate_all_measurements(struct PAC1720_device *device_ptr)
 {

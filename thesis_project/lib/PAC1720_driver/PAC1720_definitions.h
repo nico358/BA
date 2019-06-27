@@ -103,7 +103,18 @@ static const int8_t 	PAC1720_ADDRESS_ERROR 										= -2;
 typedef enum 			{FIRST_CHANNEL=1, SECOND_CHANNEL=2, BOTH_CHANNELS=3} 		ACTIVE_CHANNELS;
 static const uint8_t 	SENSOR_ADDRESS_NUMBER 										= 16;
 static const uint8_t 	SENSOR_REGISTERS_NUMBER 									= 32;
-static const uint8_t 	READING_REGISTER_OFFSET 									= 9;
+
+static const uint8_t	GLOBAL_CONFIG_REGISTERS_LENGTH								= 6;
+static const uint8_t	VSOURCE_SAMPLING_REGISTER_OFFSET							= 6;
+static const uint8_t	CH1_VSENSE_SAMPLING_REGISTER_OFFSET							= 7;
+static const uint8_t	CH2_VSENSE_SAMPLING_REGISTER_OFFSET							= 8;
+static const uint8_t 	READING_REGISTERS_OFFSET 									= 9;
+static const uint8_t 	READING_REGISTERS_LENGTH 									= 12;
+static const uint8_t	LIMIT_REGISTERS_OFFSET										= 21;
+static const uint8_t	LIMIT_REGISTERS_LENGTH										= 8;
+static const uint8_t	CONFIG_READINGS_LIMITS_REGISTERS_LENGTH						= 23;
+static const uint8_t	SENSOR_INFO_REGISTER_OFFSET									= 29;
+static const uint8_t	SENSOR_INFO_REGISTER_LENGHT									= 3;
 
 static const uint8_t 	BITMASK_MSB_CURRENT_SAMPLE									= 0x70;
 static const uint8_t 	BITMASK_FIRST_TWO											= 0xC0;

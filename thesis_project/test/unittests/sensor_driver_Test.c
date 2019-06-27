@@ -177,7 +177,7 @@ void test_assign_reading_register_values(void){
         test_reg_field[i] = i;
     }
     // Verify assignment function
-    assign_reading_register_values_func(&dev, &test_reg_field[READING_REGISTER_OFFSET]);
+    assign_reading_register_values_func(&dev, &test_reg_field[READING_REGISTERS_OFFSET]);
 
     uint16_t dummy_curr_vlt1 = (test_reg_field[9] << SHIFT_IN_BYTES_OFFSET) | test_reg_field[10];
     TEST_ASSERT_EQUAL(dummy_curr_vlt1, dev.ch1_readings.v_sense_voltage_reg);     
