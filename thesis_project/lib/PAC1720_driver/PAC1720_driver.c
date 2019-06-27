@@ -51,6 +51,19 @@ int8_t set_all_FSx_coefficients(struct PAC1720_device *device_ptr);
  */
 int8_t set_channel_FSx_coefficients(struct PAC1720_channel_config *config_ptr);
 
+
+/*!
+ * @brief
+ *
+ * 
+ * @note ..
+ * @param[in] config	: 
+ *
+ * @return 
+ * @retval 1 value -> OK/ 0 value -> Error
+ */
+void cut_up_limit_registers(struct PAC1720_device *device_ptr);
+
 /*!
  * @brief
  *
@@ -286,11 +299,15 @@ int8_t init_device_PAC1720(struct PAC1720_device *device_ptr)
             assign_reading_register_values(device_ptr, &register_field[READING_REGISTER_OFFSET]);
             /* Cut up sample configuration registers on to channel configurations */
             cut_up_sampling_registers(device_ptr);
+            /* Cut up limit registers and set conversion complete bit */
+            cut_up_limit_registers(device_ptr);
             /* Do calculate and set FULL SCALE values. NEED TO BE DONE AT LEAST ONCE after config changes */
             res = set_all_FSx_coefficients(device_ptr);
             if(res != PAC1720_OK) return res;
-            // /* Do calculation of measurements */
-            res = calculate_all_measurements(device_ptr);
+            if(device_ptr->conversion_cycle_complete){
+                // /* Do calculation of measurements */
+                res = calculate_all_measurements(device_ptr);
+            }
         }
     }
     return res;
@@ -354,6 +371,13 @@ int8_t set_channel_FSx_coefficients(struct PAC1720_channel_config *config_ptr)
     if(res != PAC1720_OK) return res;
     res = calculate_FSP(config_ptr);
     return res;
+}
+
+void cut_up_limit_registers(struct PAC1720_device *device_ptr)
+{
+    device_ptr->conversion_cycle_complete = (bool) (device_ptr->high_limit_status_reg & BITMASK_CONVERSION_CMPL); 
+
+    /* TODO limit bit eval */
 }
 
 void cut_up_sampling_registers(struct PAC1720_device *device_ptr)
@@ -428,7 +452,7 @@ int8_t write_registers(const struct PAC1720_device *device_ptr, uint8_t reg_addr
 
 int8_t calculate_BUS_CURRENT(const struct PAC1720_channel_config *channel_conf, struct PAC1720_channel_readings *channel_readings)
 {   
-    if(channel_readings->reading_done && channel_conf->current_sense_FSC != 0){
+    if(channel_conf->current_sense_FSC != 0){
 
         float FSC = channel_conf->current_sense_FSC;
         float Vsense= calculate_SENSED_VOLTAGE(&channel_readings->v_sense_voltage_reg, &channel_conf->current_sense_sampling_time_reg);
@@ -445,7 +469,7 @@ int8_t calculate_BUS_CURRENT(const struct PAC1720_channel_config *channel_conf, 
 
 int8_t calculate_BUS_VOLTAGE(const struct PAC1720_channel_config *channel_conf, struct PAC1720_channel_readings *channel_readings)
 {
-    if(channel_readings->reading_done && channel_conf->source_voltage_FSV != 0){
+    if(channel_conf->source_voltage_FSV != 0){
 
         float FSV = channel_conf->source_voltage_FSV;
         float Vsource = calculate_SOURCE_VOLTAGE(&channel_readings->v_source_voltage_reg, &channel_conf->source_voltage_sampling_time_reg);
@@ -461,7 +485,7 @@ int8_t calculate_BUS_VOLTAGE(const struct PAC1720_channel_config *channel_conf, 
 
 int8_t calculate_BUS_POWER(const struct PAC1720_channel_config *channel_conf, struct PAC1720_channel_readings *channel_readings)
 {
-    if(channel_readings->reading_done && channel_conf->power_sense_FSP != 0){
+    if(channel_conf->power_sense_FSP != 0){
         
         float FSP = channel_conf->power_sense_FSP;
         float Pratio = (float) channel_readings->power_ratio_reg;
@@ -586,7 +610,8 @@ const void* get_TEST_DRIVER_FPTR_FIELD(void)
                                                  (void*) &assign_config_register_values,
                                                  (void*) &assign_reading_register_values,
                                                  (void*) &combine_bytes,
-                                                 (void*) &cut_up_sampling_registers
+                                                 (void*) &cut_up_sampling_registers,
+                                                 (void*) &cut_up_limit_registers
                                             };
 
     return &test_fptr_field;

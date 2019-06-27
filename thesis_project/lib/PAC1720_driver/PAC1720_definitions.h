@@ -110,6 +110,7 @@ static const uint8_t 	BITMASK_FIRST_TWO											= 0xC0;
 static const uint8_t 	BITMASK_SECOND_TWO											= 0x30;
 static const uint8_t    BITMASK_THIRD_TWO											= 0x0C;
 static const uint8_t    BITMASK_FOURTH_TWO 											= 0x03;
+static const uint8_t 	BITMASK_CONVERSION_CMPL										= 0x80;
 
 static const uint8_t 	SHIFT_IN_BYTES_OFFSET 										= 8;
 static const uint8_t 	SHIFT_SIX_BITS												= 6;
@@ -138,8 +139,6 @@ typedef void (*delay_fptr) (uint32_t period);
  */
 struct	PAC1720_channel_readings 
 {
-	/*! Reading done flag */
-	bool 		reading_done;
 	/*! Sensor status byte */
 	uint8_t 	status;
 
@@ -231,6 +230,8 @@ struct	PAC1720_device
 	/*! Vsense sampling config settings, 
 	*	contains different registers for ch2 */
 	uint8_t ch2_current_sense_sampling_config_reg;
+	/*! Conversion done flag */
+	bool 	conversion_cycle_complete;
 
 	/* Sensor product id */
 	uint8_t sensor_product_id;

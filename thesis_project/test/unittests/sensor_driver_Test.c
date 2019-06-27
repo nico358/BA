@@ -25,7 +25,8 @@ typedef int8_t      (*write_registers)                  (const struct PAC1720_de
 typedef void        (*assign_config_register_values)    (struct PAC1720_device *device_ptr, uint8_t register_field[32]);
 typedef void        (*assign_reading_register_values)   (struct PAC1720_device *device_ptr, uint8_t register_field[12]);
 typedef uint16_t    (*combine_bytes)                    (uint8_t lsb, uint8_t msb);
-typedef void (*cut_up_sampling_registers) (struct PAC1720_device *device_ptr);
+typedef void        (*cut_up_sampling_registers)        (struct PAC1720_device *device_ptr);
+typedef void        (*cut_up_limit_registers)           (struct PAC1720_device *device_ptr);
 
 /** Declare function instances */
 calculate_BUS_CURRENT                   calculate_BUS_CURRENT_func;
@@ -45,7 +46,8 @@ write_registers                         write_registers_func;
 assign_config_register_values           assign_config_register_values_func;
 assign_reading_register_values          assign_reading_register_values_func;
 combine_bytes                           combine_bytes_func;
-cut_up_sampling_registers               cut_up_sampling_registers_func;               
+cut_up_sampling_registers               cut_up_sampling_registers_func;    
+cut_up_limit_registers                  cut_up_limit_registers_func;           
 
 /* Unity stuff */
 void setUp(void) {
@@ -69,8 +71,8 @@ void setUp(void) {
     assign_config_register_values_func  = (assign_config_register_values)       test_fptr_field[14];
     assign_reading_register_values_func = (assign_reading_register_values)      test_fptr_field[15];
     combine_bytes_func                  = (combine_bytes)                       test_fptr_field[16];
-    cut_up_sampling_registers_func      = (cut_up_sampling_registers)          test_fptr_field[17];
-
+    cut_up_sampling_registers_func      = (cut_up_sampling_registers)           test_fptr_field[17];
+    cut_up_limit_registers_func         = (cut_up_limit_registers)              test_fptr_field[18];
 }
 
 void tearDown(void) {}
@@ -88,6 +90,19 @@ int8_t spy_i2c_write_read(uint8_t address, uint8_t reg_address, uint8_t *data, u
     data++;
     *data = len;
     return PAC1720_OK;
+}
+void test_cut_up_limit_registers(void){
+    // Declare test- device struct
+    static struct PAC1720_device dev;
+    // Setup dummy values
+    uint8_t high_lim_dummy_fail = 0b00000000;
+    dev.high_limit_status_reg = high_lim_dummy_fail;
+    cut_up_limit_registers_func(&dev);
+    TEST_ASSERT_FALSE(dev.conversion_cycle_complete);
+    uint8_t high_lim_dummy_success = 0b10000000;
+    dev.high_limit_status_reg = high_lim_dummy_success;
+    cut_up_limit_registers_func(&dev);
+    TEST_ASSERT_TRUE(dev.conversion_cycle_complete);
 }
 
 void test_cut_up_sampling_registers(void){
@@ -240,9 +255,6 @@ void test_calculate_BUS_CURRENT (void){
     // Setup input values
     dev.ch1_readings.v_sense_voltage_reg = 0b0110100110000000;
     dev.sensor_config_ch1.current_sense_sampling_time_reg = 0x05;
-    // Test reading done flag is false
-    TEST_ASSERT_EQUAL(PAC1720_FAILURE, calculate_BUS_CURRENT_func(&dev.sensor_config_ch1, &dev.ch1_readings));
-    dev.ch1_readings.reading_done = true;
     // Test FSC not set
     TEST_ASSERT_EQUAL(PAC1720_FAILURE, calculate_BUS_CURRENT_func(&dev.sensor_config_ch1, &dev.ch1_readings));
     dev.sensor_config_ch1.current_sense_FSC = 2.0f;
@@ -260,9 +272,6 @@ void test_calculate_BUS_VOLTAGE(void){
     dev.ch1_readings.v_source_voltage_reg = 0b1001100110000000;
     dev.sensor_config_ch1.source_voltage_sampling_time_reg = 0x02;
     dev.sensor_config_ch1.source_voltage_FSV = 39.96f;
-    // Test reading flag not set
-    TEST_ASSERT_EQUAL(PAC1720_FAILURE, calculate_BUS_VOLTAGE_func(&dev.sensor_config_ch1, &dev.ch1_readings));
-    dev.ch1_readings.reading_done = true;
     TEST_ASSERT_EQUAL(PAC1720_OK, calculate_BUS_VOLTAGE_func(&dev.sensor_config_ch1, &dev.ch1_readings));
     TEST_ASSERT_EQUAL_FLOAT(23.9838123f, dev.ch1_readings.res_SOURCE_VOLTAGE);
 }
@@ -270,9 +279,6 @@ void test_calculate_BUS_VOLTAGE(void){
 void test_calculate_BUS_POWER(void){
     // Declare test- device struct
     static struct PAC1720_device dev;
-    // Test reading done flag not set
-    TEST_ASSERT_EQUAL(PAC1720_FAILURE, calculate_BUS_POWER_func(&dev.sensor_config_ch1, &dev.ch1_readings));
-    dev.ch1_readings.reading_done = true;
     // Test FSP = 0
     TEST_ASSERT_EQUAL(PAC1720_FAILURE, calculate_BUS_POWER_func(&dev.sensor_config_ch1, &dev.ch1_readings));
     // Setup input values

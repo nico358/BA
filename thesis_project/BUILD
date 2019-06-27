@@ -263,6 +263,21 @@ default_embedded_binary(
 	],
 )
 
+default_embedded_binary(
+	name = "FindSensorsApp",
+	srcs = [
+		"src/findSensorsApp.c",
+    ],
+
+	copts = commonCopts + LUFA_COPTS,
+
+	linkopts = commonCopts + LUFA_COPTS + ["-Wl,-u,vfprintf -lprintf_flt -lm"],
+
+	deps = [
+        ":IncludeLib",
+	],
+)
+
 cc_binary(
 	name = "calc",
 	srcs = ["src/calc.c"],
