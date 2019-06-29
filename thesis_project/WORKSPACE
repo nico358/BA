@@ -1,5 +1,5 @@
 workspace(
-    name = "BazelTemplate",
+    name = "ThesisProject",
 )
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
@@ -41,4 +41,10 @@ http_archive(
     build_file = "@AvrToolchain//:BUILD.LUFA",
     strip_prefix = "lufa-LUFA-170418",
     urls = ["http://fourwalledcubicle.com/files/LUFA/LUFA-170418.zip"],
+)
+
+### Load mock repository ###
+local_repository(
+    name = "ExtMockLib",
+    path = "test/mocks",
 )

@@ -1,1 +1,0 @@
-ruby cmock.rb --mock_path="../../../projects/frick/thesis_project/mocks/" ../../../projects/frick/thesis_project/lib/circular_buffer/circular_buffer.h

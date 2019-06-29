@@ -6,13 +6,18 @@
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/lib/**",
                 "${workspaceFolder}/lib/softSerial**",
+                "${workspaceFolder}/test/mocks/**",
                 "C:\\Users\\Nicolas Frick\\.platformio\\packages\\toolchain-atmelavr\\avr\\",
-                "C:\\Users\\Nicolas Frick\\.platformio\\packages\\toolchain-atmelavr\\avr\\include\\avr"
+                "C:\\Users\\Nicolas Frick\\.platformio\\packages\\toolchain-atmelavr\\avr\\include\\avr",
+                "${workspaceFolder}/test/mocks",
+                "${workspaceFolder}/lib/CMock-master/vendor/c_exception/lib"
             ],
             "defines": [
                 "_DEBUG",
                 "UNICODE",
-                "_UNICODE"
+                "_UNICODE",
+                "__AVR_ATmega32U4__",
+                "F_CPU=8000000UL"
             ],
             "compilerPath": "/usr/bin/avr-g++",
             "cStandard": "c11",
@@ -23,12 +28,13 @@
                     "${workspaceFolder}/**",
                     "${workspaceFolder}/lib/**",
                     "${workspaceFolder}/lib/softSerial**",
+                    "${workspaceFolder}/test/mocks/**",
                     "C:\\Users\\Nicolas Frick\\.platformio\\packages\\toolchain-atmelavr\\avr\\",
                     "C:\\Users\\Nicolas Frick\\.platformio\\packages\\toolchain-atmelavr\\avr\\include\\avr"
                 ],
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": ""
-            }   
+            }
         }
     ],
     "version": 4
