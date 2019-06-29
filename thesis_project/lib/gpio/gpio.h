@@ -4,7 +4,7 @@
 #include <inttypes.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include <../debug/debug.h>
+#include <debug.h>
 
 #define MONITOR_DDR DDRE
 #define MONITOR_PORT PORTE
