@@ -21,29 +21,18 @@
 			"path": "C:\\Users\\Nicolas Frick\\OneDrive\\Documents\\Eigene Dateien\\Uni\\SoSe19\\BA\\repos\\elasticnodemonitor"
 		},
 		{
+			"path": "C:\\Users\\thesis\\wsl\\motherboardtest"
+		},
+		{
 			"name": "communicationmodule",
 			"path": "C:\\Users\\thesis\\wsl\\communicationmodule"
 		},
 		{
-			"name": "EmbeddedSystemsBuildScripts",
-			"path": "C:\\Users\\thesis\\wsl\\bazel-es-buildscripts\\EmbeddedSystemsBuildScripts"
-		},
-		{
-			"name": "bazel_es",
-			"path": "C:\\Users\\thesis\\wsl\\bazel_es"
-		},
-		{
+			"name": "embedded-systems-build-scripts",
 			"path": "C:\\Users\\thesis\\wsl\\embedded-systems-build-scripts"
 		},
 		{
-			"path": "C:\\Users\\thesis\\wsl\\bazel-es-buildscripts\\bazel_es-build-scripts"
-		},
-		{
-			"name": "bazel-test-example",
-			"path": "C:\\Users\\thesis\\wsl\\bazel-test-example\\bazel-test-example"
-		},
-		{
-			"path": "C:\\Users\\thesis\\wsl\\avr"
+			"path": "C:\\Users\\thesis\\wsl\\bazel_es"
 		}
 	],
 	"settings": {
@@ -72,23 +61,7 @@
 			"circular_buffer.h": "c",
 			"interrupt.h": "c",
 			"sensor_controller.h": "c",
-			"sensor_adapter.h": "c",
-			"twi.h": "c",
-			"pac1720_adapter.h": "c",
-			"pac1720_driver.h": "c",
-			"pac1720_definitions.h": "c",
-			"mocki2cmaster.h": "c",
-			"fuse.h": "c",
-			"lock.h": "c",
-			"sfr_defs.h": "c",
-			"iom32u6.h": "c",
-			"delay_basic.h": "c",
-			"user_delay.h": "c",
-			"adapter_pac1720.h": "c",
-			"mockcircular_buffer.h": "c",
-			"stdlib.h": "c",
-			"stddef.h": "c",
-			"stdint.h": "c"
+			"subfolder.h": "c"
 		},
 		"files.exclude": {
 			"**/.classpath": true,
