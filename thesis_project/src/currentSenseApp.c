@@ -3,9 +3,11 @@
 #include <string.h>
 
 int8_t init_platform(void);
+void print_error(uint8_t res);
 void print_USB_MON(void);
-void print_FPGA_VCC(void);
+void print_FPGA_VCC(void); 
 void print_WIREL_MCU(void);
+void print_measurements(void);
 
 
 struct PAC1720_device                    dev_USB_MON;
@@ -49,48 +51,45 @@ struct BUS_INTERFACE_I2C i2c_interface = {
 
 user_delay_fptr ext_delay_func = &user_delay_ms;
 
+
 int main(void)
 {
     int8_t res = init_platform();
 
-    if(res != PAC1720_OK){
-        for(;;){
+    if(res != PAC1720_OK) print_error(res);
+
+
+    char msg[64];
+    uint8_t state = 1;
+
+    while(state){
+
+        debugReadChar();
+        if(debugReadCharAvailable())
+        {
+            uint8_t data = debugGetChar();
+            switch(data)
+            {
+                case 'C': 
+                    state = 2;
+                    break;
+
+                case 'q':
+                    state = 0;
+                    break;
+                default: 
+                    state = 1;
+            }
+        }
+
+        if(state == 2)
+        {
+            print_measurements();
             ext_delay_func(500);
-            char msg[64];
-            sprintf(msg, "Failure while initializing: %d\r\n", res);
-            debugWriteLine(msg);
         }
     }
-
-
-    char msg[256];
-
-    for(;;){
-
-        get_measurements(&dev_USB_MON);
-        get_measurements(&dev_FPGA_VCC);
-        get_measurements(&dev_WIREL_MCU);
-
-        debugWriteLine("{\r\n");
-        sprintf(msg, "[%s: current %fA voltage %fV power %fW]\r\n", dev_USB_MON.sensor_config_ch1.name, dev_USB_MON.ch1_readings.res_CURRENT, dev_USB_MON.ch1_readings.res_SOURCE_VOLTAGE, dev_USB_MON.ch1_readings.res_POWER);
-        debugWriteLine(msg);
-        sprintf(msg, "[%s: current %fA voltage %fV power %fW]\r\n", dev_USB_MON.sensor_config_ch2.name, dev_USB_MON.ch2_readings.res_CURRENT, dev_USB_MON.ch2_readings.res_SOURCE_VOLTAGE, dev_USB_MON.ch2_readings.res_POWER);
-        debugWriteLine(msg);
-
-        sprintf(msg, "[%s: current %fA voltage %fV power %fW]\r\n", dev_FPGA_VCC.sensor_config_ch1.name, dev_FPGA_VCC.ch1_readings.res_CURRENT, dev_FPGA_VCC.ch1_readings.res_SOURCE_VOLTAGE, dev_FPGA_VCC.ch1_readings.res_POWER);
-        debugWriteLine(msg);
-        sprintf(msg, "[%s: current %fA voltage %fV power %fW]\r\n", dev_FPGA_VCC.sensor_config_ch2.name, dev_FPGA_VCC.ch2_readings.res_CURRENT, dev_FPGA_VCC.ch2_readings.res_SOURCE_VOLTAGE, dev_FPGA_VCC.ch2_readings.res_POWER);
-        debugWriteLine(msg);
-
-        sprintf(msg, "[%s: current %fA voltage %fV power %fW]\r\n", dev_WIREL_MCU.sensor_config_ch1.name, dev_WIREL_MCU.ch1_readings.res_CURRENT, dev_WIREL_MCU.ch1_readings.res_SOURCE_VOLTAGE, dev_WIREL_MCU.ch1_readings.res_POWER);
-        debugWriteLine(msg);
-        sprintf(msg, "[%s: current %fA voltage %fV power %fW]\r\n", dev_WIREL_MCU.sensor_config_ch2.name, dev_WIREL_MCU.ch2_readings.res_CURRENT, dev_WIREL_MCU.ch2_readings.res_SOURCE_VOLTAGE, dev_WIREL_MCU.ch2_readings.res_POWER);
-        debugWriteLine(msg);
-        debugWriteLine("}\r\n\r\n\r\n");
-
-        ext_delay_func(500);
-    }
-
+    
+    return 0;
 }
 
 int8_t init_platform(void)
@@ -104,6 +103,31 @@ int8_t init_platform(void)
     res = adapter_init_PAC1720(&dev_FPGA_VCC, name_FPGA_VCC, name_CH1_FPGA_VCC, name_CH2_FPGA_VCC, &i2c_interface, ext_delay_func , addr_FPGA_VCC, resistance_CH1_FPGA_VCC, resistance_CH2_FPGA_VCC, channels_FPGA_VCC);
     if(res != PAC1720_OK) return res;
     return adapter_init_PAC1720(&dev_WIREL_MCU, name_WIREL_MCU, name_CH1_WIREL_MCU, name_CH2_WIREL_MCU, &i2c_interface, ext_delay_func, addr_WIREL_MCU, resistance_CH1_WIREL_MCU, resistance_CH2_WIREL_MCU, channels_WIREL_MCU);
+}
+
+void print_measurements(void)
+{
+    char msg[256];
+    get_measurements(&dev_USB_MON);
+    get_measurements(&dev_FPGA_VCC);
+    get_measurements(&dev_WIREL_MCU);
+
+    debugWriteLine("{\r\n");
+    sprintf(msg, "[%s: current %fA voltage %fV power %fW]\r\n", dev_USB_MON.sensor_config_ch1.name, dev_USB_MON.ch1_readings.res_CURRENT, dev_USB_MON.ch1_readings.res_SOURCE_VOLTAGE, dev_USB_MON.ch1_readings.res_POWER);
+    debugWriteLine(msg);
+    sprintf(msg, "[%s: current %fA voltage %fV power %fW]\r\n", dev_USB_MON.sensor_config_ch2.name, dev_USB_MON.ch2_readings.res_CURRENT, dev_USB_MON.ch2_readings.res_SOURCE_VOLTAGE, dev_USB_MON.ch2_readings.res_POWER);
+    debugWriteLine(msg);
+
+    sprintf(msg, "[%s: current %fA voltage %fV power %fW]\r\n", dev_FPGA_VCC.sensor_config_ch1.name, dev_FPGA_VCC.ch1_readings.res_CURRENT, dev_FPGA_VCC.ch1_readings.res_SOURCE_VOLTAGE, dev_FPGA_VCC.ch1_readings.res_POWER);
+    debugWriteLine(msg);
+    sprintf(msg, "[%s: current %fA voltage %fV power %fW]\r\n", dev_FPGA_VCC.sensor_config_ch2.name, dev_FPGA_VCC.ch2_readings.res_CURRENT, dev_FPGA_VCC.ch2_readings.res_SOURCE_VOLTAGE, dev_FPGA_VCC.ch2_readings.res_POWER);
+    debugWriteLine(msg);
+
+    sprintf(msg, "[%s: current %fA voltage %fV power %fW]\r\n", dev_WIREL_MCU.sensor_config_ch1.name, dev_WIREL_MCU.ch1_readings.res_CURRENT, dev_WIREL_MCU.ch1_readings.res_SOURCE_VOLTAGE, dev_WIREL_MCU.ch1_readings.res_POWER);
+    debugWriteLine(msg);
+    sprintf(msg, "[%s: current %fA voltage %fV power %fW]\r\n", dev_WIREL_MCU.sensor_config_ch2.name, dev_WIREL_MCU.ch2_readings.res_CURRENT, dev_WIREL_MCU.ch2_readings.res_SOURCE_VOLTAGE, dev_WIREL_MCU.ch2_readings.res_POWER);
+    debugWriteLine(msg);
+    debugWriteLine("}\r\n\r\n\r\n");
 }
 
 void print_USB_MON(void){
@@ -226,4 +250,14 @@ void print_WIREL_MCU(void)
         debugWriteLine(msg);
         sprintf(msg, "current: %f, voltage: %f, power: %f, sensevoltage: %f\r\n\r\n\r\n\r\n", dev_WIREL_MCU.ch2_readings.res_CURRENT, dev_WIREL_MCU.ch2_readings.res_SOURCE_VOLTAGE, dev_WIREL_MCU.ch2_readings.res_POWER, dev_WIREL_MCU.ch2_readings.res_SENSE_VOLTAGE);
         debugWriteLine(msg);
+}
+
+void print_error(uint8_t res){
+    for (;;)
+    {
+        char msg[64];
+        sprintf(msg, "Failure while initializing: %d\r\n", res);
+        debugWriteLine(msg);
+        ext_delay_func(500);
+    }
 }
