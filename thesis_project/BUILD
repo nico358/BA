@@ -151,7 +151,8 @@ cc_library(
 
 	copts = commonCopts,
 
-	deps = [],
+	deps = [
+	],
 
 	visibility = [
 		"//test:__pkg__",
@@ -162,19 +163,34 @@ cc_library(
 
 cc_library(
     name = "IncludeLib",
-	srcs = ["src/adapter_PAC1720.c"],
-    hdrs = [
-        "include/currentSenseApp.h",
-		"include/adapter_PAC1720.h",
-    ],
+    hdrs = ["include/currentSenseApp.h"],
 
     copts = commonCopts,
 
     deps = [
         ":CircularBufferLib",
-        ":PAC1720DriverLib",
-        ":I2cLib",
 		":DelayLib",
+		":AdapterLib",
+		":I2cLib",
+		":DebugLib",
+    ],
+
+	visibility = [
+		"//test:__pkg__",
+		"//test:__subpackages__",
+		"@CMock//CMock:__pkg__",
+	],
+)
+
+cc_library(
+    name = "AdapterLib",
+	srcs = ["src/adapter_PAC1720/adapter_PAC1720.c"],
+    hdrs = ["src/adapter_PAC1720/adapter_PAC1720.h"],
+
+    copts = commonCopts,
+
+    deps = [
+        ":PAC1720DriverLib",
     ],
 
 	visibility = [
@@ -237,7 +253,6 @@ default_embedded_binary(
 	name = "CurrentSenseApp",
 	srcs = [
 		"src/currentSenseApp.c",
-		"src/adapter_PAC1720.c",
     ],
 
 	copts = commonCopts + LUFA_COPTS,
@@ -245,8 +260,27 @@ default_embedded_binary(
 	linkopts = commonCopts + LUFA_COPTS + ["-Wl,-u,vfprintf -lprintf_flt -lm"],
 
 	deps = [
-		":DebugLib",
-        ":PAC1720DriverLib",
         ":IncludeLib",
 	],
+)
+
+default_embedded_binary(
+	name = "FindSensorsApp",
+	srcs = [
+		"src/findSensorsApp.c",
+    ],
+
+	copts = commonCopts + LUFA_COPTS,
+
+	linkopts = commonCopts + LUFA_COPTS + ["-Wl,-u,vfprintf -lprintf_flt -lm"],
+
+	deps = [
+        ":IncludeLib",
+	],
+)
+
+cc_binary(
+	name = "calc",
+	srcs = ["src/calc.c"],
+	deps = [":PAC1720DriverLib"],
 )

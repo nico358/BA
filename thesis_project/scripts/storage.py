@@ -23,13 +23,15 @@ class StorageController:
         self.serialAdapter.openSerial()
         self.fileStorageAdapter.openFile(path='readings.txt')
         try:
+
             while True:
                 self.serialAdapter.writeToSerial('C')
                 self.fileStorageAdapter.writeToOpenFile(
                                                         self.serialAdapter.readFromSerialWithDelay(0.1)
                                                         )
-                self.serialAdapter.serialSleep(1)
+                # self.serialAdapter.serialSleep(0.5)
         except KeyboardInterrupt:
+            self.serialAdapter.writeToSerial('p')
             print("Keyboard interrupt in controller")
         finally:
             self.serialAdapter.closeSerial()

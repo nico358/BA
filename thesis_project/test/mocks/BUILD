@@ -1,5 +1,8 @@
 cc_library(
     name = "ExtMockLib",
+    srcs = [
+        "lib/i2cmaster/twimaster.c",
+    ],
     hdrs = [
         "compat/twi.h",
         "util/twi.h",
@@ -16,10 +19,12 @@ cc_library(
         "avr/interrupt.h", 
         "inttypes.h",
         "math.h",
+        "lib/i2cmaster/i2cmaster.h",
 
     ],
     visibility = ["//visibility:public"],
     deps = [
         "@CMock",
+        "@CException",
     ],
 )

@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <setjmp.h>
 #include "cmock.h"
-#include "lib/i2cmaster/Mocki2cmaster.h"
+#include "i2cmaster/Mocki2cmaster.h"
 
 static const char* CMockString_data = "data";
 static const char* CMockString_i2c_disable = "i2c_disable";

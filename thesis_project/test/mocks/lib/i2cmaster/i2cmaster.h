@@ -79,6 +79,7 @@
 
 */
 
+#include <stdbool.h>
 
 /**@{*/
 
@@ -86,7 +87,7 @@
 #error "This library requires AVR-GCC 3.4 or later, update to newer AVR-GCC compiler !"
 #endif
 
-#include <avr/io.h>
+// #include <avr/io.h>
 
 /** defines the data direction (reading from I2C device) in i2c_start(),i2c_rep_start() */
 #define I2C_READ    1
@@ -180,6 +181,30 @@ void i2c_readAck_nonblocking(void);
 void i2c_readNak_nonblocking(void);
 void i2c_stop_nonblocking(void);
 uint8_t i2c_getData(void);
+
+
+
+struct RETURN_VALUES_I2C
+{
+    bool ret_init;
+    bool ret_enable;
+    bool ret_disable;
+    bool ret_status;
+    uint8_t ret_start;
+    bool ret_start_nonblocking;
+    uint8_t ret_start_wait;
+    uint8_t ret_rep_start;
+    bool ret_stop;
+    bool ret_stop_nonblocking;
+    uint8_t ret_write;
+    uint8_t ret_write_nonblocking;
+    bool ret_readAck_nonblocking;
+    bool ret_readNak_nonblocking;
+
+};
+
+extern struct RETURN_VALUES_I2C RETURN_VALUES_I2C;
+
 
 /**@}*/
 #endif

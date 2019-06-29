@@ -7,21 +7,12 @@ load(
 )
 
 mock(
-    name = "I2CMock",
-    srcs = ["//:lib/i2cmaster/i2cmaster.h"],
-    deps = ["//:I2cLib"],
-)
-
-mock(
-    name = "DelayMock",
-    srcs = ["//:lib/delay/user_delay.h"],
-    deps = ["//:DelayLib"],
-)
-
-mock(
-    name = "CircBufMock",
-    srcs = ["//:lib/circular_buffer/circular_buffer.h"],
-    deps = ["//:CircularBufferLib"],
+    name = "DriverMock",
+    srcs = [
+        "//:lib/PAC1720_driver/PAC1720_driver.h", 
+        "//:lib/PAC1720_driver/PAC1720_definitions.h",
+    ],
+    deps = ["//:PAC1720DriverLib"],
 )
 
 unity_test(
@@ -35,11 +26,7 @@ unity_test(
 unity_test(
     file_name = "sensor_adapter_Test.c",
     deps = [
-        ":I2CMock",
-        ":DelayMock",
-        ":CircBufMock",
-        "//:IncludeLib",
+        "//:AdapterLib",
         "@CException",
-        "@CMock",
     ],
 )

@@ -1,5 +1,5 @@
 #include "circular_buffer.h"
-// #include "lib/debug/debug.h"
+#include "lib/debug/debug.h"
 
 
 void circBufInit(circularBuffer *c, uint16_t size)
@@ -8,7 +8,7 @@ void circBufInit(circularBuffer *c, uint16_t size)
     c->buffer = (uint8_t *) malloc(size);
     if (!c->buffer)
     {
-        // debugWriteString("Could not allocate buffer of size ");
+        debugWriteString("Could not allocate buffer of size ");
         // debugWriteDec16(size);
         // debugNewLine();
     }
