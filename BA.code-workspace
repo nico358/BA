@@ -61,7 +61,8 @@
 			"circular_buffer.h": "c",
 			"interrupt.h": "c",
 			"sensor_controller.h": "c",
-			"subfolder.h": "c"
+			"subfolder.h": "c",
+			"pac1720_driver.h": "c"
 		},
 		"files.exclude": {
 			"**/.classpath": true,

@@ -9,10 +9,11 @@
 
 #pragma once
 
-/** Header includes */
+/** Header includes */ 
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 /*! @name PAC1720 device constants*/
 /** PAC1720 addresses */
@@ -24,15 +25,44 @@ static const uint8_t PAC1720_addresses[16] = {
 
 /** PAC1720 general configuration register constants */
 static const uint8_t 	configuration_register_address 								= 0x00;
+static const uint8_t 	conf_reg_bit_C1VDS 											= 0x00; 
+static const uint8_t 	conf_reg_bit_C1IDS 											= 0x01; 
+static const uint8_t 	conf_reg_bit_TOUT  											= 0x02; 
+static const uint8_t 	conf_reg_bit_C2VDS 											= 0x03;
+static const uint8_t 	conf_reg_bit_C2IDS 											= 0x04;
+static const uint8_t 	conf_reg_bit_MSKAL 											= 0x05;
+static const uint8_t 	conf_reg_bit_CDEN  											= 0x06;
 /** PAC1720 conversion rate register constants */
 static const uint8_t 	conversion_rate_register_address 							= 0x01;
 /** PAC1720 one-shot register constants */
 static const uint8_t 	one_shot_register_address 									= 0x02;
+static const uint8_t 	one_shot_reg_bit_OS0 										= 0x00; 
+static const uint8_t 	one_shot_reg_bit_OS1 										= 0x01;
+static const uint8_t 	one_shot_reg_bit_OS2 										= 0x02;
+static const uint8_t 	one_shot_reg_bit_OS3 										= 0x03;
+static const uint8_t 	one_shot_reg_bit_OS4 										= 0x04;
+static const uint8_t 	one_shot_reg_bit_OS5 										= 0x05;
+static const uint8_t 	one_shot_reg_bit_OS6 										= 0x06;
+static const uint8_t 	one_shot_reg_bit_OS7 										= 0x07;
 /** PAC1720 channel mask register constants */
 static const uint8_t 	channel_mask_register_address 								= 0x03;
-/** PAC1720 limit status register constants */
+static const uint8_t 	channel_mask_reg_bit_C1VSR  								= 0x00; 
+static const uint8_t 	channel_mask_reg_bit_C1VS   								= 0x01;
+static const uint8_t 	channel_mask_reg_bit_C2VSR  								= 0x02;
+static const uint8_t 	channel_mask_reg_bit_C2VS   								= 0x03;
+/** PAC1720 high limit status register constants */
 static const uint8_t 	high_limit_status_register_address 							= 0x04;
+static const uint8_t 	high_limit_status_reg_bit_C1VRH    							= 0x00; 
+static const uint8_t 	high_limit_status_reg_bit_C1VSH    							= 0x01;
+static const uint8_t 	high_limit_status_reg_bit_C2VRH    							= 0x02;
+static const uint8_t 	high_limit_status_reg_bit_C2VSH    							= 0x03;
+static const uint8_t 	high_limit_status_reg_bit_CVDN     							= 0x07;
+/** PAC1720 low limit status register constants */
 static const uint8_t 	low_limit_status_register_address 							= 0x05;
+static const uint8_t 	low_limit_status_reg_bit_C1VRL     							= 0x00; 
+static const uint8_t 	low_limit_status_reg_bit_C1VSL     							= 0x01;
+static const uint8_t 	low_limit_status_reg_bit_C2VRL     							= 0x02;
+static const uint8_t 	low_limit_status_reg_bit_C2VSL     							= 0x03;
 /** PAC1720 sampling configuration register constants */
 static const uint8_t 	v_source_sampling_configuration_register_address 			= 0x0A;
 static const uint8_t 	ch1_v_sense_sampling_configuration_register_address 		= 0x0B;
@@ -67,6 +97,14 @@ static const uint8_t 	product_id_register_address                  				= 0xFD;
 static const uint8_t 	manufacturer_id_register_address             				= 0xFE;
 static const uint8_t 	revision_register_address                    				= 0xFF;
 
+/* Configuration setting constants */
+enum CONVERSION_RATE 				{CONVERSION_1HZ, CONVERSION_2HZ, CONVERSION_4HZ, CONVERSION_CONTINIOUS};
+enum SOURCE_VOLTAGE_SAMPLING_TIME 	{VSRC_SAMPLE_TIME_2ms5, VSRC_SAMPLE_TIME_5ms, VSRC_SAMPLE_TIME_10ms, VSRC_SAMPLE_TIME_20ms};
+enum SAMPLE_AVERAGING 				{SAMPLE_AVERAGING_DISABLED, SAMPLE_AVERAGES_2, SAMPLE_AVERAGES_4, SAMPLE_AVERAGES_8};
+enum CURRENT_SENSE_SAMPLING_TIME 	{CURRENT_SAMPLE_TIME_2ms5, CURRENT_SAMPLE_TIME_5ms, CURRENT_SAMPLE_TIME_10ms, CURRENT_SAMPLE_TIME_20ms, 
+									 CURRENT_SAMPLE_TIME_40ms, CURRENT_SAMPLE_TIME_80ms, CURRENT_SAMPLE_TIME_160ms, CURRENT_SAMPLE_TIME_320ms};
+enum CURRENT_SENSE_RANGE 			{CURRENT_SENSE_RANGE_10mV, CURRENT_SENSE_RANGE_20mV, CURRENT_SENSE_RANGE_40mV, CURRENT_SENSE_RANGE_80mV};
+
 /** Calculation specific constants */
 /** Possible Full Scale Range values in current sensing, 
  *  determined by 'current_sense_FSR_reg' */
@@ -99,6 +137,8 @@ static const float 		DENOMINATOR_correction_source_voltage 						= 1.0f;
 static const int8_t 	PAC1720_OK 													= 0;
 static const int8_t 	PAC1720_FAILURE 											= -1;
 static const int8_t 	PAC1720_ADDRESS_ERROR 										= -2;
+static const int8_t 	PAC1720_NULLPTR_ERROR										= -3;
+static const int8_t 	PAC1720_INIT_ERROR											= -4;
 
 typedef enum 			{FIRST_CHANNEL=1, SECOND_CHANNEL=2, BOTH_CHANNELS=3} 		ACTIVE_CHANNELS;
 static const uint8_t 	SENSOR_ADDRESS_NUMBER 										= 16;
@@ -146,127 +186,207 @@ typedef void (*delay_fptr) (uint32_t period);
 
 /* Structure definitions */
 /*!
- * @brief Sensor readings data struct. 
+ * @brief  
  */
-struct	PAC1720_channel_readings 
+/* Internal config values */
+struct 	PAC1720_internal;
+struct  PAC1720_ch_internal;
+struct 	PAC1720_meas_internal;
+
+/*! The channels status flags and calculated measurements */
+struct 	PAC1720_CH_measurements 
 {
-	/*! Sensor status byte */
-	uint8_t 	status;
+	bool 						conversion_done;
+	bool 						source_voltage_high_limit;
+	bool 						source_voltage_low_limit;
+	bool 						sense_voltage_high_limit;
+	bool 						sense_voltage_low_limit;
 
-	/*! The sensed voltage across sense resistor */
-	uint16_t 	v_sense_voltage_reg; 
-	/*! The sensed voltage on input pin */
-	uint16_t 	v_source_voltage_reg; 
-	/*! The sensor determined power ratio */
-	uint16_t 	power_ratio_reg; 
+	float 						SOURCE_VOLTAGE;
+	float 						SENSE_VOLTAGE;
+	float 						CURRENT;
+	float 						POWER;
 
-	/*! The calculated measurements */
-	float 		res_SENSE_VOLTAGE;
-	float 		res_SOURCE_VOLTAGE;
-	float 		res_CURRENT;
-	float 		res_POWER;
+	struct PAC1720_meas_internal * meas_internal;
 };
 
-/*!
- * @brief PAC1720 channel configuration struct
- */
-struct	PAC1720_channel_config 
+/* Channel specific configuration */
+struct 	PAC1720_CH_config
 {
-	/*! Optional naming of channel */
-	char 		*name;
-
-	/*! Sense resistor value, set by device init */
-	float 		current_sense_resistor_value;
-
-	/*! Current sensing sampling time settings, 
-	*   contained in 'chX_current_sense_sampling_config_reg' */
-	uint8_t 	current_sense_sampling_time_reg;
-	/*! Current-sensing averaging settings, 
-	*   contained in 'chX_current_sense_sampling_config_reg' */
-	uint8_t 	current_sense_sampling_average_reg;
-	/*! Full Scale Range (FSR): current sensing range,  
-	*   contained in 'chX_current_sense_sampling_config_reg' */
-	uint8_t 	current_sense_FSR_reg;
-	/*! Full Scale Current (FSC), calculated */
-	float 		current_sense_FSC;
-
-	/*! Vsource sampling time settings, 
-	*   contained in 'source_voltage_sampling_config_reg' */
-	uint8_t 	source_voltage_sampling_time_reg;
-	/*! Vsource averaging settings, 
-	*   contained in 'source_voltage_sampling_config_reg' */
-	uint8_t 	source_voltage_sampling_average_reg;
-	/*! Full Scale Voltage (FSV), calculated */
-	float 		source_voltage_FSV;
-
-	/*! Full Scale Power (FSP), calculated */
-	float 		power_sense_FSP;
-
+	/*! Optional name  */
+	char *						 CH_name_opt;
+	/*! Sense resistor value */
+	float 						 CH_current_sense_resistor_value;
+	/*! Current sensing sampling time settings  */
+	uint8_t 					 CH_current_sense_sampling_time_reg;
+	/*! Current sensing averaging settings */
+	uint8_t 					 CH_current_sense_sampling_average_reg;
+	/*! Full Scale Range (FSR): current sensing range */
+	uint8_t 					 CH_current_sense_FSR_reg;
 	/* Sense voltage limit register */
-	uint16_t 	current_sense_limit_reg;
+	uint16_t 					 CH_current_sense_limit_reg;
+	/*! Source voltage sampling time settings */
+	uint8_t 					 CH_source_voltage_sampling_time_reg;
+	/*! Source voltage averaging settings */
+	uint8_t 					 CH_source_voltage_sampling_average_reg;
 	/* Source voltage limit register */
-	uint16_t 	source_voltage_limit_reg;
+	uint16_t 					 CH_source_voltage_limit_reg;
+	/* Mask register */
+	uint8_t 					 CH_mask_reg;
+
+	struct PAC1720_ch_internal * ch_internal;
 };
 
-/*!
- * @brief PAC1720 device struct.
- */
-struct	PAC1720_device 
-{	
-	/*! Optional naming of device */
-	char 	*name;
+/*! The struct holding the device setup and measurements */
+struct 	PAC1720_device
+{
+	/*! Optional name for device */
+	char *							DEV_name_opt;
 	/*! Sensor slave address */
-	uint8_t sensor_address;
+	uint8_t 						DEV_sensor_address;
 	/*! Sensor channels in use */
-	ACTIVE_CHANNELS channels;
+	ACTIVE_CHANNELS 				DEV_channels;
 	/* Configuration register */
-	uint8_t configuration_reg;
+	uint8_t 						DEV_configuration_reg;
 	/*! Updating measurements interval */
-	uint8_t conversion_rate_reg;
+	uint8_t 						DEV_conversion_rate_reg;
 	/* One shot register */
-	uint8_t one_shot_reg;
-	/* Channel mask register */
-	uint8_t channel_mask_reg;
-	/* High limit status register */
-	uint8_t high_limit_status_reg;
-	/* Low limit status register */
-	uint8_t low_limit_status_reg;
+	uint8_t 						DEV_one_shot_reg;
 
-	/*! Vsource sampling config settings, 
-	*   contains different registers for ch1 & ch2 */
-	uint8_t source_voltage_sampling_config_reg;
-	/*! Vsense sampling config settings, 
-	*	contains different registers for ch1 */
-	uint8_t ch1_current_sense_sampling_config_reg;
-	/*! Vsense sampling config settings, 
-	*	contains different registers for ch2 */
-	uint8_t ch2_current_sense_sampling_config_reg;
-	/*! Conversion done flag */
-	bool 	conversion_cycle_complete;
+	/*! Channel 1 configuration */
+	struct PAC1720_CH_config 		DEV_CH1_conf;
+	/*! Channel 2 configuration */
+	struct PAC1720_CH_config 		DEV_CH2_conf;
 
-	/* Sensor product id */
-	uint8_t sensor_product_id;
-	/* Sensor manufacturer id */
-	uint8_t sensor_manufact_id;
-	/* Sensor revision */
-	uint8_t sensor_revision;
+	/*! Channel 1 measurements */
+	struct PAC1720_CH_measurements 	DEV_CH1_measurements;
+	/*! Channel 2 measurements */
+	struct PAC1720_CH_measurements	DEV_CH2_measurements;
 
-	/*! The struct holding the config of channel 1*/
-	struct PAC1720_channel_config 	sensor_config_ch1;
-	/*! The struct holding the config of channel 2*/
-	struct PAC1720_channel_config 	sensor_config_ch2;
-	/*! The struct holding the latest readings of channel 1*/
-	struct PAC1720_channel_readings ch1_readings;
-	/*! The struct holding the latest readings of channel 2*/
-	struct PAC1720_channel_readings ch2_readings;
-
-	/*! Bus read function pointer */
-	PAC1720_fptr read;
-	/*! Bus write function pointer */
-	PAC1720_fptr write;
-	/*! delay function pointer */
-	delay_fptr 	 delay_ms;
+	struct PAC1720_internal *		internal;
 };
+
+
+// struct	PAC1720_channel_readings 
+// {
+// 	/*! Sensor status byte */
+// 	uint8_t 	status;
+
+// 	/*! The sensed voltage across sense resistor */
+// 	uint16_t 	v_sense_voltage_reg; 
+// 	/*! The sensed voltage on input pin */
+// 	uint16_t 	v_source_voltage_reg; 
+// 	/*! The sensor determined power ratio */
+// 	uint16_t 	power_ratio_reg; 
+
+// 	/*! The calculated measurements */
+// 	float 		res_SENSE_VOLTAGE;
+// 	float 		res_SOURCE_VOLTAGE;
+// 	float 		res_CURRENT;
+// 	float 		res_POWER;
+// };
+
+// /*!
+//  * @brief PAC1720 channel configuration struct
+//  */
+// struct	PAC1720_channel_config 
+// {
+// 	/*! Optional naming of channel */
+// 	char 		*name;
+
+// 	/*! Sense resistor value, set by device init */
+// 	float 		current_sense_resistor_value;
+
+// 	/*! Current sensing sampling time settings, 
+// 	*   contained in 'chX_current_sense_sampling_config_reg' */
+// 	uint8_t 	current_sense_sampling_time_reg;
+// 	/*! Current-sensing averaging settings, 
+// 	*   contained in 'chX_current_sense_sampling_config_reg' */
+// 	uint8_t 	current_sense_sampling_average_reg;
+// 	/*! Full Scale Range (FSR): current sensing range,  
+// 	*   contained in 'chX_current_sense_sampling_config_reg' */
+// 	uint8_t 	current_sense_FSR_reg;
+// 	/*! Full Scale Current (FSC), calculated */
+// 	float 		current_sense_FSC;
+
+// 	/*! Vsource sampling time settings, 
+// 	*   contained in 'source_voltage_sampling_config_reg' */
+// 	uint8_t 	source_voltage_sampling_time_reg;
+// 	/*! Vsource averaging settings, 
+// 	*   contained in 'source_voltage_sampling_config_reg' */
+// 	uint8_t 	source_voltage_sampling_average_reg;
+// 	/*! Full Scale Voltage (FSV), calculated */
+// 	float 		source_voltage_FSV;
+
+// 	/*! Full Scale Power (FSP), calculated */
+// 	float 		power_sense_FSP;
+
+// 	/* Sense voltage limit register */
+// 	uint16_t 	current_sense_limit_reg;
+// 	/* Source voltage limit register */
+// 	uint16_t 	source_voltage_limit_reg;
+// };
+
+// /*!
+//  * @brief PAC1720 device struct.
+//  */
+// struct	PAC1720_device 
+// {	
+// 	/*! Optional naming of device */
+// 	char 	*name;
+// 	/*! Sensor slave address */
+// 	uint8_t sensor_address;
+// 	/*! Sensor channels in use */
+// 	ACTIVE_CHANNELS channels;
+// 	/* Configuration register */
+// 	uint8_t configuration_reg;
+// 	/*! Updating measurements interval */
+// 	uint8_t conversion_rate_reg;
+// 	/* One shot register */
+// 	uint8_t one_shot_reg;
+// 	/* Channel mask register */
+// 	uint8_t channel_mask_reg;
+// 	/* High limit status register */
+// 	uint8_t high_limit_status_reg;
+// 	/* Low limit status register */
+// 	uint8_t low_limit_status_reg;
+
+// 	/*! Vsource sampling config settings, 
+// 	*   contains different registers for ch1 & ch2 */
+// 	uint8_t source_voltage_sampling_config_reg;
+// 	/*! Vsense sampling config settings, 
+// 	*	contains different registers for ch1 */
+// 	uint8_t ch1_current_sense_sampling_config_reg;
+// 	/*! Vsense sampling config settings, 
+// 	*	contains different registers for ch2 */
+// 	uint8_t ch2_current_sense_sampling_config_reg;
+// 	/*! Conversion done flag */
+// 	bool 	conversion_cycle_complete;
+
+// 	/* Sensor product id */
+// 	uint8_t sensor_product_id;
+// 	/* Sensor manufacturer id */
+// 	uint8_t sensor_manufact_id;
+// 	/* Sensor revision */
+// 	uint8_t sensor_revision;
+
+// 	/*! The struct holding the config of channel 1*/
+// 	struct PAC1720_channel_config 	sensor_config_ch1;
+// 	/*! The struct holding the config of channel 2*/
+// 	struct PAC1720_channel_config 	sensor_config_ch2;
+// 	/*! The struct holding the latest readings of channel 1*/
+// 	struct PAC1720_channel_readings ch1_readings;
+// 	/*! The struct holding the latest readings of channel 2*/
+// 	struct PAC1720_channel_readings ch2_readings;
+
+// 	/*! Bus read function pointer */
+// 	PAC1720_fptr read;
+// 	/*! Bus write function pointer */
+// 	PAC1720_fptr write;
+// 	/*! delay function pointer */
+// 	delay_fptr 	 delay_ms;
+// };
+
 
 /** @}*/
 /** @}*/

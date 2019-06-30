@@ -26,9 +26,19 @@ extern "C"
  *
  * @return 
  */
-int8_t init_device_PAC1720(struct PAC1720_device *device_ptr);
+int8_t init_device_PAC1720(struct PAC1720_device *device_ptr, PAC1720_fptr write, PAC1720_fptr read, delay_fptr delay);
 
-int8_t get_measurement_registers(struct PAC1720_device *device_ptr);
+/*!
+ * @fn 
+ * @brief 
+ *
+ * @see
+ *
+ * @return 
+ */
+void destroy_device_PAC1720(struct PAC1720_device *device_ptr);
+
+// int8_t get_measurement_registers(struct PAC1720_device *device_ptr);
 
 /*!
  * @fn 
