@@ -48,6 +48,96 @@ void destroy_device_PAC1720(struct PAC1720_device *device_ptr);
  *
  * @return 
  */
+uint8_t get_sensor_product_id(struct PAC1720_device *device_ptr);
+
+/*!
+ * @fn 
+ * @brief 
+ *
+ * @see
+ *
+ * @return 
+ */
+uint8_t get_sensor_manufact_id(struct PAC1720_device *device_ptr);
+
+/*!
+ * @fn 
+ * @brief 
+ *
+ * @see
+ *
+ * @return 
+ */
+uint8_t get_sensor_revision_id(struct PAC1720_device *device_ptr);
+
+/*!
+ * @fn 
+ * @brief 
+ *
+ * @see
+ *
+ * @return 
+ */
+float get_channel_FSC(struct PAC1720_CH_config *config_ptr);
+
+/*!
+ * @fn 
+ * @brief 
+ *
+ * @see
+ *
+ * @return 
+ */
+float get_channel_FSV(struct PAC1720_CH_config *config_ptr);
+
+/*!
+ * @fn 
+ * @brief 
+ *
+ * @see
+ *
+ * @return 
+ */
+float get_channel_FSP(struct PAC1720_CH_config *config_ptr);
+
+/*!
+ * @fn 
+ * @brief 
+ *
+ * @see
+ *
+ * @return 
+ */
+uint16_t get_channel_src_voltage_read(struct PAC1720_CH_measurements *meas_ptr);
+
+/*!
+ * @fn 
+ * @brief 
+ *
+ * @see
+ *
+ * @return 
+ */
+uint16_t get_channel_sense_voltage_read(struct PAC1720_CH_measurements *meas_ptr);
+
+/*!
+ * @fn 
+ * @brief 
+ *
+ * @see
+ *
+ * @return 
+ */
+uint16_t get_channel_pwr_ratio_read(struct PAC1720_CH_measurements *meas_ptr);
+
+/*!
+ * @fn 
+ * @brief 
+ *
+ * @see
+ *
+ * @return 
+ */
 const void* get_TEST_DRIVER_FPTR_FIELD(void);
 
 #ifdef __cplusplus

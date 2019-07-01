@@ -1,25 +1,32 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
-// #include "lib/PAC1720_driver/PAC1720_driver.h"
+#include "lib/PAC1720_driver/PAC1720_driver.h"
 
-typedef void (*fptr)(void);
-struct x* getptr(void);
 
-struct x {
-fptr y;
-uint8_t z;
+struct PAC1720_ch_internal
+{
+    /* Full Scale Current (FSC) */
+	float 		current_sense_FSC;
+    /* Full Scale Voltage (FSV) */
+	float 		source_voltage_FSV;
+	/* Full Scale Power (FSP)  */
+	float 		power_sense_FSP;
 };
+
+
 
 
 int main(void){
 
-struct x* x = getptr();
-x->y = &getptr;
-x->z = 9;
+struct PAC1720_device dev;
+static struct PAC1720_ch_internal internal;
+
+dev.DEV_CH1_conf.ch_internal = &internal;
+
 
 char msg[128];
-sprintf(msg, "%p ,x.y = %p, x.z = %d, %p, y.y = %p, y.z = %d\r\n", x, x->y, x->z, w, w->y, w->z);
+sprintf(msg, "%p = %p, %f, %f, %f\r\n", dev.DEV_CH1_conf.ch_internal, &internal, internal.current_sense_FSC, internal.power_sense_FSP, internal.source_voltage_FSV);
 printf(msg);
 
 }

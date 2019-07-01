@@ -327,7 +327,7 @@ int8_t calculate_FSP(struct PAC1720_ch_internal *ch_internal_ptr);
  * @return 
  * @retval 1 value -> OK/ 0 value -> Error
  */
-uint16_t combine_bytes(const uint8_t lsb, const uint8_t msb);
+uint16_t combine_bytes(const uint8_t *lsb, const uint8_t *msb);
 
 /*!
  * @brief
@@ -438,9 +438,13 @@ int8_t init_device_PAC1720(struct PAC1720_device *device_ptr, PAC1720_fptr ext_w
     int8_t res = device_null_pointer_check(device_ptr);
     if(res != PAC1720_OK) return res;
     res = peripherals_null_pointer_check(ext_write, ext_read, ext_delay);
-    if(res != PAC1720_OK){
+    if(res == PAC1720_OK)
+    {
         res = create_all_internal_ptrs(device_ptr, ext_write, ext_read, ext_delay);
         if(res != PAC1720_OK) return res;
+        res = set_all_FSx_coefficients(device_ptr);
+        if(res != PAC1720_OK) return res;
+        
 
 
         // /* Temporary array representation of device registers */
@@ -469,7 +473,12 @@ int8_t init_device_PAC1720(struct PAC1720_device *device_ptr, PAC1720_fptr ext_w
             // }
         // }
     }
-    // return res;
+    return res;
+}
+
+int8_t read_sensor_ids(struct PAC1720_device *device_ptr)
+{
+    
 }
 
 void destroy_device_PAC1720(struct PAC1720_device *device_ptr)
@@ -533,18 +542,23 @@ void destroy_all_internal_ptrs(struct PAC1720_device * dev_ptr)
 {
     if(dev_ptr->DEV_CH1_measurements.meas_internal != NULL){
         destroy_meas_internal_ptr(dev_ptr->DEV_CH1_measurements.meas_internal);
+        dev_ptr->DEV_CH1_measurements.meas_internal = NULL;
     }
     if(dev_ptr->DEV_CH2_measurements.meas_internal != NULL){
         destroy_meas_internal_ptr(dev_ptr->DEV_CH2_measurements.meas_internal);
+        dev_ptr->DEV_CH2_measurements.meas_internal = NULL;
     }
     if(dev_ptr->DEV_CH1_conf.ch_internal != NULL){
         destroy_ch_internal_ptr(dev_ptr->DEV_CH1_conf.ch_internal);
+        dev_ptr->DEV_CH1_conf.ch_internal = NULL;
     }
     if(dev_ptr->DEV_CH2_conf.ch_internal != NULL){
         destroy_ch_internal_ptr(dev_ptr->DEV_CH2_conf.ch_internal);
+        dev_ptr->DEV_CH2_conf.ch_internal = NULL;
     }
     if(dev_ptr->internal != NULL){
         destroy_internal_ptr(dev_ptr->internal);
+        dev_ptr->internal = NULL;
     } 
 }
 
@@ -729,8 +743,8 @@ void assign_reading_register_values(struct PAC1720_device *device_ptr, uint8_t r
 
 int8_t calculate_BUS_CURRENT(const struct PAC1720_CH_config *channel_conf, struct PAC1720_CH_measurements *channel_measurements)
 {   
-    struct PAC1720_ch_internal   *  internal_config      = &channel_conf->ch_internal;
-    struct PAC1720_meas_internal *  internal_measurement = &channel_measurements->meas_internal;
+    struct PAC1720_ch_internal   *  internal_config      = channel_conf->ch_internal;
+    struct PAC1720_meas_internal *  internal_measurement = channel_measurements->meas_internal;
     if(internal_config->current_sense_FSC != 0){
 
         float FSC = internal_config->current_sense_FSC;
@@ -748,8 +762,8 @@ int8_t calculate_BUS_CURRENT(const struct PAC1720_CH_config *channel_conf, struc
  
 int8_t calculate_BUS_VOLTAGE(const struct PAC1720_CH_config *channel_conf, struct PAC1720_CH_measurements *channel_measurements)
 {
-    struct PAC1720_ch_internal   *  internal_config      = &channel_conf->ch_internal;
-    struct PAC1720_meas_internal *  internal_measurement = &channel_measurements->meas_internal;
+    struct PAC1720_ch_internal   *  internal_config      = channel_conf->ch_internal;
+    struct PAC1720_meas_internal *  internal_measurement = channel_measurements->meas_internal;
     if(internal_config->source_voltage_FSV != 0){
 
         float FSV = internal_config->source_voltage_FSV;
@@ -766,8 +780,8 @@ int8_t calculate_BUS_VOLTAGE(const struct PAC1720_CH_config *channel_conf, struc
 
 int8_t calculate_BUS_POWER(const struct PAC1720_CH_config *channel_conf, struct PAC1720_CH_measurements *channel_measurements)
 {
-    struct PAC1720_ch_internal   * internal_config  = &channel_conf->ch_internal;
-    struct PAC1720_meas_internal * internal_meas    = &channel_measurements->meas_internal;
+    struct PAC1720_ch_internal   * internal_config  = channel_conf->ch_internal;
+    struct PAC1720_meas_internal * internal_meas    = channel_measurements->meas_internal;
 
     if(internal_config->power_sense_FSP != 0){
         
@@ -806,7 +820,7 @@ float calculate_SOURCE_VOLTAGE(const uint16_t *v_source_voltage_reg_ptr, const u
 
 int8_t calculate_FSC(struct PAC1720_CH_config *config_ptr) 
 {
-    if(config_ptr->CH_current_sense_resistor_value != 0 && config_ptr->ch_internal != NULL && config_ptr != NULL){
+    if( config_ptr != NULL && config_ptr->ch_internal != NULL && config_ptr->CH_current_sense_resistor_value != 0 ){
         struct PAC1720_ch_internal *ch_internal_ptr = config_ptr->ch_internal;
 
         float FSR = FSR_values[config_ptr->CH_current_sense_FSR_reg];
@@ -822,7 +836,7 @@ int8_t calculate_FSC(struct PAC1720_CH_config *config_ptr)
 
 int8_t calculate_FSV(struct PAC1720_CH_config *config_ptr) 
 {
-    if(config_ptr->ch_internal != NULL && config_ptr != NULL){
+    if( config_ptr != NULL && config_ptr->ch_internal != NULL ){
         struct PAC1720_ch_internal *ch_internal_ptr = config_ptr->ch_internal;
 
         float DENOMINATOR = DENOMINATOR_values_source_voltage[config_ptr->CH_source_voltage_sampling_time_reg];
@@ -837,7 +851,7 @@ int8_t calculate_FSV(struct PAC1720_CH_config *config_ptr)
 
 int8_t calculate_FSP(struct PAC1720_ch_internal *ch_internal_ptr) 
 {
-    if(ch_internal_ptr != NULL && ch_internal_ptr->current_sense_FSC != 0 && ch_internal_ptr->source_voltage_FSV != 0){
+    if( ch_internal_ptr != NULL && ch_internal_ptr->current_sense_FSC != 0 && ch_internal_ptr->source_voltage_FSV != 0 ){
 
         ch_internal_ptr->power_sense_FSP = ch_internal_ptr->current_sense_FSC * ch_internal_ptr->source_voltage_FSV;
 
@@ -847,9 +861,102 @@ int8_t calculate_FSP(struct PAC1720_ch_internal *ch_internal_ptr)
     }
 }
 
-uint16_t combine_bytes(const uint8_t lsb, const uint8_t msb)
+uint8_t get_sensor_product_id(struct PAC1720_device *device_ptr)
 {
-    return (msb << SHIFT_IN_BYTES_OFFSET) + lsb;
+    if(device_ptr->internal != NULL){
+        struct PAC1720_internal * internal = device_ptr->internal;
+        if(internal->sensor_product_id != 0){
+            return internal->sensor_product_id;
+        }
+    }
+    return PAC1720_UNSIGNED_ERROR;
+}
+
+uint8_t get_sensor_manufact_id(struct PAC1720_device *device_ptr)
+{
+    if(device_ptr->internal != NULL){
+        struct PAC1720_internal * internal = device_ptr->internal;
+        if(internal->sensor_manufact_id != 0){
+            return internal->sensor_manufact_id;
+        }
+    }
+    return PAC1720_UNSIGNED_ERROR;
+}
+
+uint8_t get_sensor_revision_id(struct PAC1720_device *device_ptr)
+{
+    if(device_ptr->internal != NULL){
+        struct PAC1720_internal * internal = device_ptr->internal;
+        if(internal->sensor_revision != 0){
+            return internal->sensor_revision;
+        }
+    }
+    return PAC1720_UNSIGNED_ERROR;
+}
+
+float get_channel_FSC(struct PAC1720_CH_config *config_ptr)
+{
+    if(config_ptr->ch_internal != NULL){
+        struct PAC1720_ch_internal * internal = config_ptr->ch_internal;
+        if(internal->current_sense_FSC != 0){
+            return internal->current_sense_FSC;
+        }
+    }
+    return (float) PAC1720_FAILURE;
+}
+
+float get_channel_FSV(struct PAC1720_CH_config *config_ptr)
+{
+    if(config_ptr->ch_internal != NULL){
+        struct PAC1720_ch_internal * internal = config_ptr->ch_internal;
+        if(internal->source_voltage_FSV != 0){
+            return internal->source_voltage_FSV;
+        }
+    }
+    return (float) PAC1720_FAILURE;
+}
+
+float get_channel_FSP(struct PAC1720_CH_config *config_ptr)
+{
+    if(config_ptr->ch_internal != NULL){
+        struct PAC1720_ch_internal * internal = config_ptr->ch_internal;
+        if(internal->power_sense_FSP != 0){
+            return internal->power_sense_FSP;
+        }
+    }
+    return (float) PAC1720_FAILURE;
+}
+
+uint16_t get_channel_src_voltage_read(struct PAC1720_CH_measurements *meas_ptr)
+{
+    if(meas_ptr->meas_internal != NULL){
+        struct PAC1720_meas_internal * internal = meas_ptr->meas_internal;
+        return internal->v_source_voltage_reg;
+    }
+    return (uint16_t) (PAC1720_UNSIGNED_ERROR << SHIFT_IN_BYTES_OFFSET) | PAC1720_UNSIGNED_ERROR;
+}
+
+uint16_t get_channel_sense_voltage_read(struct PAC1720_CH_measurements *meas_ptr)
+{
+    if(meas_ptr->meas_internal != NULL){
+        struct PAC1720_meas_internal * internal = meas_ptr->meas_internal;
+        return internal->v_sense_voltage_reg;
+    }
+    return (uint16_t) (PAC1720_UNSIGNED_ERROR << SHIFT_IN_BYTES_OFFSET) | PAC1720_UNSIGNED_ERROR;
+}
+
+uint16_t get_channel_pwr_ratio_read(struct PAC1720_CH_measurements *meas_ptr)
+{
+    if(meas_ptr->meas_internal != NULL){
+        struct PAC1720_meas_internal * internal = meas_ptr->meas_internal;
+        return internal->power_ratio_reg;
+    }
+    return (uint16_t) (PAC1720_UNSIGNED_ERROR << SHIFT_IN_BYTES_OFFSET) | PAC1720_UNSIGNED_ERROR;
+}
+
+uint16_t combine_bytes(const uint8_t *lsb, const uint8_t *msb)
+{
+    return (*msb << SHIFT_IN_BYTES_OFFSET) + *lsb;
 }
 
 uint16_t twos_complement(const uint16_t *to_complement)

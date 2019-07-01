@@ -60,7 +60,7 @@ typedef int8_t                          (*read_registers)                   (con
 typedef int8_t                          (*write_registers)                  (const struct PAC1720_device *device_ptr, uint8_t reg_address, uint8_t *data_ptr, uint8_t len);
 typedef void                            (*assign_config_register_values)    (struct PAC1720_device *device_ptr, uint8_t register_field[32]);
 typedef void                            (*assign_reading_register_values)   (struct PAC1720_device *device_ptr, uint8_t register_field[12]);
-typedef uint16_t                        (*combine_bytes)                    (uint8_t lsb, uint8_t msb);
+typedef uint16_t                        (*combine_bytes)                    (const uint8_t *lsb, const uint8_t *msb);
 typedef void                            (*cut_up_sampling_registers)        (struct PAC1720_device *device_ptr);
 typedef void                            (*cut_up_limit_registers)           (struct PAC1720_device *device_ptr);
 typedef struct PAC1720_internal *       (*create_internal_ptr)              (const PAC1720_fptr ext_write, const PAC1720_fptr ext_read, const delay_fptr ext_delay);
@@ -91,7 +91,7 @@ assign_reading_register_values          assign_reading_register_values_func;
 combine_bytes                           combine_bytes_func;
 cut_up_sampling_registers               cut_up_sampling_registers_func;    
 cut_up_limit_registers                  cut_up_limit_registers_func;     
-create_internal_ptr                     create_internal_ptr_func;
+create_internal_ptr                     create_internal_ptr_func; 
 create_ch_internal_ptr                  create_ch_internal_ptr_func;
 destroy_internal_ptr                    destroy_internal_ptr_func;
 destroy_ch_internal_ptr                 destroy_ch_internal_ptr_func;  
@@ -150,68 +150,80 @@ int8_t spy_i2c_write_read(uint8_t address, uint8_t reg_address, uint8_t *data, u
 }
 
 void test_create_meas_internal_ptr(void){
-
+    struct PAC1720_meas_internal * test_ptr = create_meas_internal_ptr_func();
+    TEST_ASSERT_FALSE(test_ptr == NULL);
+    TEST_ASSERT_EQUAL(sizeof(struct PAC1720_meas_internal), sizeof(*test_ptr));
+    TEST_ASSERT_EQUAL(0, test_ptr->power_ratio_reg);
+    TEST_ASSERT_EQUAL(0, test_ptr->v_sense_voltage_reg);
+    TEST_ASSERT_EQUAL(0, test_ptr->v_source_voltage_reg);
+    free(test_ptr);
 }
 
 void test_create_ch_internal_ptr(void){
-
+    struct PAC1720_ch_internal * test_ptr = create_ch_internal_ptr_func();
+    TEST_ASSERT_FALSE(test_ptr == NULL);
+    TEST_ASSERT_EQUAL(sizeof(struct PAC1720_ch_internal), sizeof(*test_ptr));
+    TEST_ASSERT_EQUAL(0, test_ptr->current_sense_FSC);
+    TEST_ASSERT_EQUAL(0, test_ptr->power_sense_FSP);
+    TEST_ASSERT_EQUAL(0, test_ptr->source_voltage_FSV);
+    free(test_ptr);
 }
 
 void test_create_internal_ptr(void){
-
+    PAC1720_fptr dummy_write = (PAC1720_fptr) &dummy_func;
+    PAC1720_fptr dummy_read = (PAC1720_fptr) &dummy_func;
+    delay_fptr dummy_delay = (delay_fptr) &dummy_func;
+    struct PAC1720_internal * test_ptr = create_internal_ptr_func(dummy_write, dummy_read, dummy_delay);
+    TEST_ASSERT_FALSE(test_ptr == NULL);
+    TEST_ASSERT_EQUAL(sizeof(struct PAC1720_internal), sizeof(*test_ptr));
+    TEST_ASSERT_EQUAL_PTR(&dummy_func, test_ptr->write);
+    TEST_ASSERT_EQUAL_PTR(&dummy_func, test_ptr->read);
+    TEST_ASSERT_EQUAL_PTR(&dummy_func, test_ptr->delay_ms);
+    TEST_ASSERT_EQUAL(0, test_ptr->sensor_product_id);
+    TEST_ASSERT_EQUAL(0, test_ptr->sensor_manufact_id);
+    TEST_ASSERT_EQUAL(0, test_ptr->sensor_revision);
+    free(test_ptr);
 }
 
-void test_destroy_meas_internal_ptr(void){
-
+void test_read_registers(void){
+    // Declare test structs
+    static struct PAC1720_device dummy_dev;
+    static struct PAC1720_internal dummy_internal;
+    dummy_dev.internal = &dummy_internal;
+    // Assign spy 
+    dummy_internal.read = (PAC1720_fptr) &spy_i2c_write_read;
+    // Set function arguments
+    dummy_dev.DEV_sensor_address = 0xF0;
+    uint8_t data[3] = {0};
+    uint8_t reg_addr = 0x11;
+    uint8_t len = 3;
+    // Call function to test
+    TEST_ASSERT_EQUAL(PAC1720_OK, read_registers_func(&dummy_dev, reg_addr, data, len));
+    // Verify values
+    TEST_ASSERT_EQUAL(dummy_dev.DEV_sensor_address, data[0]);
+    TEST_ASSERT_EQUAL(reg_addr, data[1]);
+    TEST_ASSERT_EQUAL(len, data[2]);
 }
 
-void test_destroy_ch_internal(void){
-
+void test_write_registers(void){
+    // Declare test structs
+    static struct PAC1720_device dummy_dev;
+    static struct PAC1720_internal dummy_internal;
+    dummy_dev.internal = &dummy_internal;
+    // Assign spy
+    dummy_internal.write = (PAC1720_fptr) &spy_i2c_write_read;
+    // Set function arguments
+    dummy_dev.DEV_sensor_address = 0xF0;
+    uint8_t data[3] = {0};
+    uint8_t reg_addr = 0x11;
+    uint8_t len = 3;
+    // Call function to test
+    TEST_ASSERT_EQUAL(PAC1720_OK, write_registers_func(&dummy_dev, reg_addr, data, len));
+    // Verify values
+    TEST_ASSERT_EQUAL(dummy_dev.DEV_sensor_address, data[0]);
+    TEST_ASSERT_EQUAL(reg_addr, data[1]);
+    TEST_ASSERT_EQUAL(len, data[2]);
 }
-
-void test_destroy_internal_ptr(void){
-
-}
-
-// void test_read_registers(void){
-//     // Declare test structs
-//     static struct PAC1720_device dummy_dev;
-//     static struct PAC1720_internal dummy_internal;
-//     dummy_dev.internal = &dummy_internal;
-//     // Assign spy 
-//     dummy_internal.read = (PAC1720_fptr) &spy_i2c_write_read;
-//     // Set function arguments
-//     dummy_dev.DEV_sensor_address = 0xF0;
-//     uint8_t data[3] = {0};
-//     uint8_t reg_addr = 0x11;
-//     uint8_t len = 3;
-//     // Call function to test
-//     TEST_ASSERT_EQUAL(PAC1720_OK, read_registers_func(&dummy_dev, reg_addr, data, len));
-//     // Verify values
-//     TEST_ASSERT_EQUAL(dummy_dev.DEV_sensor_address, data[0]);
-//     TEST_ASSERT_EQUAL(reg_addr, data[1]);
-//     TEST_ASSERT_EQUAL(len, data[2]);
-// }
-
-// void test_write_registers(void){
-//     // Declare test structs
-//     static struct PAC1720_device dummy_dev;
-//     static struct PAC1720_internal dummy_internal;
-//     dummy_dev.internal = &dummy_internal;
-//     // Assign spy
-//     dummy_internal.write = (PAC1720_fptr) &spy_i2c_write_read;
-//     // Set function arguments
-//     dummy_dev.DEV_sensor_address = 0xF0;
-//     uint8_t data[3] = {0};
-//     uint8_t reg_addr = 0x11;
-//     uint8_t len = 3;
-//     // Call function to test
-//     TEST_ASSERT_EQUAL(PAC1720_OK, write_registers_func(&dummy_dev, reg_addr, data, len));
-//     // Verify values
-//     TEST_ASSERT_EQUAL(dummy_dev.DEV_sensor_address, data[0]);
-//     TEST_ASSERT_EQUAL(reg_addr, data[1]);
-//     TEST_ASSERT_EQUAL(len, data[2]);
-// }
 
 // void test_cut_up_limit_registers(void){
 //     // Declare test- device struct
@@ -319,175 +331,175 @@ void test_destroy_internal_ptr(void){
 // }   
 
 
-// void test_calculate_BUS_CURRENT (void){
-//     static struct PAC1720_CH_config dummy_config;
-//     static struct PAC1720_CH_measurements dummy_meas;
-//     static struct PAC1720_ch_internal dummy_ch_internal;
-//     static struct PAC1720_meas_internal dummy_meas_internal;
-//     dummy_config.ch_internal = &dummy_ch_internal;
-//     dummy_meas.meas_internal = &dummy_meas_internal;
-//     // Setup input values
-//     dummy_meas_internal.v_sense_voltage_reg = 0b0110100110000000;
-//     dummy_config.CH_current_sense_sampling_time_reg = 0x05;
-//     // Test FSC not set
-//     TEST_ASSERT_EQUAL(PAC1720_FAILURE, calculate_BUS_CURRENT_func(&dummy_config, &dummy_meas));
-//     dummy_ch_internal.current_sense_FSC = 2.0f;
-//     // Test correct current- calculation- denominator selection
-//     TEST_ASSERT_EQUAL_FLOAT(2047.0f, DENOMINATOR_values_current_sense[dummy_config.CH_current_sense_sampling_time_reg]);
-//     // Test correct current calculation
-//     TEST_ASSERT_EQUAL(PAC1720_OK, calculate_BUS_CURRENT_func(&dummy_config, &dummy_meas));
-//     TEST_ASSERT_EQUAL_FLOAT(1.64924276f, dummy_meas.CURRENT);
-// }
+void test_calculate_BUS_CURRENT (void){
+    static struct PAC1720_CH_config dummy_config;
+    static struct PAC1720_CH_measurements dummy_meas;
+    static struct PAC1720_ch_internal dummy_ch_internal;
+    static struct PAC1720_meas_internal dummy_meas_internal;
+    dummy_config.ch_internal = &dummy_ch_internal;
+    dummy_meas.meas_internal = &dummy_meas_internal;
+    // Setup input values
+    dummy_meas_internal.v_sense_voltage_reg = 0b0110100110000000;
+    dummy_config.CH_current_sense_sampling_time_reg = 0x05;
+    // Test FSC not set
+    TEST_ASSERT_EQUAL(PAC1720_FAILURE, calculate_BUS_CURRENT_func(&dummy_config, &dummy_meas));
+    dummy_ch_internal.current_sense_FSC = 2.0f;
+    // Test correct current- calculation- denominator selection
+    TEST_ASSERT_EQUAL_FLOAT(2047.0f, DENOMINATOR_values_current_sense[dummy_config.CH_current_sense_sampling_time_reg]);
+    // Test correct current calculation
+    TEST_ASSERT_EQUAL(PAC1720_OK, calculate_BUS_CURRENT_func(&dummy_config, &dummy_meas));
+    TEST_ASSERT_EQUAL_FLOAT(1.64924276f, dummy_meas.CURRENT);
+}
 
-// void test_calculate_BUS_VOLTAGE(void){
-//     static struct PAC1720_CH_config dummy_config;
-//     static struct PAC1720_CH_measurements dummy_meas;
-//     static struct PAC1720_ch_internal dummy_ch_internal;
-//     static struct PAC1720_meas_internal dummy_meas_internal;
-//     dummy_config.ch_internal = &dummy_ch_internal;
-//     dummy_meas.meas_internal = &dummy_meas_internal;
-//     // Setup input values
-//     dummy_meas_internal.v_source_voltage_reg = 0b1001100110000000;
-//     dummy_config.CH_source_voltage_sampling_time_reg = 0x02;
-//     dummy_ch_internal.source_voltage_FSV = 39.96f;
-//     TEST_ASSERT_EQUAL(PAC1720_OK, calculate_BUS_VOLTAGE_func(&dummy_config, &dummy_meas));
-//     TEST_ASSERT_EQUAL_FLOAT(23.9838123f, dummy_meas.SOURCE_VOLTAGE);
-// }
+void test_calculate_BUS_VOLTAGE(void){
+    static struct PAC1720_CH_config dummy_config;
+    static struct PAC1720_CH_measurements dummy_meas;
+    static struct PAC1720_ch_internal dummy_ch_internal;
+    static struct PAC1720_meas_internal dummy_meas_internal;
+    dummy_config.ch_internal = &dummy_ch_internal;
+    dummy_meas.meas_internal = &dummy_meas_internal;
+    // Setup input values
+    dummy_meas_internal.v_source_voltage_reg = 0b1001100110000000;
+    dummy_config.CH_source_voltage_sampling_time_reg = 0x02;
+    dummy_ch_internal.source_voltage_FSV = 39.96f;
+    TEST_ASSERT_EQUAL(PAC1720_OK, calculate_BUS_VOLTAGE_func(&dummy_config, &dummy_meas));
+    TEST_ASSERT_EQUAL_FLOAT(23.9838123f, dummy_meas.SOURCE_VOLTAGE);
+}
 
-// void test_calculate_BUS_POWER(void){
-//     static struct PAC1720_CH_config dummy_config;
-//     static struct PAC1720_CH_measurements dummy_meas;
-//     static struct PAC1720_ch_internal dummy_ch_internal;
-//     static struct PAC1720_meas_internal dummy_meas_internal;
-//     dummy_config.ch_internal = &dummy_ch_internal;
-//     dummy_meas.meas_internal = &dummy_meas_internal;
-//     // Test FSP = 0
-//     TEST_ASSERT_EQUAL(PAC1720_FAILURE, calculate_BUS_POWER_func(&dummy_config, &dummy_meas));
-//     // Setup input values
-//     dummy_ch_internal.power_sense_FSP = 79.92f;
-//     dummy_meas_internal.power_ratio_reg = 0b0011100001000111;
-//     TEST_ASSERT_EQUAL(PAC1720_OK, calculate_BUS_POWER_func(&dummy_config, &dummy_meas));
-//     TEST_ASSERT_EQUAL_FLOAT(17.5693493f, dummy_meas.POWER);
-// }
+void test_calculate_BUS_POWER(void){
+    static struct PAC1720_CH_config dummy_config;
+    static struct PAC1720_CH_measurements dummy_meas;
+    static struct PAC1720_ch_internal dummy_ch_internal;
+    static struct PAC1720_meas_internal dummy_meas_internal;
+    dummy_config.ch_internal = &dummy_ch_internal;
+    dummy_meas.meas_internal = &dummy_meas_internal;
+    // Test FSP = 0
+    TEST_ASSERT_EQUAL(PAC1720_FAILURE, calculate_BUS_POWER_func(&dummy_config, &dummy_meas));
+    // Setup input values
+    dummy_ch_internal.power_sense_FSP = 79.92f;
+    dummy_meas_internal.power_ratio_reg = 0b0011100001000111;
+    TEST_ASSERT_EQUAL(PAC1720_OK, calculate_BUS_POWER_func(&dummy_config, &dummy_meas));
+    TEST_ASSERT_EQUAL_FLOAT(17.5693493f, dummy_meas.POWER);
+}
 
-// void test_calculate_SENSED_VOLTAGE (void){
-//     static struct PAC1720_CH_config dummy_config;
-//     static struct PAC1720_meas_internal dummy_meas_internal;
-//     // Set sampling time to allow determination of resolution
-//     dummy_config.CH_current_sense_sampling_time_reg = 0x05;
-//     // Test negative voltage return value
-//     dummy_meas_internal.v_sense_voltage_reg = 0b1001011010000000;
-//     TEST_ASSERT_EQUAL_FLOAT(-1688.0f, calculate_SENSED_VOLTAGE_func(&dummy_meas_internal.v_sense_voltage_reg, &dummy_config.CH_current_sense_sampling_time_reg));
-//     dummy_meas_internal.v_sense_voltage_reg = 0xEBC0;
-//     TEST_ASSERT_EQUAL_FLOAT(-324.0f, calculate_SENSED_VOLTAGE_func(&dummy_meas_internal.v_sense_voltage_reg, &dummy_config.CH_current_sense_sampling_time_reg));
-//     // Test positive voltage return value
-//     dummy_meas_internal.v_sense_voltage_reg = 0b0110100110000000;
-//     TEST_ASSERT_EQUAL_FLOAT(1688.0f, calculate_SENSED_VOLTAGE_func(&dummy_meas_internal.v_sense_voltage_reg, &dummy_config.CH_current_sense_sampling_time_reg));
-// }
+void test_calculate_SENSED_VOLTAGE (void){
+    static struct PAC1720_CH_config dummy_config;
+    static struct PAC1720_meas_internal dummy_meas_internal;
+    // Set sampling time to allow determination of resolution
+    dummy_config.CH_current_sense_sampling_time_reg = 0x05;
+    // Test negative voltage return value
+    dummy_meas_internal.v_sense_voltage_reg = 0b1001011010000000;
+    TEST_ASSERT_EQUAL_FLOAT(-1688.0f, calculate_SENSED_VOLTAGE_func(&dummy_meas_internal.v_sense_voltage_reg, &dummy_config.CH_current_sense_sampling_time_reg));
+    dummy_meas_internal.v_sense_voltage_reg = 0xEBC0;
+    TEST_ASSERT_EQUAL_FLOAT(-324.0f, calculate_SENSED_VOLTAGE_func(&dummy_meas_internal.v_sense_voltage_reg, &dummy_config.CH_current_sense_sampling_time_reg));
+    // Test positive voltage return value
+    dummy_meas_internal.v_sense_voltage_reg = 0b0110100110000000;
+    TEST_ASSERT_EQUAL_FLOAT(1688.0f, calculate_SENSED_VOLTAGE_func(&dummy_meas_internal.v_sense_voltage_reg, &dummy_config.CH_current_sense_sampling_time_reg));
+}
 
-// void test_calculate_SOURCE_VOLTAGE(void){
-//     static struct PAC1720_CH_config dummy_config;
-//     static struct PAC1720_meas_internal dummy_meas_internal;
-//     // Test source voltage return value with sample time 2.5 ms (sample reg = 0x00)
-//     dummy_meas_internal.v_source_voltage_reg = 0b1111111100000000;
-//     TEST_ASSERT_EQUAL_FLOAT(255.0f, calculate_SOURCE_VOLTAGE_func(&dummy_meas_internal.v_source_voltage_reg, &dummy_config.CH_source_voltage_sampling_time_reg));
-//      // Set sampling time to allow shifting in correct resolution (11bit here)
-//     dummy_config.CH_source_voltage_sampling_time_reg = 0x03;
-//     // Test source voltage return value
-//     dummy_meas_internal.v_source_voltage_reg = 0b0100010000100000;
-//     TEST_ASSERT_EQUAL_FLOAT(545.0f, calculate_SOURCE_VOLTAGE_func(&dummy_meas_internal.v_source_voltage_reg, &dummy_config.CH_source_voltage_sampling_time_reg));
-//     // Set sampling time to allow shifting in correct resolution (10bit here)
-//     dummy_config.CH_source_voltage_sampling_time_reg = 0x02;
-//     // Test source voltage return value
-//     dummy_meas_internal.v_source_voltage_reg = 0b1001100110000000;
-//     TEST_ASSERT_EQUAL_FLOAT(614.0f, calculate_SOURCE_VOLTAGE_func(&dummy_meas_internal.v_source_voltage_reg, &dummy_config.CH_source_voltage_sampling_time_reg));
-// }
+void test_calculate_SOURCE_VOLTAGE(void){
+    static struct PAC1720_CH_config dummy_config;
+    static struct PAC1720_meas_internal dummy_meas_internal;
+    // Test source voltage return value with sample time 2.5 ms (sample reg = 0x00)
+    dummy_meas_internal.v_source_voltage_reg = 0b1111111100000000;
+    TEST_ASSERT_EQUAL_FLOAT(255.0f, calculate_SOURCE_VOLTAGE_func(&dummy_meas_internal.v_source_voltage_reg, &dummy_config.CH_source_voltage_sampling_time_reg));
+     // Set sampling time to allow shifting in correct resolution (11bit here)
+    dummy_config.CH_source_voltage_sampling_time_reg = 0x03;
+    // Test source voltage return value
+    dummy_meas_internal.v_source_voltage_reg = 0b0100010000100000;
+    TEST_ASSERT_EQUAL_FLOAT(545.0f, calculate_SOURCE_VOLTAGE_func(&dummy_meas_internal.v_source_voltage_reg, &dummy_config.CH_source_voltage_sampling_time_reg));
+    // Set sampling time to allow shifting in correct resolution (10bit here)
+    dummy_config.CH_source_voltage_sampling_time_reg = 0x02;
+    // Test source voltage return value
+    dummy_meas_internal.v_source_voltage_reg = 0b1001100110000000;
+    TEST_ASSERT_EQUAL_FLOAT(614.0f, calculate_SOURCE_VOLTAGE_func(&dummy_meas_internal.v_source_voltage_reg, &dummy_config.CH_source_voltage_sampling_time_reg));
+}
 
-// void test_calculate_FSC (void){
-//     static struct PAC1720_CH_config dummy_config;
-//     static struct PAC1720_ch_internal dummy_internal;
-//     // Test nullpointer fail
-//     TEST_ASSERT_EQUAL(PAC1720_FAILURE, calculate_FSC_func(NULL));
-//     TEST_ASSERT_EQUAL(PAC1720_FAILURE, calculate_FSC_func(&dummy_config));
-//     dummy_config.ch_internal = &dummy_internal;
-//     // Test resistance = 0
-//     TEST_ASSERT_EQUAL(PAC1720_FAILURE, calculate_FSC_func(&dummy_config));
-//     // Test correct FSR selection, reg=0 => select first value
-//     TEST_ASSERT_EQUAL_FLOAT( 0.01f, FSR_values[dummy_config.CH_current_sense_FSR_reg] );
-//     // Test correct FSC calculation
-//     dummy_config.CH_current_sense_FSR_reg = 0x01;
-//     dummy_config.CH_current_sense_resistor_value = 0.01f;
-//     TEST_ASSERT_EQUAL(PAC1720_OK, calculate_FSC_func(&dummy_config));
-//     TEST_ASSERT_EQUAL_FLOAT(2.0f, dummy_internal.current_sense_FSC);
-// }
+void test_calculate_FSC (void){
+    static struct PAC1720_CH_config dummy_config;
+    static struct PAC1720_ch_internal dummy_internal;
+    // Test nullpointer fail
+    TEST_ASSERT_EQUAL(PAC1720_FAILURE, calculate_FSC_func(NULL));
+    TEST_ASSERT_EQUAL(PAC1720_FAILURE, calculate_FSC_func(&dummy_config));
+    dummy_config.ch_internal = &dummy_internal;
+    // Test resistance = 0
+    TEST_ASSERT_EQUAL(PAC1720_FAILURE, calculate_FSC_func(&dummy_config));
+    // Test correct FSR selection, reg=0 => select first value
+    TEST_ASSERT_EQUAL_FLOAT( 0.01f, FSR_values[dummy_config.CH_current_sense_FSR_reg] );
+    // Test correct FSC calculation
+    dummy_config.CH_current_sense_FSR_reg = 0x01;
+    dummy_config.CH_current_sense_resistor_value = 0.01f;
+    TEST_ASSERT_EQUAL(PAC1720_OK, calculate_FSC_func(&dummy_config));
+    TEST_ASSERT_EQUAL_FLOAT(2.0f, dummy_internal.current_sense_FSC);
+}
 
-// void test_calculate_FSV(void){
-//     static struct PAC1720_CH_config dummy_config;
-//     static struct PAC1720_ch_internal dummy_internal;
-//     // Test nullpointer fail
-//     TEST_ASSERT_EQUAL(PAC1720_FAILURE, calculate_FSV_func(NULL));
-//     TEST_ASSERT_EQUAL(PAC1720_FAILURE, calculate_FSV_func(&dummy_config));
-//     dummy_config.ch_internal = &dummy_internal;
-//     // Set sampling time for DENOMINATOR value determ.
-//     dummy_config.CH_source_voltage_sampling_time_reg = 0x02;
-//     TEST_ASSERT_EQUAL(PAC1720_OK, calculate_FSV_func(&dummy_config));
-//     TEST_ASSERT_EQUAL_FLOAT(39.9609375, dummy_internal.source_voltage_FSV);
-// }
+void test_calculate_FSV(void){
+    static struct PAC1720_CH_config dummy_config;
+    static struct PAC1720_ch_internal dummy_internal;
+    // Test nullpointer fail
+    TEST_ASSERT_EQUAL(PAC1720_FAILURE, calculate_FSV_func(NULL));
+    TEST_ASSERT_EQUAL(PAC1720_FAILURE, calculate_FSV_func(&dummy_config));
+    dummy_config.ch_internal = &dummy_internal;
+    // Set sampling time for DENOMINATOR value determ.
+    dummy_config.CH_source_voltage_sampling_time_reg = 0x02;
+    TEST_ASSERT_EQUAL(PAC1720_OK, calculate_FSV_func(&dummy_config));
+    TEST_ASSERT_EQUAL_FLOAT(39.9609375, dummy_internal.source_voltage_FSV);
+}
 
-// void test_calculate_FSP(void){
-//     static struct PAC1720_ch_internal dummy_internal;
-//     // Test FSC is zero
-//     TEST_ASSERT_EQUAL(PAC1720_FAILURE, calculate_FSP_func(&dummy_internal));
-//     // Set FSC
-//     dummy_internal.current_sense_FSC = 2.0f;
-//     // Test FSV is zero
-//     TEST_ASSERT_EQUAL(PAC1720_FAILURE, calculate_FSP_func(&dummy_internal));
-//     // Set FSV and validate FSP
-//     dummy_internal.source_voltage_FSV = 39.96f;
-//     TEST_ASSERT_EQUAL(PAC1720_OK, calculate_FSP_func(&dummy_internal));
-//     TEST_ASSERT_EQUAL_FLOAT(79.92f, dummy_internal.power_sense_FSP);
-// }
+void test_calculate_FSP(void){
+    static struct PAC1720_ch_internal dummy_internal;
+    // Test FSC is zero
+    TEST_ASSERT_EQUAL(PAC1720_FAILURE, calculate_FSP_func(&dummy_internal));
+    // Set FSC
+    dummy_internal.current_sense_FSC = 2.0f;
+    // Test FSV is zero
+    TEST_ASSERT_EQUAL(PAC1720_FAILURE, calculate_FSP_func(&dummy_internal));
+    // Set FSV and validate FSP
+    dummy_internal.source_voltage_FSV = 39.96f;
+    TEST_ASSERT_EQUAL(PAC1720_OK, calculate_FSP_func(&dummy_internal));
+    TEST_ASSERT_EQUAL_FLOAT(79.92f, dummy_internal.power_sense_FSP);
+}
 
-// void test_combine_bytes(void){
-//     uint8_t msb = 0xF0;
-//     uint8_t lsb = 0x0F;
-//     uint16_t res = combine_bytes_func(lsb, msb);
-//     TEST_ASSERT_EQUAL_HEX16(0xF00F, res);
-// }     
+void test_combine_bytes(void){
+    uint8_t msb = 0xF0;
+    uint8_t lsb = 0x0F;
+    uint16_t res = combine_bytes_func(&lsb, &msb);
+    TEST_ASSERT_EQUAL_HEX16(0xF00F, res);
+}     
 
-// void test_twos_complement (void){
-//     uint16_t int_to_test = 0x0F0A;
-//     TEST_ASSERT_EQUAL_UINT16(0xF0F6, twos_complement_func(&int_to_test));
-// }
+void test_twos_complement (void){
+    uint16_t int_to_test = 0x0F0A;
+    TEST_ASSERT_EQUAL_UINT16(0xF0F6, twos_complement_func(&int_to_test));
+}
 
-// void test_is_negative_value (void){
-//     uint16_t int_to_test = 0x7FFF;
-//     TEST_ASSERT_FALSE(is_negative_value_func(&int_to_test));
-//     int_to_test = 0x8089;
-//     TEST_ASSERT_TRUE(is_negative_value_func(&int_to_test));
-// }
+void test_is_negative_value (void){
+    uint16_t int_to_test = 0x7FFF;
+    TEST_ASSERT_FALSE(is_negative_value_func(&int_to_test));
+    int_to_test = 0x8089;
+    TEST_ASSERT_TRUE(is_negative_value_func(&int_to_test));
+}
 
-// void test_right_bit_shift(void) {
-//     uint16_t int_to_shift = 0x8000;
-//     TEST_ASSERT_EQUAL_UINT16(0x01, right_bit_shift_func(&int_to_shift, SHIFT_TO_SIGN_BIT));
-// }
+void test_right_bit_shift(void) {
+    uint16_t int_to_shift = 0x8000;
+    TEST_ASSERT_EQUAL_UINT16(0x01, right_bit_shift_func(&int_to_shift, SHIFT_TO_SIGN_BIT));
+}
 
 
-// void test_peripherals_null_pointer_check(void){
-//     PAC1720_fptr dummy_write = (PAC1720_fptr) &dummy_func;
-//     PAC1720_fptr dummy_read  = (PAC1720_fptr) &dummy_func;
-//     delay_fptr dummy_delay   = (delay_fptr)   &dummy_func;
-//     TEST_ASSERT_EQUAL(PAC1720_NULLPTR_ERROR, peripherals_null_pointer_check_func(NULL, NULL, NULL));
-//     TEST_ASSERT_EQUAL(PAC1720_NULLPTR_ERROR, peripherals_null_pointer_check_func(dummy_write, NULL, NULL));
-//     TEST_ASSERT_EQUAL(PAC1720_NULLPTR_ERROR, peripherals_null_pointer_check_func(dummy_write, dummy_read, NULL));
-//     TEST_ASSERT_EQUAL(PAC1720_OK, peripherals_null_pointer_check_func(dummy_write, dummy_read, dummy_delay));
-// }
+void test_peripherals_null_pointer_check(void){
+    PAC1720_fptr dummy_write = (PAC1720_fptr) &dummy_func;
+    PAC1720_fptr dummy_read  = (PAC1720_fptr) &dummy_func;
+    delay_fptr dummy_delay   = (delay_fptr)   &dummy_func;
+    TEST_ASSERT_EQUAL(PAC1720_NULLPTR_ERROR, peripherals_null_pointer_check_func(NULL, NULL, NULL));
+    TEST_ASSERT_EQUAL(PAC1720_NULLPTR_ERROR, peripherals_null_pointer_check_func(dummy_write, NULL, NULL));
+    TEST_ASSERT_EQUAL(PAC1720_NULLPTR_ERROR, peripherals_null_pointer_check_func(dummy_write, dummy_read, NULL));
+    TEST_ASSERT_EQUAL(PAC1720_OK, peripherals_null_pointer_check_func(dummy_write, dummy_read, dummy_delay));
+}
 
-// void test_device_null_pointer_check(void) {
-//     static struct PAC1720_device dev;
-//     TEST_ASSERT_EQUAL(PAC1720_NULLPTR_ERROR, device_null_pointer_check_func((void*)0));
-//     TEST_ASSERT_EQUAL(PAC1720_OK, device_null_pointer_check_func(&dev));
-// }
+void test_device_null_pointer_check(void) {
+    static struct PAC1720_device dev;
+    TEST_ASSERT_EQUAL(PAC1720_NULLPTR_ERROR, device_null_pointer_check_func((void*)0));
+    TEST_ASSERT_EQUAL(PAC1720_OK, device_null_pointer_check_func(&dev));
+}
 
     // char msg[500];
     // sprintf(msg, "Test: %p %p %p %p", &dev, dev.write, dev.read, dev.delay_ms);

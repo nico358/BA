@@ -81,6 +81,9 @@ typedef void        (*adapter_delay)                (uint32_t period);
 typedef bool        (*sensor_address_out_of_range)  (const uint8_t address);
 typedef bool        (*channels_out_of_range)        (const ACTIVE_CHANNELS channels);
 typedef uint8_t     (*poll_i2c)                     (const struct FIELD_BUS_INTERFACE *i2c_ptr, uint8_t loop_var, uint8_t *addresses);
+typedef void        (*set_fieldbus_ptr)             (struct FIELD_BUS_INTERFACE *external_fieldbus_interface);
+typedef void        (*set_delay_ptr)                (delay_function_ptr external_delay);
+typedef bool        (*check_mandatory_dev_settings) (struct PAC1720_device *dev_ptr);
 
 /** Declare functions */
 adapter_i2c_write               adapter_i2c_write_func;
@@ -89,6 +92,10 @@ adapter_delay                   adapter_delay_func;
 sensor_address_out_of_range     sensor_address_out_of_range_func;
 channels_out_of_range           channels_out_of_range_func;
 poll_i2c                        poll_i2c_func;
+set_fieldbus_ptr                set_fieldbus_ptr_func;
+set_delay_ptr                   set_delay_ptr_func;
+check_mandatory_dev_settings    check_mandatory_dev_settings_func;
+
 
 void setUp(void) {
     // Get function pointers from declaration
@@ -100,6 +107,9 @@ void setUp(void) {
     sensor_address_out_of_range_func    = (sensor_address_out_of_range)     test_fptr_field[3];
     channels_out_of_range_func          = (channels_out_of_range)           test_fptr_field[4];
     poll_i2c_func                       = (poll_i2c)                        test_fptr_field[5];
+    set_fieldbus_ptr_func               = (set_fieldbus_ptr)                test_fptr_field[6];
+    set_delay_ptr_func                  = (set_delay_ptr)                   test_fptr_field[7];
+    check_mandatory_dev_settings_func   = (check_mandatory_dev_settings)    test_fptr_field[8];
 }
 
 void tearDown(void) {
@@ -117,6 +127,9 @@ void tearDown(void) {
 
     mock_delay_arg = 0;
     mock_delay_call = 0;
+
+    set_fieldbus_ptr_func(NULL);
+    set_delay_ptr_func(NULL);
 }
 
 void test_adapter_find_sensors(void){
@@ -132,49 +145,52 @@ void test_adapter_init_PAC1720(void){
 
 }
 
-// void test_adapter_i2c_write(void){
-//     /* Set up dummy inputs */
-//     uint8_t dummy_address = 0x28;
-//     uint8_t dummy_address_return = (dummy_address << BUS_ADDRESS_SHIFT) + I2C_WRITE;
-//     uint8_t dummy_reg_address = 0x11;
-//     uint8_t dummy_data[2] = {0xAA, 0xBB};
-//     uint8_t dummy_len = sizeof(dummy_data);
-//     /* Execute function */
-//     TEST_ASSERT_EQUAL(PAC1720_OK, adapter_i2c_write_func(dummy_address, dummy_reg_address, dummy_data, dummy_len));
-//     /* Evaluate spy parameters */
-//     TEST_ASSERT_EQUAL_HEX8(dummy_address_return, mock_i2c_start_wait_arg);
-//     TEST_ASSERT_EQUAL(1,mock_i2c_start_wait_call);
-//     TEST_ASSERT_EQUAL_HEX8(dummy_data[1], mock_i2c_write_arg);
-//     TEST_ASSERT_EQUAL(3, mock_i2c_write_call);
-//     TEST_ASSERT_EQUAL(1,mock_i2c_stop_call);
-// }   
+void test_adapter_i2c_write(void){
+    set_fieldbus_ptr_func(&dummy_i2c);
+    /* Set up dummy inputs */
+    uint8_t dummy_address = 0x28;
+    uint8_t dummy_address_return = (dummy_address << BUS_ADDRESS_SHIFT) + I2C_WRITE;
+    uint8_t dummy_reg_address = 0x11;
+    uint8_t dummy_data[2] = {0xAA, 0xBB};
+    uint8_t dummy_len = sizeof(dummy_data);
+    /* Execute function */
+    TEST_ASSERT_EQUAL(PAC1720_OK, adapter_i2c_write_func(dummy_address, dummy_reg_address, dummy_data, dummy_len));
+    /* Evaluate spy parameters */
+    TEST_ASSERT_EQUAL_HEX8(dummy_address_return, mock_i2c_start_wait_arg);
+    TEST_ASSERT_EQUAL(1,mock_i2c_start_wait_call);
+    TEST_ASSERT_EQUAL_HEX8(dummy_data[1], mock_i2c_write_arg);
+    TEST_ASSERT_EQUAL(3, mock_i2c_write_call);
+    TEST_ASSERT_EQUAL(1,mock_i2c_stop_call);
+}   
 
-// void test_adapter_i2c_read(void){
-//     /* Set up dummy inputs */
-//     uint8_t dummy_address = 0x28;
-//     uint8_t dummy_address_write_return = (dummy_address << BUS_ADDRESS_SHIFT) + I2C_WRITE;
-//     uint8_t dummy_address_read_return = (dummy_address << BUS_ADDRESS_SHIFT) + I2C_READ;
-//     uint8_t dummy_reg_address = 0x11;
-//     uint8_t dummy_data[3] = {0};
-//     uint8_t dummy_len = sizeof(dummy_data);
-//     /* Execute function */
-//     TEST_ASSERT_EQUAL_HEX8(PAC1720_OK, adapter_i2c_read_func(dummy_address, dummy_reg_address, dummy_data, dummy_len));
-//     /* Evaluate spy parameters */
-//     TEST_ASSERT_EQUAL_HEX8(dummy_address_write_return, mock_i2c_start_wait_arg);
-//     TEST_ASSERT_EQUAL(1, mock_i2c_start_wait_call);
-//     TEST_ASSERT_EQUAL_HEX8(dummy_reg_address, mock_i2c_write_arg);
-//     TEST_ASSERT_EQUAL(1, mock_i2c_write_call);
-//     TEST_ASSERT_EQUAL_HEX8(dummy_address_read_return, mock_i2c_rep_start_arg);
-//     TEST_ASSERT_EQUAL(1, mock_i2c_rep_start_call);
-//     TEST_ASSERT_EQUAL(2, mock_i2c_readAck_call);
-//     TEST_ASSERT_EQUAL(1, mock_i2c_readNak_call);
-//     TEST_ASSERT_EQUAL(1,mock_i2c_stop_call);
-//     /* Evaluate array reading */
-//     uint8_t test_arr[3] = {0xDD, 0xDD, 0xDE};
-//     TEST_ASSERT_EQUAL_HEX8_ARRAY(test_arr, dummy_data, dummy_len);
-// }
+void test_adapter_i2c_read(void){
+    set_fieldbus_ptr_func(&dummy_i2c);
+    /* Set up dummy inputs */
+    uint8_t dummy_address = 0x28;
+    uint8_t dummy_address_write_return = (dummy_address << BUS_ADDRESS_SHIFT) + I2C_WRITE;
+    uint8_t dummy_address_read_return = (dummy_address << BUS_ADDRESS_SHIFT) + I2C_READ;
+    uint8_t dummy_reg_address = 0x11;
+    uint8_t dummy_data[3] = {0};
+    uint8_t dummy_len = sizeof(dummy_data);
+    /* Execute function */
+    TEST_ASSERT_EQUAL_HEX8(PAC1720_OK, adapter_i2c_read_func(dummy_address, dummy_reg_address, dummy_data, dummy_len));
+    /* Evaluate spy parameters */
+    TEST_ASSERT_EQUAL_HEX8(dummy_address_write_return, mock_i2c_start_wait_arg);
+    TEST_ASSERT_EQUAL(1, mock_i2c_start_wait_call);
+    TEST_ASSERT_EQUAL_HEX8(dummy_reg_address, mock_i2c_write_arg);
+    TEST_ASSERT_EQUAL(1, mock_i2c_write_call);
+    TEST_ASSERT_EQUAL_HEX8(dummy_address_read_return, mock_i2c_rep_start_arg);
+    TEST_ASSERT_EQUAL(1, mock_i2c_rep_start_call);
+    TEST_ASSERT_EQUAL(2, mock_i2c_readAck_call);
+    TEST_ASSERT_EQUAL(1, mock_i2c_readNak_call);
+    TEST_ASSERT_EQUAL(1,mock_i2c_stop_call);
+    /* Evaluate array reading */
+    uint8_t test_arr[3] = {0xDD, 0xDD, 0xDE};
+    TEST_ASSERT_EQUAL_HEX8_ARRAY(test_arr, dummy_data, dummy_len);
+}
 
 void test_adapter_delay(void){
+    set_delay_ptr_func(&mock_user_delay);
     uint32_t dummy_period = 1500;
     adapter_delay_func(dummy_period);
     TEST_ASSERT_EQUAL(1500, mock_delay_arg);
@@ -198,6 +214,17 @@ void test_channels_out_of_range(void){
      TEST_ASSERT_FALSE(channels_out_of_range_func(BOTH_CHANNELS));
      TEST_ASSERT_TRUE(channels_out_of_range_func(0));
      TEST_ASSERT_TRUE(channels_out_of_range_func(4));
+}
+
+void test_check_mandatory_dev_settings(void){
+    static struct PAC1720_device dummy_dev;
+    dummy_dev.DEV_sensor_address = 0x18;
+    dummy_dev.DEV_channels = FIRST_CHANNEL;
+    TEST_ASSERT_FALSE(check_mandatory_dev_settings_func(&dummy_dev));
+    dummy_dev.DEV_CH1_conf.CH_current_sense_resistor_value = 0.8f;
+    TEST_ASSERT_FALSE(check_mandatory_dev_settings_func(&dummy_dev));
+    dummy_dev.DEV_CH2_conf.CH_current_sense_resistor_value = 0.8f;
+    TEST_ASSERT_TRUE(check_mandatory_dev_settings_func(&dummy_dev));
 }
 
 void test_fail(void){

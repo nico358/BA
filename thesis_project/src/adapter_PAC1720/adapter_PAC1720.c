@@ -190,6 +190,28 @@ bool sensor_address_out_of_range(const uint8_t address);
  */
 bool channels_out_of_range(const ACTIVE_CHANNELS channels);
 
+/*!
+ * @fn 
+ * @brief
+ *
+ * @note 
+ *
+ * @param .
+ *
+ */
+void set_fieldbus_ptr(struct FIELD_BUS_INTERFACE *external_fieldbus_interface);
+
+/*!
+ * @fn 
+ * @brief
+ *
+ * @note 
+ *
+ * @param .
+ *
+ */
+void set_delay_ptr(delay_function_ptr external_delay);
+
 
 /** Function definitions */
 
@@ -197,8 +219,8 @@ int8_t adapter_init_PAC1720(struct PAC1720_device *dev_ptr, struct FIELD_BUS_INT
 {
         if (dev_ptr != NULL && fieldbus_interface != NULL && delay_fptr != NULL && check_mandatory_dev_settings(dev_ptr))
         {
-            internal_fieldbus_interface = fieldbus_interface;
-            internal_delay = delay_fptr;
+            set_fieldbus_ptr(fieldbus_interface);
+            set_delay_ptr(delay_fptr);
             return init_device_PAC1720(dev_ptr, &adapter_i2c_write, &adapter_i2c_read, &adapter_delay);
         } else 
         {
@@ -306,7 +328,7 @@ uint8_t poll_i2c(uint8_t *addresses, struct FIELD_BUS_INTERFACE *fieldbus_interf
     return no_match;
 }
 
-bool check_mandatory_dev_settings(struct PAC1720_device *dev_ptr)
+bool check_mandatory_dev_settings(struct PAC1720_device *dev_ptr) 
 {
     if ( sensor_address_out_of_range(dev_ptr->DEV_sensor_address) 
          || channels_out_of_range(dev_ptr->DEV_channels)               
@@ -337,6 +359,16 @@ bool channels_out_of_range(const ACTIVE_CHANNELS channels)
     return true;
 }
 
+void set_fieldbus_ptr(struct FIELD_BUS_INTERFACE *external_fieldbus_interface)
+{
+    internal_fieldbus_interface = external_fieldbus_interface;
+}
+
+void set_delay_ptr(delay_function_ptr external_delay)
+{
+    internal_delay = external_delay;
+}
+
 const void* get_ADAPTER_TEST_FPTR_FIELD(void)
 {
     static const void* test_fptr_field[] =  {
@@ -345,7 +377,10 @@ const void* get_ADAPTER_TEST_FPTR_FIELD(void)
                                                  (void*) &adapter_delay,
                                                  (void*) &sensor_address_out_of_range,
                                                  (void*) &channels_out_of_range,
-                                                 (void*) &poll_i2c
+                                                 (void*) &poll_i2c,
+                                                 (void*) &set_fieldbus_ptr,
+                                                 (void*) &set_delay_ptr,
+                                                 (void*) &check_mandatory_dev_settings
                                             };
 
     return &test_fptr_field;
