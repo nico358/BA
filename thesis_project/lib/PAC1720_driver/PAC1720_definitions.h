@@ -229,13 +229,15 @@ struct 	PAC1720_CH_config
 	/*! Full Scale Range (FSR): current sensing range */
 	uint8_t 					 CH_current_sense_FSR_reg;
 	/* Sense voltage limit register */
-	uint16_t 					 CH_current_sense_limit_reg;
+	uint8_t 					 CH_current_sense_high_limit_reg;
+	uint8_t 					 CH_current_sense_low_limit_reg;
 	/*! Source voltage sampling time settings */
 	uint8_t 					 CH_source_voltage_sampling_time_reg;
 	/*! Source voltage averaging settings */
 	uint8_t 					 CH_source_voltage_sampling_average_reg;
 	/* Source voltage limit register */
-	uint16_t 					 CH_source_voltage_limit_reg;
+	uint8_t 					 CH_source_voltage_high_limit_reg;
+	uint8_t 					 CH_source_voltage_low_limit_reg;
 	/* Mask register */
 	uint8_t 					 CH_mask_reg;
 

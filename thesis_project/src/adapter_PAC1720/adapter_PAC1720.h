@@ -55,8 +55,6 @@ typedef void (*delay_function_ptr) (uint32_t period);
 
 /******************************** Instances ***********************************************/
 /** Sensor struct instances, i2c instance and assigned delay function  */
-extern struct FIELD_BUS_INTERFACE   external_fieldbus_interface;
-extern delay_function_ptr           external_delay_function;
 extern struct PAC1720_device        dev_USB_MON;
 extern struct PAC1720_device        dev_FPGA_VCC;
 extern struct PAC1720_device        dev_WIREL_MCU;
@@ -71,9 +69,16 @@ extern struct PAC1720_device        dev_WIREL_MCU;
  *
  * @return 
  */
-int8_t adapter_init_PAC1720(struct PAC1720_device *dev_ptr, struct FIELD_BUS_INTERFACE *fieldbus_interface, delay_function_ptr delay_fptr);
+void adapter_init_peripherals(struct FIELD_BUS_INTERFACE *fieldbus_interface, delay_function_ptr delay_fptr);
 
-// int8_t get_measurements(struct PAC1720_device *dev_ptr);
+/*!
+ * @fn 
+ * @brief 
+ *
+ *
+ * @return 
+ */
+int8_t adapter_init_PAC1720(struct PAC1720_device *dev_ptr);
 
 /* function prototypes */
 /*!

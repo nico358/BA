@@ -23,6 +23,11 @@ uint8_t  mock_delay_call;
 unsigned char mock_i2c_start(unsigned char address){
     mock_i2c_start_call++;
     mock_i2c_start_arg = address;
+    /** Return fail for 0x18 addr */
+    if(address == (0x18 << BUS_ADDRESS_SHIFT) + I2C_WRITE) 
+    {
+        return 1;
+    }
     return PAC1720_OK;
 }
 
@@ -75,41 +80,50 @@ struct FIELD_BUS_INTERFACE dummy_i2c = {
 };
 
 /** Provide function pointers */
-typedef int8_t      (*adapter_i2c_write)            (const uint8_t sensor_address, const uint8_t reg_address, uint8_t *data_ptr, const uint16_t len);
-typedef int8_t      (*adapter_i2c_read)             (const uint8_t sensor_address, const uint8_t reg_address, uint8_t *data_ptr, const uint16_t len);
+typedef int8_t      (*adapter_fbus_write)           (const uint8_t sensor_address, const uint8_t reg_address, uint8_t *data_ptr, const uint16_t len);
+typedef int8_t      (*adapter_fbus_read)            (const uint8_t sensor_address, const uint8_t reg_address, uint8_t *data_ptr, const uint16_t len);
 typedef void        (*adapter_delay)                (uint32_t period);
 typedef bool        (*sensor_address_out_of_range)  (const uint8_t address);
 typedef bool        (*channels_out_of_range)        (const ACTIVE_CHANNELS channels);
-typedef uint8_t     (*poll_i2c)                     (const struct FIELD_BUS_INTERFACE *i2c_ptr, uint8_t loop_var, uint8_t *addresses);
+typedef uint8_t     (*poll_fbus)                    (uint8_t *addresses, struct FIELD_BUS_INTERFACE *fieldbus_interface, uint8_t loop_var);
 typedef void        (*set_fieldbus_ptr)             (struct FIELD_BUS_INTERFACE *external_fieldbus_interface);
 typedef void        (*set_delay_ptr)                (delay_function_ptr external_delay);
 typedef bool        (*check_mandatory_dev_settings) (struct PAC1720_device *dev_ptr);
+typedef bool        (*check_peripherals_initialized)(void);
+typedef int8_t      (*fbus_write_loop)              (uint8_t *data_ptr, const uint16_t len);
+typedef int8_t      (*fbus_read_loop)               (uint8_t *data_ptr, const uint16_t len);
 
 /** Declare functions */
-adapter_i2c_write               adapter_i2c_write_func;
-adapter_i2c_read                adapter_i2c_read_func;
+adapter_fbus_write              adapter_fbus_write_func;
+adapter_fbus_read               adapter_fbus_read_func;
 adapter_delay                   adapter_delay_func;
 sensor_address_out_of_range     sensor_address_out_of_range_func;
 channels_out_of_range           channels_out_of_range_func;
-poll_i2c                        poll_i2c_func;
+poll_fbus                       poll_fbus_func;
 set_fieldbus_ptr                set_fieldbus_ptr_func;
 set_delay_ptr                   set_delay_ptr_func;
 check_mandatory_dev_settings    check_mandatory_dev_settings_func;
+check_peripherals_initialized   check_peripherals_initialized_func;
+fbus_write_loop                 fbus_write_loop_func;
+fbus_read_loop                  fbus_read_loop_func;
 
 
 void setUp(void) {
     // Get function pointers from declaration
     const void* (**test_fptr_field)[]   = (void*) get_ADAPTER_TEST_FPTR_FIELD();
     // Assign function pointers function declares
-    adapter_i2c_write_func              = (adapter_i2c_write)               test_fptr_field[0];
-    adapter_i2c_read_func               = (adapter_i2c_read)                test_fptr_field[1];
+    adapter_fbus_write_func             = (adapter_fbus_write)              test_fptr_field[0];
+    adapter_fbus_read_func              = (adapter_fbus_read)               test_fptr_field[1];
     adapter_delay_func                  = (adapter_delay)                   test_fptr_field[2];
     sensor_address_out_of_range_func    = (sensor_address_out_of_range)     test_fptr_field[3];
     channels_out_of_range_func          = (channels_out_of_range)           test_fptr_field[4];
-    poll_i2c_func                       = (poll_i2c)                        test_fptr_field[5];
+    poll_fbus_func                      = (poll_fbus)                       test_fptr_field[5];
     set_fieldbus_ptr_func               = (set_fieldbus_ptr)                test_fptr_field[6];
     set_delay_ptr_func                  = (set_delay_ptr)                   test_fptr_field[7];
     check_mandatory_dev_settings_func   = (check_mandatory_dev_settings)    test_fptr_field[8];
+    check_peripherals_initialized_func  = (check_peripherals_initialized)   test_fptr_field[9];
+    fbus_write_loop_func                = (fbus_write_loop)                 test_fptr_field[10];
+    fbus_read_loop_func                 = (fbus_read_loop)                  test_fptr_field[11];
 }
 
 void tearDown(void) {
@@ -133,19 +147,85 @@ void tearDown(void) {
 }
 
 void test_adapter_find_sensors(void){
-
+    /* Set up dummy inputs */
+    uint8_t dummy_addresses[16] = {0};
+    /** Verify function call */
+    uint8_t test_result = SENSOR_ADDRESS_NUMBER -1;
+    uint8_t dummy_last_sensor_addr = PAC1720_addresses[SENSOR_ADDRESS_NUMBER -1];
+    uint8_t dummy_sensor_addr_return = (dummy_last_sensor_addr << BUS_ADDRESS_SHIFT) + I2C_WRITE;
+    TEST_ASSERT_EQUAL(test_result, adapter_find_sensors(dummy_addresses, &dummy_i2c, &mock_user_delay));
+    TEST_ASSERT_EQUAL(SENSOR_ADDRESS_NUMBER + max_search_attempts, mock_i2c_start_call);
+    TEST_ASSERT_EQUAL(dummy_sensor_addr_return, mock_i2c_start_arg);
+    TEST_ASSERT_EQUAL(max_search_attempts +1, mock_delay_call);
+    TEST_ASSERT_EQUAL(10, mock_delay_arg);
+    TEST_ASSERT_EQUAL(SENSOR_ADDRESS_NUMBER + max_search_attempts, mock_i2c_stop_call);
+    uint8_t test_arr[16] = {0};
+    /** Copy sensor addresses in test array but first address */
+    for(int i = 1; i < SENSOR_ADDRESS_NUMBER; i++){
+        test_arr[i] = PAC1720_addresses[i];
+    }
+    TEST_ASSERT_EQUAL_HEX8_ARRAY(test_arr, dummy_addresses, sizeof(dummy_addresses));
 }
 
-void test_poll_i2c(void){
-
+void test_poll_fbus(void){
+    /* Set up dummy inputs */
+    uint8_t dummy_loop_var = 0;
+    uint8_t dummy_sensor_addr = PAC1720_addresses[dummy_loop_var];
+    uint8_t dummy_sensor_addr_return = (dummy_sensor_addr << BUS_ADDRESS_SHIFT) + I2C_WRITE;
+    uint8_t dummy_addresses[2] = {0};
+    /** Check return no match */
+    TEST_ASSERT_EQUAL(1, poll_fbus_func(dummy_addresses, &dummy_i2c, dummy_loop_var));
+    TEST_ASSERT_EQUAL(1, mock_i2c_start_call);
+    TEST_ASSERT_EQUAL(dummy_sensor_addr_return, mock_i2c_start_arg);
+    TEST_ASSERT_EQUAL(1, mock_i2c_stop_call);
+    uint8_t test_arr[2] = {0x00, 0x00};
+    TEST_ASSERT_EQUAL_HEX8_ARRAY(test_arr, dummy_addresses, sizeof(dummy_addresses));
+    /** Check return match */
+    dummy_loop_var = 1;
+    dummy_sensor_addr = PAC1720_addresses[dummy_loop_var];
+    dummy_sensor_addr_return = (dummy_sensor_addr << BUS_ADDRESS_SHIFT) + I2C_WRITE;
+    TEST_ASSERT_EQUAL(0, poll_fbus_func(dummy_addresses, &dummy_i2c, dummy_loop_var));
+    TEST_ASSERT_EQUAL(2, mock_i2c_start_call);
+    TEST_ASSERT_EQUAL(dummy_sensor_addr_return, mock_i2c_start_arg);
+    TEST_ASSERT_EQUAL(2, mock_i2c_stop_call);
+    test_arr[1] = dummy_sensor_addr;
+    TEST_ASSERT_EQUAL_HEX8_ARRAY(test_arr, dummy_addresses, sizeof(dummy_addresses));
 }
 
-void test_adapter_init_PAC1720(void){
+void test_fbus_write_loop(void){
+    set_fieldbus_ptr_func(&dummy_i2c);
+        /* Set up dummy inputs */
+    uint8_t dummy_data[2] = {0xAA, 0xBB};
+    uint8_t dummy_len = sizeof(dummy_data);
+    /* Execute function */
+    TEST_ASSERT_EQUAL(PAC1720_OK, fbus_write_loop_func(dummy_data, dummy_len));
+    /* Evaluate spy parameters */
+    TEST_ASSERT_EQUAL_HEX8(dummy_data[1], mock_i2c_write_arg);
+    TEST_ASSERT_EQUAL(dummy_len, mock_i2c_write_call);
+}
+void test_fbus_read_loop(void){
+    set_fieldbus_ptr_func(&dummy_i2c);
+        /* Set up dummy inputs */
+    uint8_t dummy_data[3] = {0};
+    uint8_t dummy_len = sizeof(dummy_data);
+    /* Execute function */
+    TEST_ASSERT_EQUAL_HEX8(PAC1720_OK, fbus_read_loop_func(dummy_data, dummy_len));
+    /* Evaluate spy parameters */
+    TEST_ASSERT_EQUAL(2, mock_i2c_readAck_call);
+    TEST_ASSERT_EQUAL(1, mock_i2c_readNak_call);
+    /* Evaluate array reading */
+    uint8_t test_arr[3] = {0xDD, 0xDD, 0xDE};
+    TEST_ASSERT_EQUAL_HEX8_ARRAY(test_arr, dummy_data, dummy_len);
+}  
 
-
+void test_check_peripherals_initialized(void){
+    TEST_ASSERT_FALSE(check_peripherals_initialized_func());
+    set_fieldbus_ptr_func(&dummy_i2c);
+    set_delay_ptr_func(&mock_user_delay);
+    TEST_ASSERT_TRUE(check_peripherals_initialized_func());
 }
 
-void test_adapter_i2c_write(void){
+void test_adapter_fbus_write(void){
     set_fieldbus_ptr_func(&dummy_i2c);
     /* Set up dummy inputs */
     uint8_t dummy_address = 0x28;
@@ -154,7 +234,7 @@ void test_adapter_i2c_write(void){
     uint8_t dummy_data[2] = {0xAA, 0xBB};
     uint8_t dummy_len = sizeof(dummy_data);
     /* Execute function */
-    TEST_ASSERT_EQUAL(PAC1720_OK, adapter_i2c_write_func(dummy_address, dummy_reg_address, dummy_data, dummy_len));
+    TEST_ASSERT_EQUAL(PAC1720_OK, adapter_fbus_write_func(dummy_address, dummy_reg_address, dummy_data, dummy_len));
     /* Evaluate spy parameters */
     TEST_ASSERT_EQUAL_HEX8(dummy_address_return, mock_i2c_start_wait_arg);
     TEST_ASSERT_EQUAL(1,mock_i2c_start_wait_call);
@@ -163,7 +243,7 @@ void test_adapter_i2c_write(void){
     TEST_ASSERT_EQUAL(1,mock_i2c_stop_call);
 }   
 
-void test_adapter_i2c_read(void){
+void test_adapter_fbus_read(void){
     set_fieldbus_ptr_func(&dummy_i2c);
     /* Set up dummy inputs */
     uint8_t dummy_address = 0x28;
@@ -173,7 +253,7 @@ void test_adapter_i2c_read(void){
     uint8_t dummy_data[3] = {0};
     uint8_t dummy_len = sizeof(dummy_data);
     /* Execute function */
-    TEST_ASSERT_EQUAL_HEX8(PAC1720_OK, adapter_i2c_read_func(dummy_address, dummy_reg_address, dummy_data, dummy_len));
+    TEST_ASSERT_EQUAL_HEX8(PAC1720_OK, adapter_fbus_read_func(dummy_address, dummy_reg_address, dummy_data, dummy_len));
     /* Evaluate spy parameters */
     TEST_ASSERT_EQUAL_HEX8(dummy_address_write_return, mock_i2c_start_wait_arg);
     TEST_ASSERT_EQUAL(1, mock_i2c_start_wait_call);

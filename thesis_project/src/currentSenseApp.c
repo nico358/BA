@@ -1,6 +1,4 @@
 #include "include/currentSenseApp.h"
-#include <stdio.h>
-#include <string.h>
 
 /* Instanciate a field bus interface */
 struct FIELD_BUS_INTERFACE external_fieldbus_interface = {
@@ -18,53 +16,87 @@ struct FIELD_BUS_INTERFACE external_fieldbus_interface = {
 /** Assign user provided delay function to pointer */
 delay_function_ptr external_delay_function = &user_delay_ms;
 
-int8_t init_platform(void);
-void print_error(uint8_t res);
+/** Function prototypes */
+int8_t  init_platform(void);
+void    check_user_input(void);
+void    set_state(void);
+void    print_error(uint8_t res);
+
+/** User input controlled state */
+uint8_t state = 1;
 
 
 int main(void)
 {   
     int8_t res = init_platform();
 
-    if(res != PAC1720_OK) print_error(res);
+    if(res != PAC1720_OK) 
+    {
+        print_error(res);
+    }
 
     char msg[64];
-    uint8_t state = 1;
 
     while(state){
 
-        debugReadChar();
-        if(debugReadCharAvailable())
-        {
-            uint8_t data = debugGetChar();
-            switch(data)
-            {
-                case 'C': 
-                    state = 2;
-                    break;
-
-                case 'q':
-                    state = 0;
-                    break;
-                default: 
-                    state = 1;
-            }
-        }
-
+        check_user_input();
         if(state == 2)
         {
-            ext_delay_func(500);
+            sprintf(msg, "In mode 2\r\n", res);
+            debugWriteLine(msg);
+            external_delay_function(500);
         }
+
     }
     
     return 0;
 }
 
+
 int8_t init_platform(void)
 {
+    uint8_t res = PAC1720_OK;
+
     debugInit(NULL);
-    i2c_init();
-    // external_fieldbus_interface.init();
+    external_fieldbus_interface.init();
+    adapter_init_peripherals(&external_fieldbus_interface, external_delay_function);
+
+    res = adapter_init_PAC1720(&dev_USB_MON);
+    if(res != PAC1720_OK) 
+    {
+        return res;
+    }
+    res = adapter_init_PAC1720(&dev_FPGA_VCC);
+    if(res != PAC1720_OK)
+    {
+        return res;
+    }
+    return adapter_init_PAC1720(&dev_WIREL_MCU);
+}
+
+void check_user_input(void)
+{
+    debugReadChar();
+    if (debugReadCharAvailable())
+    {
+        set_state();
+    }
+}
+
+void set_state(void)
+{
+    uint8_t data = debugGetChar();
+    switch (data)
+    {
+    case 'C':
+        state = 2;
+        break;
+    case 'q':
+        state = 0;
+        break;
+    default:
+        state = 1;
+    }
 }
 
 void print_error(uint8_t res){
@@ -73,6 +105,6 @@ void print_error(uint8_t res){
         char msg[64];
         sprintf(msg, "Failure while initializing: %d\r\n", res);
         debugWriteLine(msg);
-        ext_delay_func(500);
+        external_delay_function(1000);
     }
 }

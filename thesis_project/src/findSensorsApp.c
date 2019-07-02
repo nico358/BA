@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
-struct BUS_INTERFACE_I2C i2c_interface = {
+struct FIELD_BUS_INTERFACE i2c_interface = {
     .init       = &i2c_init,
     .stop       = &i2c_stop,
     .start      = &i2c_start,
@@ -13,7 +13,7 @@ struct BUS_INTERFACE_I2C i2c_interface = {
     .readNak    = &i2c_readNak
 };
 
-user_delay_fptr ext_delay_func = &user_delay_ms;
+delay_function_ptr ext_delay_func = &user_delay_ms;
 
 int main(void)
 {
@@ -25,7 +25,7 @@ int main(void)
 
     for(;;){
 
-        uint8_t res = adapter_find_sensors(&i2c_interface, ext_delay_func, addr);
+        uint8_t res = adapter_find_sensors(addr, &i2c_interface, ext_delay_func);
         sprintf(msg, "Found sensors: %d, ", res);
         for(uint8_t i = 0; i < SENSOR_ADDRESS_NUMBER; i++){
             if(addr[i]){

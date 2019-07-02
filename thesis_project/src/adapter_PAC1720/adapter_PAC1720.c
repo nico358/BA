@@ -30,10 +30,12 @@ struct PAC1720_device dev_USB_MON = {
     .DEV_CH1_conf.CH_current_sense_sampling_time_reg        = CURRENT_SAMPLE_TIME_80ms,
     .DEV_CH1_conf.CH_current_sense_sampling_average_reg     = SAMPLE_AVERAGING_DISABLED,
     .DEV_CH1_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_80mV,
-    .DEV_CH1_conf.CH_current_sense_limit_reg                = 0,
+    .DEV_CH1_conf.CH_current_sense_high_limit_reg           = 0,
+	.DEV_CH1_conf.CH_current_sense_low_limit_reg            = 0,
     .DEV_CH1_conf.CH_source_voltage_sampling_time_reg       = VSRC_SAMPLE_TIME_20ms,
     .DEV_CH1_conf.CH_source_voltage_sampling_average_reg    = SAMPLE_AVERAGING_DISABLED,
-    .DEV_CH1_conf.CH_source_voltage_limit_reg               = 0,
+    .DEV_CH1_conf.CH_source_voltage_high_limit_reg          = 0,
+	.DEV_CH1_conf.CH_source_voltage_low_limit_reg           = 0,
     .DEV_CH1_conf.CH_mask_reg                               = 0,
 
     .DEV_CH2_conf.CH_name_opt                               = "MON_VCC",
@@ -41,10 +43,12 @@ struct PAC1720_device dev_USB_MON = {
     .DEV_CH2_conf.CH_current_sense_sampling_time_reg        = CURRENT_SAMPLE_TIME_80ms,
     .DEV_CH2_conf.CH_current_sense_sampling_average_reg     = SAMPLE_AVERAGING_DISABLED,
     .DEV_CH2_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_80mV,
-    .DEV_CH2_conf.CH_current_sense_limit_reg                = 0,
+    .DEV_CH2_conf.CH_current_sense_high_limit_reg           = 0,
+	.DEV_CH2_conf.CH_current_sense_low_limit_reg            = 0,
     .DEV_CH2_conf.CH_source_voltage_sampling_time_reg       = VSRC_SAMPLE_TIME_20ms,
     .DEV_CH2_conf.CH_source_voltage_sampling_average_reg    = SAMPLE_AVERAGING_DISABLED,
-    .DEV_CH2_conf.CH_source_voltage_limit_reg               = 0,
+    .DEV_CH2_conf.CH_source_voltage_high_limit_reg          = 0,
+	.DEV_CH2_conf.CH_source_voltage_low_limit_reg           = 0,
     .DEV_CH2_conf.CH_mask_reg                               = 0,
 };
 
@@ -61,10 +65,12 @@ struct PAC1720_device dev_FPGA_VCC = {
     .DEV_CH1_conf.CH_current_sense_sampling_time_reg        = CURRENT_SAMPLE_TIME_80ms,
     .DEV_CH1_conf.CH_current_sense_sampling_average_reg     = SAMPLE_AVERAGING_DISABLED,
     .DEV_CH1_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_80mV,
-    .DEV_CH1_conf.CH_current_sense_limit_reg                = 0,
+    .DEV_CH1_conf.CH_current_sense_high_limit_reg           = 0,
+	.DEV_CH1_conf.CH_current_sense_low_limit_reg            = 0,
     .DEV_CH1_conf.CH_source_voltage_sampling_time_reg       = VSRC_SAMPLE_TIME_20ms,
     .DEV_CH1_conf.CH_source_voltage_sampling_average_reg    = SAMPLE_AVERAGING_DISABLED,
-    .DEV_CH1_conf.CH_source_voltage_limit_reg               = 0,
+    .DEV_CH1_conf.CH_source_voltage_high_limit_reg          = 0,
+	.DEV_CH1_conf.CH_source_voltage_low_limit_reg           = 0,
     .DEV_CH1_conf.CH_mask_reg                               = 0,
 
     .DEV_CH2_conf.CH_name_opt                               = "FPGA_VCCAUX_MON",
@@ -72,10 +78,12 @@ struct PAC1720_device dev_FPGA_VCC = {
     .DEV_CH2_conf.CH_current_sense_sampling_time_reg        = CURRENT_SAMPLE_TIME_80ms,
     .DEV_CH2_conf.CH_current_sense_sampling_average_reg     = SAMPLE_AVERAGING_DISABLED,
     .DEV_CH2_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_80mV,
-    .DEV_CH2_conf.CH_current_sense_limit_reg                = 0,
+    .DEV_CH2_conf.CH_current_sense_high_limit_reg           = 0,
+	.DEV_CH2_conf.CH_current_sense_low_limit_reg            = 0,
     .DEV_CH2_conf.CH_source_voltage_sampling_time_reg       = VSRC_SAMPLE_TIME_20ms,
     .DEV_CH2_conf.CH_source_voltage_sampling_average_reg    = SAMPLE_AVERAGING_DISABLED,
-    .DEV_CH2_conf.CH_source_voltage_limit_reg               = 0,
+    .DEV_CH2_conf.CH_source_voltage_high_limit_reg          = 0,
+	.DEV_CH2_conf.CH_source_voltage_low_limit_reg           = 0,
     .DEV_CH2_conf.CH_mask_reg                               = 0,
 };
 
@@ -92,10 +100,12 @@ struct PAC1720_device dev_WIREL_MCU = {
     .DEV_CH1_conf.CH_current_sense_sampling_time_reg        = CURRENT_SAMPLE_TIME_80ms,
     .DEV_CH1_conf.CH_current_sense_sampling_average_reg     = SAMPLE_AVERAGING_DISABLED,
     .DEV_CH1_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_80mV,
-    .DEV_CH1_conf.CH_current_sense_limit_reg                = 0,
+    .DEV_CH1_conf.CH_current_sense_high_limit_reg           = 0,
+	.DEV_CH1_conf.CH_current_sense_low_limit_reg            = 0,
     .DEV_CH1_conf.CH_source_voltage_sampling_time_reg       = VSRC_SAMPLE_TIME_20ms,
     .DEV_CH1_conf.CH_source_voltage_sampling_average_reg    = SAMPLE_AVERAGING_DISABLED,
-    .DEV_CH1_conf.CH_source_voltage_limit_reg               = 0,
+    .DEV_CH1_conf.CH_source_voltage_high_limit_reg          = 0,
+	.DEV_CH1_conf.CH_source_voltage_low_limit_reg           = 0,
     .DEV_CH1_conf.CH_mask_reg                               = 0,
 
     .DEV_CH2_conf.CH_name_opt                               = "MCU_VCC",
@@ -103,10 +113,12 @@ struct PAC1720_device dev_WIREL_MCU = {
     .DEV_CH2_conf.CH_current_sense_sampling_time_reg        = CURRENT_SAMPLE_TIME_80ms,
     .DEV_CH2_conf.CH_current_sense_sampling_average_reg     = SAMPLE_AVERAGING_DISABLED,
     .DEV_CH2_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_80mV,
-    .DEV_CH2_conf.CH_current_sense_limit_reg                = 0,
+    .DEV_CH2_conf.CH_current_sense_high_limit_reg           = 0,
+	.DEV_CH2_conf.CH_current_sense_low_limit_reg            = 0,
     .DEV_CH2_conf.CH_source_voltage_sampling_time_reg       = VSRC_SAMPLE_TIME_20ms,
     .DEV_CH2_conf.CH_source_voltage_sampling_average_reg    = SAMPLE_AVERAGING_DISABLED,
-    .DEV_CH2_conf.CH_source_voltage_limit_reg               = 0,
+    .DEV_CH2_conf.CH_source_voltage_high_limit_reg          = 0,
+	.DEV_CH2_conf.CH_source_voltage_low_limit_reg           = 0,
     .DEV_CH2_conf.CH_mask_reg                               = 0,
 };
 
@@ -122,7 +134,7 @@ struct PAC1720_device dev_WIREL_MCU = {
  * @param .
  *
  */
-int8_t adapter_i2c_write(const uint8_t sensor_address, const uint8_t reg_address, uint8_t *data_ptr, const uint16_t len);
+int8_t adapter_fbus_write(const uint8_t sensor_address, const uint8_t reg_address, uint8_t *data_ptr, const uint16_t len);
 
 /*!
  * @fn 
@@ -133,7 +145,7 @@ int8_t adapter_i2c_write(const uint8_t sensor_address, const uint8_t reg_address
  * @param .
  *
  */
-int8_t adapter_i2c_read(const uint8_t sensor_address, const uint8_t reg_address, uint8_t *data_ptr, const uint16_t len);
+int8_t adapter_fbus_read(const uint8_t sensor_address, const uint8_t reg_address, uint8_t *data_ptr, const uint16_t len);
 
 /*!
  * @fn 
@@ -155,6 +167,28 @@ void adapter_delay(uint32_t period);
  * @param .
  *
  */
+int8_t fbus_write_loop(uint8_t *data_ptr, const uint16_t len);
+
+/*!
+ * @fn 
+ * @brief
+ *
+ * @note 
+ *
+ * @param .
+ *
+ */
+int8_t fbus_read_loop(uint8_t *data_ptr, const uint16_t len);
+
+/*!
+ * @fn 
+ * @brief
+ *
+ * @note 
+ *
+ * @param .
+ *
+ */
 bool check_mandatory_dev_settings(struct PAC1720_device *dev_ptr);
 
 /*!
@@ -166,7 +200,18 @@ bool check_mandatory_dev_settings(struct PAC1720_device *dev_ptr);
  * @param .
  *
  */
-uint8_t poll_i2c(uint8_t *addresses, struct FIELD_BUS_INTERFACE *fieldbus_interface, uint8_t loop_var);
+uint8_t poll_fbus(uint8_t *addresses, struct FIELD_BUS_INTERFACE *fieldbus_interface, uint8_t loop_var);
+
+/*!
+ * @fn 
+ * @brief
+ *
+ * @note 
+ *
+ * @param .
+ *
+ */
+bool check_peripherals_initialized(void);
 
 /*!
  * @fn 
@@ -215,73 +260,26 @@ void set_delay_ptr(delay_function_ptr external_delay);
 
 /** Function definitions */
 
-int8_t adapter_init_PAC1720(struct PAC1720_device *dev_ptr, struct FIELD_BUS_INTERFACE *fieldbus_interface, delay_function_ptr delay_fptr)
+void adapter_init_peripherals(struct FIELD_BUS_INTERFACE *fieldbus_interface, delay_function_ptr delay_fptr)
 {
-        if (dev_ptr != NULL && fieldbus_interface != NULL && delay_fptr != NULL && check_mandatory_dev_settings(dev_ptr))
-        {
-            set_fieldbus_ptr(fieldbus_interface);
-            set_delay_ptr(delay_fptr);
-            return init_device_PAC1720(dev_ptr, &adapter_i2c_write, &adapter_i2c_read, &adapter_delay);
-        } else 
-        {
-            return PAC1720_FAILURE;
-        }
-}
-
-// int8_t get_measurements( struct PAC1720_device *dev_ptr )
-// {
-//     return get_measurement_registers(dev_ptr);
-// }
-
-/** User defined i2c write function */
-int8_t adapter_i2c_write(const uint8_t sensor_address, const uint8_t reg_address, uint8_t *data_ptr, const uint16_t len)
-{   /** (Blocking) Connect to sensor, return error if fails */
-    uint8_t result = PAC1720_OK;
-    internal_fieldbus_interface->startWait((sensor_address << BUS_ADDRESS_SHIFT) + I2C_WRITE); 
-    result = internal_fieldbus_interface->write(reg_address);
-    if(result != PAC1720_OK) return result;
-
-    /** Write to #len registers, increase the address #len times, return error if fails */
-    for(uint16_t i = 0; i < len; i++)
+    if (fieldbus_interface != NULL && delay_fptr != NULL)
     {
-        result = internal_fieldbus_interface->write(*data_ptr);
-        if(result != PAC1720_OK) return result;
-        data_ptr++;
-    }
-    /** Stop communication */
-    internal_fieldbus_interface->stop();
-    return result;
+        set_fieldbus_ptr(fieldbus_interface);
+        set_delay_ptr(delay_fptr);
+    } 
 }
 
-/** User defined i2c read function */
-int8_t adapter_i2c_read(const uint8_t sensor_address, const uint8_t reg_address, uint8_t *data_ptr, const uint16_t len)
-{   /** (Blocking) Connect to sensor, return error if fails */
-    uint8_t result = PAC1720_OK;
-    internal_fieldbus_interface->startWait((sensor_address << BUS_ADDRESS_SHIFT) + I2C_WRITE);
-    result = internal_fieldbus_interface->write(reg_address); 
-    if(result != PAC1720_OK) return result;
 
-    /* (Blocking) Repeat start in read mode, return error if fails  */
-    result = internal_fieldbus_interface->repStart((sensor_address << BUS_ADDRESS_SHIFT) + I2C_READ);
-    if(result != PAC1720_OK) return result;
-    /* Read from #len registers, increase the address #len times */
-    for(uint16_t i = 0; i < len; i++)
-    {   /** Read register and send ACK */
-        if(i < len -1)  *data_ptr = internal_fieldbus_interface->readAck();
-        /* After the last read send NACK */
-        else            *data_ptr = internal_fieldbus_interface->readNak(); 
-        data_ptr++;
-    }
-    /** Stop communication */
-    internal_fieldbus_interface->stop();
-    return result;
-}
-
-/* User defined delay function */
-void adapter_delay(uint32_t period)
+int8_t adapter_init_PAC1720(struct PAC1720_device *dev_ptr)
 {
-    /* Provided delay function */
-    internal_delay(period);
+    if (dev_ptr != NULL && check_mandatory_dev_settings(dev_ptr) && check_peripherals_initialized())
+    {
+        return init_device_PAC1720(dev_ptr, &adapter_fbus_write, &adapter_fbus_read, &adapter_delay);
+    }
+    else
+    {
+        return PAC1720_INIT_ERROR;
+    }
 }
 
 uint8_t adapter_find_sensors(uint8_t *addresses, struct FIELD_BUS_INTERFACE *fieldbus_interface, delay_function_ptr delay_fptr)
@@ -292,9 +290,9 @@ uint8_t adapter_find_sensors(uint8_t *addresses, struct FIELD_BUS_INTERFACE *fie
 
     for (uint8_t loop_var = 0; loop_var < SENSOR_ADDRESS_NUMBER; loop_var++)
     {
-        while (no_match && count < max_search_attempts)
+        while (no_match && count <= max_search_attempts)
         {
-            no_match = poll_i2c(addresses, fieldbus_interface, loop_var);
+            no_match = poll_fbus(addresses, fieldbus_interface, loop_var);
 
             if (no_match)
             {
@@ -313,7 +311,85 @@ uint8_t adapter_find_sensors(uint8_t *addresses, struct FIELD_BUS_INTERFACE *fie
     return res;
 }
 
-uint8_t poll_i2c(uint8_t *addresses, struct FIELD_BUS_INTERFACE *fieldbus_interface, uint8_t loop_var)
+/** User defined i2c write function */
+int8_t adapter_fbus_write(const uint8_t sensor_address, const uint8_t reg_address, uint8_t *data_ptr, const uint16_t len)
+{   /** (Blocking) Connect to sensor, return error if fails */
+    uint8_t result = PAC1720_OK;
+
+    internal_fieldbus_interface->startWait((sensor_address << BUS_ADDRESS_SHIFT) + I2C_WRITE); 
+    result = internal_fieldbus_interface->write(reg_address);
+    if(result != PAC1720_OK) 
+    {
+        return result;
+    }
+
+    result = fbus_write_loop(data_ptr, len);
+
+    /** Stop communication */
+    internal_fieldbus_interface->stop();
+    return result;
+}
+
+/** User defined i2c read function */
+int8_t adapter_fbus_read(const uint8_t sensor_address, const uint8_t reg_address, uint8_t *data_ptr, const uint16_t len)
+{   /** (Blocking) Connect to sensor, return error if fails */
+    uint8_t result = PAC1720_OK;
+
+    internal_fieldbus_interface->startWait((sensor_address << BUS_ADDRESS_SHIFT) + I2C_WRITE);
+    result = internal_fieldbus_interface->write(reg_address); 
+    if(result != PAC1720_OK)
+    {
+        return result;
+    }
+    /* (Blocking) Repeat start in read mode, return error if fails  */
+    result = internal_fieldbus_interface->repStart((sensor_address << BUS_ADDRESS_SHIFT) + I2C_READ);
+    if(result != PAC1720_OK) 
+    {
+        return result;
+    }
+    
+    result = fbus_read_loop(data_ptr, len);
+
+    /** Stop communication */
+    internal_fieldbus_interface->stop();
+    return result;
+}
+
+/* User defined delay function */
+void adapter_delay(uint32_t period)
+{
+    /* Provided delay function */
+    internal_delay(period);
+}
+
+int8_t fbus_write_loop(uint8_t *data_ptr, const uint16_t len)
+{
+    uint8_t result = PAC1720_OK;
+    /** Write to #len registers, increase the address #len times, return error if fails */
+    for(uint16_t i = 0; i < len; i++)
+    {
+        result = internal_fieldbus_interface->write(*data_ptr);
+        if(result != PAC1720_OK) return result;
+        data_ptr++;
+    }
+    return result;
+}
+
+int8_t fbus_read_loop(uint8_t *data_ptr, const uint16_t len)
+{
+    uint8_t result = PAC1720_OK;
+    /* Read from #len registers, increase the address #len times */
+    for(uint16_t i = 0; i < len; i++)
+    {   /** Read register and send ACK */
+        if(i < len -1)  *data_ptr = internal_fieldbus_interface->readAck();
+        /* After the last read send NACK */
+        else            *data_ptr = internal_fieldbus_interface->readNak(); 
+        data_ptr++;
+    }
+    return result;
+}
+
+uint8_t poll_fbus(uint8_t *addresses, struct FIELD_BUS_INTERFACE *fieldbus_interface, uint8_t loop_var)
 {
     uint8_t sensor_addr = PAC1720_addresses[loop_var];
 
@@ -328,6 +404,11 @@ uint8_t poll_i2c(uint8_t *addresses, struct FIELD_BUS_INTERFACE *fieldbus_interf
     return no_match;
 }
 
+bool check_peripherals_initialized(void)
+{
+    return (internal_fieldbus_interface != NULL && internal_delay != NULL);
+}
+
 bool check_mandatory_dev_settings(struct PAC1720_device *dev_ptr) 
 {
     if ( sensor_address_out_of_range(dev_ptr->DEV_sensor_address) 
@@ -338,7 +419,6 @@ bool check_mandatory_dev_settings(struct PAC1720_device *dev_ptr)
         return false;
     }
     return true;
-    
 }
       
 bool sensor_address_out_of_range(const uint8_t address)
@@ -372,15 +452,18 @@ void set_delay_ptr(delay_function_ptr external_delay)
 const void* get_ADAPTER_TEST_FPTR_FIELD(void)
 {
     static const void* test_fptr_field[] =  {
-                                                 (void*) &adapter_i2c_write,
-                                                 (void*) &adapter_i2c_read,
+                                                 (void*) &adapter_fbus_write,
+                                                 (void*) &adapter_fbus_read,
                                                  (void*) &adapter_delay,
                                                  (void*) &sensor_address_out_of_range,
                                                  (void*) &channels_out_of_range,
-                                                 (void*) &poll_i2c,
+                                                 (void*) &poll_fbus,
                                                  (void*) &set_fieldbus_ptr,
                                                  (void*) &set_delay_ptr,
-                                                 (void*) &check_mandatory_dev_settings
+                                                 (void*) &check_mandatory_dev_settings,
+                                                 (void*) &check_peripherals_initialized,
+                                                 (void*) &fbus_write_loop,
+                                                 (void*) &fbus_read_loop
                                             };
 
     return &test_fptr_field;
