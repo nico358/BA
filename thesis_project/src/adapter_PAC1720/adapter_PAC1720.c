@@ -24,6 +24,7 @@ struct PAC1720_device dev_USB_MON = {
     .DEV_configuration_reg                                  = 0,
 	.DEV_conversion_rate_reg                                = CONVERSION_CONTINIOUS,
 	.DEV_one_shot_reg                                       = 0,
+    .DEV_mask_reg                                           = 0,
 
     .DEV_CH1_conf.CH_name_opt                               = "USB_VCC",
     .DEV_CH1_conf.CH_current_sense_resistor_value           = 0.15f,
@@ -36,7 +37,6 @@ struct PAC1720_device dev_USB_MON = {
     .DEV_CH1_conf.CH_source_voltage_sampling_average_reg    = SAMPLE_AVERAGING_DISABLED,
     .DEV_CH1_conf.CH_source_voltage_high_limit_reg          = 0,
 	.DEV_CH1_conf.CH_source_voltage_low_limit_reg           = 0,
-    .DEV_CH1_conf.CH_mask_reg                               = 0,
 
     .DEV_CH2_conf.CH_name_opt                               = "MON_VCC",
     .DEV_CH2_conf.CH_current_sense_resistor_value           = 0.8f,
@@ -49,7 +49,6 @@ struct PAC1720_device dev_USB_MON = {
     .DEV_CH2_conf.CH_source_voltage_sampling_average_reg    = SAMPLE_AVERAGING_DISABLED,
     .DEV_CH2_conf.CH_source_voltage_high_limit_reg          = 0,
 	.DEV_CH2_conf.CH_source_voltage_low_limit_reg           = 0,
-    .DEV_CH2_conf.CH_mask_reg                               = 0,
 };
 
 struct PAC1720_device dev_FPGA_VCC = {
@@ -59,6 +58,7 @@ struct PAC1720_device dev_FPGA_VCC = {
     .DEV_configuration_reg                                  = 0,
 	.DEV_conversion_rate_reg                                = CONVERSION_CONTINIOUS,
 	.DEV_one_shot_reg                                       = 0,
+    .DEV_mask_reg                                           = 0,
 
     .DEV_CH1_conf.CH_name_opt                               = "FPGA_VCCINT_MON",
     .DEV_CH1_conf.CH_current_sense_resistor_value           = 0.8f,
@@ -71,7 +71,6 @@ struct PAC1720_device dev_FPGA_VCC = {
     .DEV_CH1_conf.CH_source_voltage_sampling_average_reg    = SAMPLE_AVERAGING_DISABLED,
     .DEV_CH1_conf.CH_source_voltage_high_limit_reg          = 0,
 	.DEV_CH1_conf.CH_source_voltage_low_limit_reg           = 0,
-    .DEV_CH1_conf.CH_mask_reg                               = 0,
 
     .DEV_CH2_conf.CH_name_opt                               = "FPGA_VCCAUX_MON",
     .DEV_CH2_conf.CH_current_sense_resistor_value           = 0.8f,
@@ -84,7 +83,6 @@ struct PAC1720_device dev_FPGA_VCC = {
     .DEV_CH2_conf.CH_source_voltage_sampling_average_reg    = SAMPLE_AVERAGING_DISABLED,
     .DEV_CH2_conf.CH_source_voltage_high_limit_reg          = 0,
 	.DEV_CH2_conf.CH_source_voltage_low_limit_reg           = 0,
-    .DEV_CH2_conf.CH_mask_reg                               = 0,
 };
 
 struct PAC1720_device dev_WIREL_MCU = {
@@ -94,6 +92,7 @@ struct PAC1720_device dev_WIREL_MCU = {
     .DEV_configuration_reg                                  = 0,
 	.DEV_conversion_rate_reg                                = CONVERSION_CONTINIOUS,
 	.DEV_one_shot_reg                                       = 0,
+    .DEV_mask_reg                                           = 0,
 
     .DEV_CH1_conf.CH_name_opt                               = "WIRELESS_VCC",
     .DEV_CH1_conf.CH_current_sense_resistor_value           = 0.8f,
@@ -106,7 +105,6 @@ struct PAC1720_device dev_WIREL_MCU = {
     .DEV_CH1_conf.CH_source_voltage_sampling_average_reg    = SAMPLE_AVERAGING_DISABLED,
     .DEV_CH1_conf.CH_source_voltage_high_limit_reg          = 0,
 	.DEV_CH1_conf.CH_source_voltage_low_limit_reg           = 0,
-    .DEV_CH1_conf.CH_mask_reg                               = 0,
 
     .DEV_CH2_conf.CH_name_opt                               = "MCU_VCC",
     .DEV_CH2_conf.CH_current_sense_resistor_value           = 0.8f,
@@ -119,7 +117,6 @@ struct PAC1720_device dev_WIREL_MCU = {
     .DEV_CH2_conf.CH_source_voltage_sampling_average_reg    = SAMPLE_AVERAGING_DISABLED,
     .DEV_CH2_conf.CH_source_voltage_high_limit_reg          = 0,
 	.DEV_CH2_conf.CH_source_voltage_low_limit_reg           = 0,
-    .DEV_CH2_conf.CH_mask_reg                               = 0,
 };
 
 

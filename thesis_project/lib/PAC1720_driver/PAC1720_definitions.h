@@ -149,10 +149,12 @@ typedef enum 			{FIRST_CHANNEL=1, SECOND_CHANNEL=2, BOTH_CHANNELS=3} 		ACTIVE_CH
 static const uint8_t 	SENSOR_ADDRESS_NUMBER 										= 16;
 static const uint8_t 	SENSOR_REGISTERS_NUMBER 									= 32;
 
-static const uint8_t	GLOBAL_CONFIG_REGISTERS_LENGTH								= 6;
+static const uint8_t	GLOBAL_CONFIG_REGISTERS_LENGTH								= 4;
+static const uint8_t	LIMIT_STATUS_REGISTERS_LENGTH								= 2;
 static const uint8_t	VSOURCE_SAMPLING_REGISTER_OFFSET							= 6;
 static const uint8_t	CH1_VSENSE_SAMPLING_REGISTER_OFFSET							= 7;
 static const uint8_t	CH2_VSENSE_SAMPLING_REGISTER_OFFSET							= 8;
+static const uint8_t	SAMPLING_CONFIG_REGISTERS_LENGTH							= 3;
 static const uint8_t 	READING_REGISTERS_OFFSET 									= 9;
 static const uint8_t 	READING_REGISTERS_LENGTH 									= 12;
 static const uint8_t	LIMIT_REGISTERS_OFFSET										= 21;
@@ -167,6 +169,10 @@ static const uint8_t 	BITMASK_SECOND_TWO											= 0x30;
 static const uint8_t    BITMASK_THIRD_TWO											= 0x0C;
 static const uint8_t    BITMASK_FOURTH_TWO 											= 0x03;
 static const uint8_t 	BITMASK_CONVERSION_CMPL										= 0x80;
+static const uint8_t 	BITMASK_CH2_VSENSE_LIMIT									= 0x08;
+static const uint8_t 	BITMASK_CH2_VSRC_LIMIT										= 0x04;
+static const uint8_t 	BITMASK_CH1_VSENSE_LIMIT									= 0x02;
+static const uint8_t 	BITMASK_CH1_VSRC_LIMIT										= 0x01;
 
 static const uint8_t 	SHIFT_IN_BYTES_OFFSET 										= 8;
 static const uint8_t 	SHIFT_SIX_BITS												= 6;
@@ -238,8 +244,6 @@ struct 	PAC1720_CH_config
 	/* Source voltage limit register */
 	uint8_t 					 CH_source_voltage_high_limit_reg;
 	uint8_t 					 CH_source_voltage_low_limit_reg;
-	/* Mask register */
-	uint8_t 					 CH_mask_reg;
 
 	struct PAC1720_ch_internal * ch_internal;
 };
@@ -259,6 +263,8 @@ struct 	PAC1720_device
 	uint8_t 						DEV_conversion_rate_reg;
 	/* One shot register */
 	uint8_t 						DEV_one_shot_reg;
+	/* Mask register */
+	uint8_t 					 	DEV_mask_reg;
 
 	/*! Channel 1 configuration */
 	struct PAC1720_CH_config 		DEV_CH1_conf;
