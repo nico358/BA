@@ -84,7 +84,7 @@ typedef int8_t      (*adapter_fbus_write)           (const uint8_t sensor_addres
 typedef int8_t      (*adapter_fbus_read)            (const uint8_t sensor_address, const uint8_t reg_address, uint8_t *data_ptr, const uint16_t len);
 typedef void        (*adapter_delay)                (uint32_t period);
 typedef bool        (*sensor_address_out_of_range)  (const uint8_t address);
-typedef bool        (*channels_out_of_range)        (const ACTIVE_CHANNELS channels);
+//NULL
 typedef uint8_t     (*poll_fbus)                    (uint8_t *addresses, struct FIELD_BUS_INTERFACE *fieldbus_interface, uint8_t loop_var);
 typedef void        (*set_fieldbus_ptr)             (struct FIELD_BUS_INTERFACE *external_fieldbus_interface);
 typedef void        (*set_delay_ptr)                (delay_function_ptr external_delay);
@@ -98,7 +98,7 @@ adapter_fbus_write              adapter_fbus_write_func;
 adapter_fbus_read               adapter_fbus_read_func;
 adapter_delay                   adapter_delay_func;
 sensor_address_out_of_range     sensor_address_out_of_range_func;
-channels_out_of_range           channels_out_of_range_func;
+//NULL
 poll_fbus                       poll_fbus_func;
 set_fieldbus_ptr                set_fieldbus_ptr_func;
 set_delay_ptr                   set_delay_ptr_func;
@@ -116,7 +116,7 @@ void setUp(void) {
     adapter_fbus_read_func              = (adapter_fbus_read)               test_fptr_field[1];
     adapter_delay_func                  = (adapter_delay)                   test_fptr_field[2];
     sensor_address_out_of_range_func    = (sensor_address_out_of_range)     test_fptr_field[3];
-    channels_out_of_range_func          = (channels_out_of_range)           test_fptr_field[4];
+    //NULL
     poll_fbus_func                      = (poll_fbus)                       test_fptr_field[5];
     set_fieldbus_ptr_func               = (set_fieldbus_ptr)                test_fptr_field[6];
     set_delay_ptr_func                  = (set_delay_ptr)                   test_fptr_field[7];
@@ -288,19 +288,9 @@ void test_sensor_address_out_of_range(void){
     }
 }
 
-void test_channels_out_of_range(void){
-     TEST_ASSERT_FALSE(channels_out_of_range_func(FIRST_CHANNEL));
-     TEST_ASSERT_FALSE(channels_out_of_range_func(SECOND_CHANNEL));
-     TEST_ASSERT_FALSE(channels_out_of_range_func(BOTH_CHANNELS));
-     TEST_ASSERT_FALSE(channels_out_of_range_func(NO_CHANNEL));
-     TEST_ASSERT_TRUE(channels_out_of_range_func(-1));
-     TEST_ASSERT_TRUE(channels_out_of_range_func(4));
-}
-
 void test_check_mandatory_dev_settings(void){
     static struct PAC1720_device dummy_dev;
     dummy_dev.DEV_sensor_address = 0x18;
-    dummy_dev.DEV_channels = FIRST_CHANNEL;
     TEST_ASSERT_FALSE(check_mandatory_dev_settings_func(&dummy_dev));
     dummy_dev.DEV_CH1_conf.CH_current_sense_resistor_value = 0.8f;
     TEST_ASSERT_FALSE(check_mandatory_dev_settings_func(&dummy_dev));

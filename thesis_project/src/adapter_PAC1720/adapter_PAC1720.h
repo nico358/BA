@@ -80,7 +80,47 @@ void adapter_init_peripherals(struct FIELD_BUS_INTERFACE *fieldbus_interface, de
  */
 int8_t adapter_init_PAC1720_from_field(struct PAC1720_device *dev_ptr);
 
-/* function prototypes */
+/*!
+ * @fn 
+ * @brief 
+ *
+ *
+ * @return 
+ */
+int8_t adapter_init_PAC1720_user_defined(struct PAC1720_device *dev_ptr);
+
+/*!
+ * @fn 
+ * @brief 
+ *
+ * @see
+ *
+ * @return 
+ */
+void adapter_destroy_PAC1720(struct PAC1720_device *device_ptr);
+
+/*!
+ * @fn 
+ * @brief 
+ *
+ * @see
+ *
+ * @return 
+ */
+int8_t adapter_get_measurements_PAC1720(struct PAC1720_device *device_ptr);
+
+/*!
+ * @brief
+ *
+ * 
+ * @note ..
+ * @param[in] config	: 
+ *
+ * @return 
+ * @retval 1 value -> OK/ 0 value -> Error
+ */
+int8_t adapter_write_one_shot_PAC1720(struct PAC1720_device *device_ptr);
+
 /*!
  * @fn
  * @brief

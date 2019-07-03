@@ -81,16 +81,30 @@ static const uint8_t 	manufacturer_id_register_address             				= 0xFE;
 static const uint8_t 	revision_register_address                    				= 0xFF;
 
 /* Configuration setting constants */
-enum CONVERSION_RATE 				{CONVERSION_1HZ, CONVERSION_2HZ, CONVERSION_4HZ, CONVERSION_CONTINIOUS};
+enum GLOBAL_CONFIG					 {CONFIG_ALL_CH_ENABLED, CONFIG_ALL_CHANNEL_DISABLED=27, CONFIG_FIRST_CH_ENABLED=24, CONFIG_SECOND_CH_ENABLED=3};
 
-enum SOURCE_VOLTAGE_SAMPLING_TIME 	{VSRC_SAMPLE_TIME_2ms5, VSRC_SAMPLE_TIME_5ms, VSRC_SAMPLE_TIME_10ms, VSRC_SAMPLE_TIME_20ms};
+enum CHANNEL_MASK					 {MASK_NO_CH_ALERT_ASSERT, MASK_CH1_ALERT_ASSERT=3, MASK_CH2_ALERT_ASSERT=12, MASK_ALL_CH_ALERT_ASSERT=15};
 
-enum SAMPLE_AVERAGING 				{SAMPLE_AVERAGING_DISABLED, SAMPLE_AVERAGES_2, SAMPLE_AVERAGES_4, SAMPLE_AVERAGES_8};
+enum CONVERSION_RATE 				 {CONVERSION_1HZ, CONVERSION_2HZ, CONVERSION_4HZ, CONVERSION_CONTINIOUS, CONVERSION_DEFAULT=3};
 
-enum CURRENT_SENSE_SAMPLING_TIME 	{CURRENT_SAMPLE_TIME_2ms5, CURRENT_SAMPLE_TIME_5ms, CURRENT_SAMPLE_TIME_10ms, CURRENT_SAMPLE_TIME_20ms, 
-									 CURRENT_SAMPLE_TIME_40ms, CURRENT_SAMPLE_TIME_80ms, CURRENT_SAMPLE_TIME_160ms, CURRENT_SAMPLE_TIME_320ms};
+enum SOURCE_VOLTAGE_SAMPLING_TIME 	 {VSRC_SAMPLE_TIME_2ms5, VSRC_SAMPLE_TIME_5ms, VSRC_SAMPLE_TIME_10ms, VSRC_SAMPLE_TIME_20ms, VSRC_SAMPLE_TIME_DEFAULT=2};
 
-enum CURRENT_SENSE_RANGE 			{CURRENT_SENSE_RANGE_10mV, CURRENT_SENSE_RANGE_20mV, CURRENT_SENSE_RANGE_40mV, CURRENT_SENSE_RANGE_80mV};
+enum CURRENT_SENSE_SAMPLING_TIME 	 {CURRENT_SAMPLE_TIME_2ms5, CURRENT_SAMPLE_TIME_5ms, CURRENT_SAMPLE_TIME_10ms, CURRENT_SAMPLE_TIME_20ms, 
+									  CURRENT_SAMPLE_TIME_40ms, CURRENT_SAMPLE_TIME_80ms, CURRENT_SAMPLE_TIME_160ms, CURRENT_SAMPLE_TIME_320ms, CURRENT_SAMPLE_TIME_DEFAULT=5};
+
+enum CURRENT_SENSE_RANGE 			 {CURRENT_SENSE_RANGE_10mV, CURRENT_SENSE_RANGE_20mV, CURRENT_SENSE_RANGE_40mV, CURRENT_SENSE_RANGE_80mV, CURRENT_SENSE_RANGE_DEFAULT=3};
+
+enum SAMPLE_AVERAGING 				 {SAMPLE_AVERAGING_DISABLED, SAMPLE_AVERAGES_2, SAMPLE_AVERAGES_4, SAMPLE_AVERAGES_8};
+
+enum CURRENT_SENSE_HIGH_LIMIT        {CURRENT_SENSE_HIGH_LIMIT_DEFAULT=127};
+
+enum CURRENT_SENSE_LOW_LIMIT         {CURRENT_SENSE_LOW_LIMIT_DEFAULT=128};
+
+enum SOURCE_VOLTAGE_HIGH_LIMIT 		 {SOURCE_VOLTAGE_HIGH_LIMIT_DEFAULT=255};
+
+enum SOURCE_VOLTAGE_LOW_LIMIT 		 {SOURCE_VOLTAGE_LOW_LIMIT_DEFAULT=0};
+
+
 
 /** Calculation specific constants */
 /** Possible Full Scale Range values in current sensing, 
@@ -126,9 +140,8 @@ static const int8_t 	PAC1720_FAILURE 											= -1;
 static const int8_t 	PAC1720_ADDRESS_ERROR 										= -2;
 static const int8_t 	PAC1720_NULLPTR_ERROR										= -3;
 static const int8_t 	PAC1720_INIT_ERROR											= -4;
-static const int8_t 	PAC1720_UNSIGNED_ERROR										= 0xFF;
+static const int8_t 	PAC1720_UNSIGNED_ERROR										= 255;
 
-typedef enum 			{BOTH_CHANNELS, FIRST_CHANNEL, SECOND_CHANNEL, NO_CHANNEL}  ACTIVE_CHANNELS;
 static const uint8_t 	SENSOR_ADDRESS_NUMBER 										= 16;
 static const uint8_t 	SENSOR_REGISTERS_NUMBER 									= 32;
 
@@ -206,6 +219,8 @@ struct 	PAC1720_CH_measurements
 	float 						POWER;
 
 	struct PAC1720_meas_internal * meas_internal;
+
+	uint32_t meas_cnt;
 };
 
 /* Channel specific configuration */
@@ -234,6 +249,7 @@ struct 	PAC1720_CH_config
 	uint8_t 					 CH_source_voltage_low_limit_reg;
 
 	struct PAC1720_ch_internal * ch_internal;
+
 };
 
 /*! The struct holding the device setup and measurements */
@@ -243,8 +259,6 @@ struct 	PAC1720_device
 	char *							DEV_name_opt;
 	/*! Sensor slave address */
 	uint8_t 						DEV_sensor_address;
-	/*! Sensor channels in use */
-	ACTIVE_CHANNELS 				DEV_channels;
 	/* Configuration register */
 	uint8_t 						DEV_configuration_reg;
 	/*! Updating measurements interval */

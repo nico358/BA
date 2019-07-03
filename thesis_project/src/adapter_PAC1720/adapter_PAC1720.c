@@ -10,7 +10,6 @@
 /** Header includes **/
 #include "adapter_PAC1720.h"
 
-
 /** The platform dependend bus interface instance used inside this file */
 struct FIELD_BUS_INTERFACE *internal_fieldbus_interface;
 
@@ -20,7 +19,6 @@ delay_function_ptr internal_delay;
 struct PAC1720_device dev_USB_MON = {
 	.DEV_name_opt                                           = "USB_MON",
 	.DEV_sensor_address                                     = 0x4D,
-	.DEV_channels                                           = BOTH_CHANNELS,
     .DEV_configuration_reg                                  = 0,
 	.DEV_conversion_rate_reg                                = CONVERSION_CONTINIOUS,
 	.DEV_one_shot_reg                                       = 0,
@@ -54,7 +52,6 @@ struct PAC1720_device dev_USB_MON = {
 struct PAC1720_device dev_FPGA_VCC = {
 	.DEV_name_opt                                           = "FPGA_VCC",
 	.DEV_sensor_address                                     = 0x4F,
-	.DEV_channels                                           = BOTH_CHANNELS,
     .DEV_configuration_reg                                  = 0,
 	.DEV_conversion_rate_reg                                = CONVERSION_CONTINIOUS,
 	.DEV_one_shot_reg                                       = 0,
@@ -88,7 +85,6 @@ struct PAC1720_device dev_FPGA_VCC = {
 struct PAC1720_device dev_WIREL_MCU = {
 	.DEV_name_opt                                           = "WIREL_MCU",
 	.DEV_sensor_address                                     = 0x29,
-	.DEV_channels                                           = BOTH_CHANNELS,
     .DEV_configuration_reg                                  = 0,
 	.DEV_conversion_rate_reg                                = CONVERSION_CONTINIOUS,
 	.DEV_one_shot_reg                                       = 0,
@@ -230,17 +226,6 @@ bool sensor_address_out_of_range(const uint8_t address);
  * @param .
  *
  */
-bool channels_out_of_range(const ACTIVE_CHANNELS channels);
-
-/*!
- * @fn 
- * @brief
- *
- * @note 
- *
- * @param .
- *
- */
 void set_fieldbus_ptr(struct FIELD_BUS_INTERFACE *external_fieldbus_interface);
 
 /*!
@@ -277,6 +262,33 @@ int8_t adapter_init_PAC1720_from_field(struct PAC1720_device *dev_ptr)
     {
         return PAC1720_INIT_ERROR;
     }
+}
+
+int8_t adapter_init_PAC1720_user_defined(struct PAC1720_device *dev_ptr)
+{
+    if (dev_ptr != NULL && check_mandatory_dev_settings(dev_ptr) && check_peripherals_initialized())
+    {
+        return init_device_PAC1720_user_defined(dev_ptr, &adapter_fbus_write, &adapter_fbus_read, &adapter_delay);
+    }
+    else
+    {
+        return PAC1720_INIT_ERROR;
+    }
+}
+
+void adapter_destroy_PAC1720(struct PAC1720_device *device_ptr)
+{
+    destroy_device_PAC1720(device_ptr);
+}
+
+int8_t adapter_get_measurements_PAC1720(struct PAC1720_device *device_ptr)
+{
+    return get_all_measurements_PAC1720(device_ptr);
+}
+
+int8_t adapter_write_one_shot_PAC1720(struct PAC1720_device *device_ptr)
+{
+    return write_out_one_shot_register(device_ptr);
 }
 
 uint8_t adapter_find_sensors(uint8_t *addresses, struct FIELD_BUS_INTERFACE *fieldbus_interface, delay_function_ptr delay_fptr)
@@ -408,8 +420,7 @@ bool check_peripherals_initialized(void)
 
 bool check_mandatory_dev_settings(struct PAC1720_device *dev_ptr) 
 {
-    if ( sensor_address_out_of_range(dev_ptr->DEV_sensor_address) 
-         || channels_out_of_range(dev_ptr->DEV_channels)               
+    if ( sensor_address_out_of_range(dev_ptr->DEV_sensor_address)               
          || dev_ptr->DEV_CH1_conf.CH_current_sense_resistor_value == 0  
          || dev_ptr->DEV_CH2_conf.CH_current_sense_resistor_value == 0 )
     {
@@ -421,15 +432,6 @@ bool check_mandatory_dev_settings(struct PAC1720_device *dev_ptr)
 bool sensor_address_out_of_range(const uint8_t address)
 {
     if(address == 0x18 || (address > 0x27 && address < 0x2F) || (address > 0x47 && address < 0x50))
-    {
-        return false;
-    }
-    return true;
-}
-
-bool channels_out_of_range(const ACTIVE_CHANNELS channels)
-{
-    if(channels >= BOTH_CHANNELS && channels <= NO_CHANNEL)
     {
         return false;
     }
@@ -453,7 +455,7 @@ const void* get_ADAPTER_TEST_FPTR_FIELD(void)
                                                  (void*) &adapter_fbus_read,
                                                  (void*) &adapter_delay,
                                                  (void*) &sensor_address_out_of_range,
-                                                 (void*) &channels_out_of_range,
+                                                 (void*) NULL,
                                                  (void*) &poll_fbus,
                                                  (void*) &set_fieldbus_ptr,
                                                  (void*) &set_delay_ptr,

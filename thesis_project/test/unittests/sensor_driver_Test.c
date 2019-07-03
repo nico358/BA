@@ -72,7 +72,6 @@ typedef struct PAC1720_meas_internal *  (*create_meas_internal_ptr)         (voi
 typedef void                            (*destroy_meas_internal_ptr)        (struct PAC1720_meas_internal *meas_internal);
 typedef void                            (*set_measurements_zero)            (struct PAC1720_device *device_ptr);////////
 typedef void                            (*assign_tmp_sampling_config_array) (struct PAC1720_device *device_ptr, uint8_t tmp_smpl_conf_reg[3]);////////
-typedef void                            (*set_active_channels)              (struct PAC1720_device *device_ptr);////////////
 typedef void                            (*assign_tmp_limit_array)           (struct PAC1720_device *device_ptr, uint8_t tmp_lmt_reg[8]);///////////
 
 
@@ -106,7 +105,6 @@ create_meas_internal_ptr                create_meas_internal_ptr_func;
 destroy_meas_internal_ptr               destroy_meas_internal_ptr_func;
 set_measurements_zero                   set_measurements_zero_func;//////////////////
 assign_tmp_sampling_config_array        assign_tmp_sampling_config_array_func;//////////
-set_active_channels                     set_active_channels_func;      /////////////  
 assign_tmp_limit_array                  assign_tmp_limit_array_func;//////////             
 
 /* Unity stuff */
@@ -142,8 +140,7 @@ void setUp(void) {
     destroy_meas_internal_ptr_func      = (destroy_meas_internal_ptr)           test_fptr_field[25];
     set_measurements_zero_func          = (set_measurements_zero)               test_fptr_field[26];/////////
     assign_tmp_sampling_config_array_func = (assign_tmp_sampling_config_array)  test_fptr_field[27];//////////
-    set_active_channels_func            = (set_active_channels)                 test_fptr_field[28];/////////
-    assign_tmp_limit_array_func         = (assign_tmp_limit_array)              test_fptr_field[29];///////
+    assign_tmp_limit_array_func         = (assign_tmp_limit_array)              test_fptr_field[28];///////
 }
 
 void tearDown(void) {}
@@ -240,10 +237,6 @@ void test_write_registers(void){
 }
 
 void test_assign_tmp_limit_array(void){
-    
-}
-
-void test_set_active_channels(void){
 
 }
 
