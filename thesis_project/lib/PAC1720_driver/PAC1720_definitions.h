@@ -36,14 +36,6 @@ static const uint8_t 	conf_reg_bit_CDEN  											= 0x06;
 static const uint8_t 	conversion_rate_register_address 							= 0x01;
 /** PAC1720 one-shot register constants */
 static const uint8_t 	one_shot_register_address 									= 0x02;
-static const uint8_t 	one_shot_reg_bit_OS0 										= 0x00; 
-static const uint8_t 	one_shot_reg_bit_OS1 										= 0x01;
-static const uint8_t 	one_shot_reg_bit_OS2 										= 0x02;
-static const uint8_t 	one_shot_reg_bit_OS3 										= 0x03;
-static const uint8_t 	one_shot_reg_bit_OS4 										= 0x04;
-static const uint8_t 	one_shot_reg_bit_OS5 										= 0x05;
-static const uint8_t 	one_shot_reg_bit_OS6 										= 0x06;
-static const uint8_t 	one_shot_reg_bit_OS7 										= 0x07;
 /** PAC1720 channel mask register constants */
 static const uint8_t 	channel_mask_register_address 								= 0x03;
 static const uint8_t 	channel_mask_reg_bit_C1VSR  								= 0x00; 
@@ -52,17 +44,8 @@ static const uint8_t 	channel_mask_reg_bit_C2VSR  								= 0x02;
 static const uint8_t 	channel_mask_reg_bit_C2VS   								= 0x03;
 /** PAC1720 high limit status register constants */
 static const uint8_t 	high_limit_status_register_address 							= 0x04;
-static const uint8_t 	high_limit_status_reg_bit_C1VRH    							= 0x00; 
-static const uint8_t 	high_limit_status_reg_bit_C1VSH    							= 0x01;
-static const uint8_t 	high_limit_status_reg_bit_C2VRH    							= 0x02;
-static const uint8_t 	high_limit_status_reg_bit_C2VSH    							= 0x03;
-static const uint8_t 	high_limit_status_reg_bit_CVDN     							= 0x07;
 /** PAC1720 low limit status register constants */
 static const uint8_t 	low_limit_status_register_address 							= 0x05;
-static const uint8_t 	low_limit_status_reg_bit_C1VRL     							= 0x00; 
-static const uint8_t 	low_limit_status_reg_bit_C1VSL     							= 0x01;
-static const uint8_t 	low_limit_status_reg_bit_C2VRL     							= 0x02;
-static const uint8_t 	low_limit_status_reg_bit_C2VSL     							= 0x03;
 /** PAC1720 sampling configuration register constants */
 static const uint8_t 	v_source_sampling_configuration_register_address 			= 0x0A;
 static const uint8_t 	ch1_v_sense_sampling_configuration_register_address 		= 0x0B;
@@ -145,7 +128,7 @@ static const int8_t 	PAC1720_NULLPTR_ERROR										= -3;
 static const int8_t 	PAC1720_INIT_ERROR											= -4;
 static const int8_t 	PAC1720_UNSIGNED_ERROR										= 0xFF;
 
-typedef enum 			{FIRST_CHANNEL=1, SECOND_CHANNEL=2, BOTH_CHANNELS=3} 		ACTIVE_CHANNELS;
+typedef enum 			{BOTH_CHANNELS, FIRST_CHANNEL, SECOND_CHANNEL, NO_CHANNEL}  ACTIVE_CHANNELS;
 static const uint8_t 	SENSOR_ADDRESS_NUMBER 										= 16;
 static const uint8_t 	SENSOR_REGISTERS_NUMBER 									= 32;
 
@@ -173,10 +156,14 @@ static const uint8_t 	BITMASK_CH2_VSENSE_LIMIT									= 0x08;
 static const uint8_t 	BITMASK_CH2_VSRC_LIMIT										= 0x04;
 static const uint8_t 	BITMASK_CH1_VSENSE_LIMIT									= 0x02;
 static const uint8_t 	BITMASK_CH1_VSRC_LIMIT										= 0x01;
+static const uint8_t 	BITMASK_CH1_DISABLED										= 0x03;
+static const uint8_t 	BITMASK_CH2_DISABLED										= 0x18;
+static const uint8_t 	BITMASK_ALL_CH_DISABLED										= 0x1B;
 
 static const uint8_t 	SHIFT_IN_BYTES_OFFSET 										= 8;
 static const uint8_t 	SHIFT_SIX_BITS												= 6;
 static const uint8_t 	SHIFT_FOUR_BITS												= 4;
+static const uint8_t 	SHIFT_THREE_BITS											= 3;
 static const uint8_t 	SHIFT_TWO_BITS												= 2;
 
 /** Type definitions */
@@ -237,6 +224,7 @@ struct 	PAC1720_CH_config
 	/* Sense voltage limit register */
 	uint8_t 					 CH_current_sense_high_limit_reg;
 	uint8_t 					 CH_current_sense_low_limit_reg;
+
 	/*! Source voltage sampling time settings */
 	uint8_t 					 CH_source_voltage_sampling_time_reg;
 	/*! Source voltage averaging settings */

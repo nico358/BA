@@ -78,7 +78,7 @@ void adapter_init_peripherals(struct FIELD_BUS_INTERFACE *fieldbus_interface, de
  *
  * @return 
  */
-int8_t adapter_init_PAC1720(struct PAC1720_device *dev_ptr);
+int8_t adapter_init_PAC1720_from_field(struct PAC1720_device *dev_ptr);
 
 /* function prototypes */
 /*!

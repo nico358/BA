@@ -292,7 +292,8 @@ void test_channels_out_of_range(void){
      TEST_ASSERT_FALSE(channels_out_of_range_func(FIRST_CHANNEL));
      TEST_ASSERT_FALSE(channels_out_of_range_func(SECOND_CHANNEL));
      TEST_ASSERT_FALSE(channels_out_of_range_func(BOTH_CHANNELS));
-     TEST_ASSERT_TRUE(channels_out_of_range_func(0));
+     TEST_ASSERT_FALSE(channels_out_of_range_func(NO_CHANNEL));
+     TEST_ASSERT_TRUE(channels_out_of_range_func(-1));
      TEST_ASSERT_TRUE(channels_out_of_range_func(4));
 }
 

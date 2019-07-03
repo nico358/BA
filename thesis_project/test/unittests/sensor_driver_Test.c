@@ -58,11 +58,11 @@ typedef int8_t                          (*calculate_BUS_POWER)              (con
 typedef int8_t                          (*calculate_FSP)                    (struct PAC1720_ch_internal *ch_internal_ptr); 
 typedef int8_t                          (*read_registers)                   (const struct PAC1720_device *device_ptr, uint8_t reg_address, uint8_t *data_ptr, uint8_t len);
 typedef int8_t                          (*write_registers)                  (const struct PAC1720_device *device_ptr, uint8_t reg_address, uint8_t *data_ptr, uint8_t len);
-// typedef void                            (*assign_config_register_values)    (struct PAC1720_device *device_ptr, uint8_t register_field[32]);
-// typedef void                            (*assign_reading_register_values)   (struct PAC1720_device *device_ptr, uint8_t register_field[12]);
+typedef void                            (*assign_ch_limit_registers)        (struct PAC1720_device *device_ptr, uint8_t tmp_lmt_reg[8]);///////////////
+typedef void                            (*assign_internal_measurements_registers) (struct PAC1720_device *device_ptr, uint8_t tmp_meas_reg[12]);//////////////
 typedef uint16_t                        (*combine_bytes)                    (const uint8_t *lsb, const uint8_t *msb);
-// typedef void                            (*cut_up_sampling_registers)        (struct PAC1720_device *device_ptr);
-// typedef void                            (*cut_up_limit_registers)           (struct PAC1720_device *device_ptr);
+typedef void                            (*assign_sampling_config_registers) (struct PAC1720_device *device_ptr, uint8_t tmp_smpl_conf_reg[3]);////////
+typedef void                            (*assign_limit_status_registers)    (struct PAC1720_device *device_ptr, uint8_t tmp_limit_reg[2]);/////////////
 typedef struct PAC1720_internal *       (*create_internal_ptr)              (const PAC1720_fptr ext_write, const PAC1720_fptr ext_read, const delay_fptr ext_delay);
 typedef struct PAC1720_ch_internal *    (*create_ch_internal_ptr)           (void);
 typedef void                            (*destroy_internal_ptr)             (struct PAC1720_internal *internal);
@@ -70,6 +70,12 @@ typedef void                            (*destroy_ch_internal_ptr)          (str
 typedef int8_t                          (*peripherals_null_pointer_check)   (const PAC1720_fptr write, const PAC1720_fptr read, const delay_fptr delay);
 typedef struct PAC1720_meas_internal *  (*create_meas_internal_ptr)         (void);
 typedef void                            (*destroy_meas_internal_ptr)        (struct PAC1720_meas_internal *meas_internal);
+typedef void                            (*set_measurements_zero)            (struct PAC1720_device *device_ptr);////////
+typedef void                            (*assign_tmp_sampling_config_array) (struct PAC1720_device *device_ptr, uint8_t tmp_smpl_conf_reg[3]);////////
+typedef void                            (*set_active_channels)              (struct PAC1720_device *device_ptr);////////////
+typedef void                            (*assign_tmp_limit_array)           (struct PAC1720_device *device_ptr, uint8_t tmp_lmt_reg[8]);///////////
+
+
 
 /** Declare function instances */
 calculate_BUS_CURRENT                   calculate_BUS_CURRENT_func;
@@ -86,11 +92,11 @@ calculate_BUS_POWER                     calculate_BUS_POWER_func;
 calculate_FSP                           calculate_FSP_func;
 read_registers                          read_registers_func;
 write_registers                         write_registers_func;
-// assign_config_register_values           assign_config_register_values_func;
-// assign_reading_register_values          assign_reading_register_values_func;
+assign_ch_limit_registers               assign_ch_limit_registers_func;//////////////
+assign_internal_measurements_registers  assign_internal_measurements_registers_func;///////////
 combine_bytes                           combine_bytes_func;
-// cut_up_sampling_registers               cut_up_sampling_registers_func;    
-// cut_up_limit_registers                  cut_up_limit_registers_func;     
+assign_sampling_config_registers        assign_sampling_config_registers_func;///////////////
+assign_limit_status_registers           assign_limit_status_registers_func;////////////   
 create_internal_ptr                     create_internal_ptr_func; 
 create_ch_internal_ptr                  create_ch_internal_ptr_func;
 destroy_internal_ptr                    destroy_internal_ptr_func;
@@ -98,6 +104,10 @@ destroy_ch_internal_ptr                 destroy_ch_internal_ptr_func;
 peripherals_null_pointer_check          peripherals_null_pointer_check_func;
 create_meas_internal_ptr                create_meas_internal_ptr_func;
 destroy_meas_internal_ptr               destroy_meas_internal_ptr_func;
+set_measurements_zero                   set_measurements_zero_func;//////////////////
+assign_tmp_sampling_config_array        assign_tmp_sampling_config_array_func;//////////
+set_active_channels                     set_active_channels_func;      /////////////  
+assign_tmp_limit_array                  assign_tmp_limit_array_func;//////////             
 
 /* Unity stuff */
 void setUp(void) {
@@ -118,11 +128,11 @@ void setUp(void) {
     calculate_FSP_func                  = (calculate_FSP)                       test_fptr_field[11];
     read_registers_func                 = (read_registers)                      test_fptr_field[12];
     write_registers_func                = (write_registers)                     test_fptr_field[13];
-    // assign_config_register_values_func  = (assign_config_register_values)       test_fptr_field[14];
-    // assign_reading_register_values_func = (assign_reading_register_values)      test_fptr_field[15];
+    assign_ch_limit_registers_func      = (assign_ch_limit_registers)           test_fptr_field[14];//////////////
+    assign_internal_measurements_registers_func = (assign_internal_measurements_registers) test_fptr_field[15];/////////////
     combine_bytes_func                  = (combine_bytes)                       test_fptr_field[16];
-    // cut_up_sampling_registers_func      = (cut_up_sampling_registers)           test_fptr_field[17];
-    // cut_up_limit_registers_func         = (cut_up_limit_registers)              test_fptr_field[18];
+    assign_sampling_config_registers_func = (assign_sampling_config_registers)  test_fptr_field[17];///////////////
+    assign_limit_status_registers_func  = (assign_limit_status_registers)       test_fptr_field[18];////////////
     create_internal_ptr_func            = (create_internal_ptr)                 test_fptr_field[19];
     create_ch_internal_ptr_func         = (create_ch_internal_ptr)              test_fptr_field[20];
     destroy_internal_ptr_func           = (destroy_internal_ptr)                test_fptr_field[21];
@@ -130,6 +140,10 @@ void setUp(void) {
     peripherals_null_pointer_check_func = (peripherals_null_pointer_check)      test_fptr_field[23];
     create_meas_internal_ptr_func       = (create_meas_internal_ptr)            test_fptr_field[24];
     destroy_meas_internal_ptr_func      = (destroy_meas_internal_ptr)           test_fptr_field[25];
+    set_measurements_zero_func          = (set_measurements_zero)               test_fptr_field[26];/////////
+    assign_tmp_sampling_config_array_func = (assign_tmp_sampling_config_array)  test_fptr_field[27];//////////
+    set_active_channels_func            = (set_active_channels)                 test_fptr_field[28];/////////
+    assign_tmp_limit_array_func         = (assign_tmp_limit_array)              test_fptr_field[29];///////
 }
 
 void tearDown(void) {}
@@ -224,6 +238,39 @@ void test_write_registers(void){
     TEST_ASSERT_EQUAL(reg_addr, data[1]);
     TEST_ASSERT_EQUAL(len, data[2]);
 }
+
+void test_assign_tmp_limit_array(void){
+    
+}
+
+void test_set_active_channels(void){
+
+}
+
+void test_assign_tmp_sampling_config_array(void){
+
+}
+
+void test_set_measurements_zero(void){
+
+}
+
+void test_assign_ch_limit_registers(void){
+
+}
+
+void test_assign_internal_measurements_registers(void){
+
+}
+
+void test_assign_sampling_config_registers(void){
+
+}
+
+void test_assign_limit_status_registers(void){
+
+}
+
 
 // void test_cut_up_limit_registers(void){
 //     // Declare test- device struct

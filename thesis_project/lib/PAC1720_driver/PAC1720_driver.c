@@ -13,6 +13,112 @@
  * @return 
  * @retval 1 value -> OK/ 0 value -> Error
  */
+int8_t write_all_settings_to_sensor(struct PAC1720_device *device_ptr);
+
+/*!
+ * @brief
+ *
+ * 
+ * @note ..
+ * @param[in] config	: 
+ *
+ * @return 
+ * @retval 1 value -> OK/ 0 value -> Error
+ */
+void assign_tmp_limit_array(struct PAC1720_device *device_ptr, uint8_t tmp_lmt_reg[8]);
+
+/*!
+ * @brief
+ *
+ * 
+ * @note ..
+ * @param[in] config	: 
+ *
+ * @return 
+ * @retval 1 value -> OK/ 0 value -> Error
+ */
+int8_t write_out_limit_registers(struct PAC1720_device *device_ptr);
+
+/*!
+ * @brief
+ *
+ * 
+ * @note ..
+ * @param[in] config	: 
+ *
+ * @return 
+ * @retval 1 value -> OK/ 0 value -> Error
+ */
+void assign_tmp_global_config_array(struct PAC1720_device *device_ptr, uint8_t tmp_config_reg[4]);
+
+/*!
+ * @brief
+ *
+ * 
+ * @note ..
+ * @param[in] config	: 
+ *
+ * @return 
+ * @retval 1 value -> OK/ 0 value -> Error
+ */
+void assign_tmp_sampling_config_array(struct PAC1720_device *device_ptr, uint8_t tmp_smpl_conf_reg[3]);
+
+/*!
+ * @brief
+ *
+ * 
+ * @note ..
+ * @param[in] config	: 
+ *
+ * @return 
+ * @retval 1 value -> OK/ 0 value -> Error
+ */
+int8_t write_out_sampling_config_registers(struct PAC1720_device *device_ptr);
+
+/*!
+ * @brief
+ *
+ * 
+ * @note ..
+ * @param[in] config	: 
+ *
+ * @return 
+ * @retval 1 value -> OK/ 0 value -> Error
+ */
+int8_t write_out_global_config_registers(struct PAC1720_device *device_ptr);
+
+/*!
+ * @brief
+ *
+ * 
+ * @note ..
+ * @param[in] config	: 
+ *
+ * @return 
+ * @retval 1 value -> OK/ 0 value -> Error
+ */
+void set_active_channels(struct PAC1720_device *device_ptr);
+
+/*!
+ * @fn 
+ * @brief 
+ *
+ * @see
+ *
+ * @return 
+ */
+int8_t get_all_settings_from_sensor(struct PAC1720_device *device_ptr);
+
+/*!
+ * @brief
+ *
+ * 
+ * @note ..
+ * @param[in] config	: 
+ *
+ * @return 
+ * @retval 1 value -> OK/ 0 value -> Error
+ */
 int8_t readin_global_config_registers(struct PAC1720_device *device_ptr);
 
 /*!
@@ -564,7 +670,27 @@ struct 	PAC1720_meas_internal
 
 /******************************* Public function definitions *****************************************/
 
-int8_t init_device_PAC1720(struct PAC1720_device *device_ptr, PAC1720_fptr ext_write, PAC1720_fptr ext_read, delay_fptr ext_delay)
+int8_t init_device_PAC1720_from_field(struct PAC1720_device *device_ptr, PAC1720_fptr ext_write, PAC1720_fptr ext_read, delay_fptr ext_delay)
+{
+    int8_t res = device_null_pointer_check(device_ptr);
+    if(res != PAC1720_OK) return res;
+    res = peripherals_null_pointer_check(ext_write, ext_read, ext_delay);
+    if(res == PAC1720_OK)
+    {   
+        destroy_all_internal_ptrs(device_ptr);
+        set_measurements_zero(device_ptr);
+        res = readin_global_config_registers(device_ptr);
+        set_active_channels(device_ptr);
+        res = create_all_internal_ptrs(device_ptr, ext_write, ext_read, ext_delay);
+        if(res != PAC1720_OK) return res;
+        res = set_all_FSx_coefficients(device_ptr);
+        if(res != PAC1720_OK) return res;
+        res = get_all_settings_from_sensor(device_ptr);
+    }
+    return res;
+}
+
+int8_t init_device_PAC1720_user_defined(struct PAC1720_device *device_ptr, PAC1720_fptr ext_write, PAC1720_fptr ext_read, delay_fptr ext_delay)
 {
     int8_t res = device_null_pointer_check(device_ptr);
     if(res != PAC1720_OK) return res;
@@ -577,7 +703,7 @@ int8_t init_device_PAC1720(struct PAC1720_device *device_ptr, PAC1720_fptr ext_w
         if(res != PAC1720_OK) return res;
         res = set_all_FSx_coefficients(device_ptr);
         if(res != PAC1720_OK) return res;
-        res = readin_sensor_infos_registers(device_ptr);
+        write_all_settings_to_sensor(device_ptr);
     }
     return res;
 }
@@ -602,6 +728,103 @@ int8_t get_all_measurements_PAC1720(struct PAC1720_device *device_ptr)
     return res;
 }
 
+int8_t write_out_one_shot_register(struct PAC1720_device *device_ptr)
+{
+    return write_registers(device_ptr, one_shot_register_address, device_ptr->DEV_one_shot_reg, 1);
+}
+
+/******************************* Private function definitions *****************************************/
+
+int8_t write_all_settings_to_sensor(struct PAC1720_device *device_ptr)
+{
+    uint8_t res = PAC1720_OK;
+    res = write_out_global_config_registers(device_ptr);
+    if(res != PAC1720_OK) return res;
+    res = write_out_sampling_config_registers(device_ptr);
+    if(res != PAC1720_OK) return res;
+    write_out_limit_registers(device_ptr);
+    return res;
+}
+
+int8_t write_out_global_config_registers(struct PAC1720_device *device_ptr)
+{
+    uint8_t tmp_config_reg[4] = {0};
+    assign_tmp_global_config_array(device_ptr, tmp_config_reg);
+    return write_registers(device_ptr, configuration_register_address, tmp_config_reg, GLOBAL_CONFIG_REGISTERS_LENGTH);
+}
+
+void assign_tmp_global_config_array(struct PAC1720_device *device_ptr, uint8_t tmp_config_reg[4])
+{
+    tmp_config_reg[0] = device_ptr->DEV_configuration_reg;
+    tmp_config_reg[1] = device_ptr->DEV_conversion_rate_reg;
+    tmp_config_reg[2] = device_ptr->DEV_one_shot_reg;
+    tmp_config_reg[3] = device_ptr->DEV_mask_reg;
+}
+
+int8_t write_out_sampling_config_registers(struct PAC1720_device *device_ptr)
+{
+    uint8_t tmp_smpl_conf_reg[3] = {0};
+    assign_tmp_sampling_config_array(device_ptr, tmp_smpl_conf_reg);
+    return write_registers(device_ptr, v_source_sampling_configuration_register_address, tmp_smpl_conf_reg, SAMPLING_CONFIG_REGISTERS_LENGTH);
+}
+
+void assign_tmp_sampling_config_array(struct PAC1720_device *device_ptr, uint8_t tmp_smpl_conf_reg[3])
+{ 
+    tmp_smpl_conf_reg[0] |= device_ptr->DEV_CH1_conf.CH_source_voltage_sampling_time_reg        <<  SHIFT_TWO_BITS;
+    tmp_smpl_conf_reg[0] |= device_ptr->DEV_CH1_conf.CH_source_voltage_sampling_average_reg;    //no shift
+    
+    tmp_smpl_conf_reg[1] |= device_ptr->DEV_CH1_conf.CH_current_sense_sampling_time_reg         <<  SHIFT_FOUR_BITS;
+    tmp_smpl_conf_reg[1] |= device_ptr->DEV_CH1_conf.CH_current_sense_sampling_average_reg      <<  SHIFT_TWO_BITS;
+    tmp_smpl_conf_reg[1] |= device_ptr->DEV_CH1_conf.CH_current_sense_FSR_reg;                  //no shift
+   
+    tmp_smpl_conf_reg[0] |= device_ptr->DEV_CH2_conf.CH_source_voltage_sampling_time_reg        <<  SHIFT_SIX_BITS;
+    tmp_smpl_conf_reg[0] |= device_ptr->DEV_CH2_conf.CH_source_voltage_sampling_average_reg     <<  SHIFT_FOUR_BITS;
+
+    tmp_smpl_conf_reg[2] |= device_ptr->DEV_CH2_conf.CH_current_sense_sampling_time_reg         <<  SHIFT_FOUR_BITS;
+    tmp_smpl_conf_reg[2] |= device_ptr->DEV_CH2_conf.CH_current_sense_sampling_average_reg      <<  SHIFT_TWO_BITS;
+    tmp_smpl_conf_reg[2] |= device_ptr->DEV_CH2_conf.CH_current_sense_FSR_reg;                  //no shift
+}
+
+int8_t write_out_limit_registers(struct PAC1720_device *device_ptr)
+{
+    uint8_t tmp_lmt_reg[8] = {0};
+    assign_tmp_limit_array(device_ptr, tmp_lmt_reg);
+    return write_registers(device_ptr, ch1_sense_voltage_high_limit_register_address, tmp_lmt_reg, LIMIT_REGISTERS_LENGTH);
+}
+
+void assign_tmp_limit_array(struct PAC1720_device *device_ptr, uint8_t tmp_lmt_reg[8])
+{
+    tmp_lmt_reg[0] = device_ptr->DEV_CH1_conf.CH_current_sense_high_limit_reg;
+    tmp_lmt_reg[2] = device_ptr->DEV_CH1_conf.CH_current_sense_low_limit_reg;
+    tmp_lmt_reg[4] = device_ptr->DEV_CH1_conf.CH_source_voltage_high_limit_reg;
+    tmp_lmt_reg[6] = device_ptr->DEV_CH1_conf.CH_source_voltage_low_limit_reg;
+
+    tmp_lmt_reg[1] = device_ptr->DEV_CH2_conf.CH_current_sense_high_limit_reg;
+    tmp_lmt_reg[3] = device_ptr->DEV_CH2_conf.CH_current_sense_low_limit_reg ;
+    tmp_lmt_reg[5] = device_ptr->DEV_CH2_conf.CH_source_voltage_high_limit_reg;
+    tmp_lmt_reg[7] = device_ptr->DEV_CH2_conf.CH_source_voltage_low_limit_reg;
+}
+
+void set_active_channels(struct PAC1720_device *device_ptr)
+{
+    uint8_t ch1_disable_bits    = device_ptr->DEV_configuration_reg & BITMASK_CH1_DISABLED;
+    uint8_t ch2_disable_bits    = device_ptr->DEV_configuration_reg & BITMASK_CH2_DISABLED;
+
+    if(ch1_disable_bits == BITMASK_CH1_DISABLED && ch2_disable_bits == BITMASK_CH2_DISABLED)
+    {
+        device_ptr->DEV_channels = NO_CHANNEL;
+    }
+    else if(ch1_disable_bits != BITMASK_CH1_DISABLED && ch2_disable_bits == BITMASK_CH2_DISABLED)
+    {
+        device_ptr->DEV_channels = FIRST_CHANNEL;
+    }
+    else if(ch1_disable_bits == BITMASK_CH1_DISABLED && ch2_disable_bits != BITMASK_CH2_DISABLED)
+    {
+        device_ptr->DEV_channels = SECOND_CHANNEL;
+    }
+    else device_ptr->DEV_channels = BOTH_CHANNELS;
+}
+
 int8_t get_all_settings_from_sensor(struct PAC1720_device *device_ptr)
 {
     uint8_t res = PAC1720_OK;
@@ -610,10 +833,12 @@ int8_t get_all_settings_from_sensor(struct PAC1720_device *device_ptr)
     res = readin_sampling_config_registers(device_ptr);
     if(res != PAC1720_OK) return res;
     res = readin_limit_registers(device_ptr);
+    if(res != PAC1720_OK) return res;
+    res = readin_sensor_infos_registers(device_ptr);
+    
     return res;
 }
 
-/******************************* Private function definitions *****************************************/
 int8_t readin_global_config_registers(struct PAC1720_device *device_ptr)
 {
     uint8_t res = PAC1720_OK;
@@ -672,23 +897,18 @@ int8_t readin_sampling_config_registers(struct PAC1720_device *device_ptr)
 }
 
 void assign_sampling_config_registers(struct PAC1720_device *device_ptr, uint8_t tmp_smpl_conf_reg[3])
-{
-    if(first_channel_is_active(device_ptr))
-    {
-        device_ptr->DEV_CH1_conf.CH_source_voltage_sampling_time_reg        = (tmp_smpl_conf_reg[0] & BITMASK_THIRD_TWO)            >> SHIFT_TWO_BITS;
-        device_ptr->DEV_CH1_conf.CH_source_voltage_sampling_average_reg     = (tmp_smpl_conf_reg[0] & BITMASK_FOURTH_TWO);          //no shift
-        device_ptr->DEV_CH1_conf.CH_current_sense_sampling_time_reg         = (tmp_smpl_conf_reg[1] & BITMASK_MSB_CURRENT_SAMPLE)   >> SHIFT_FOUR_BITS;
-        device_ptr->DEV_CH1_conf.CH_current_sense_sampling_average_reg      = (tmp_smpl_conf_reg[1] & BITMASK_THIRD_TWO)            >> SHIFT_TWO_BITS;
-        device_ptr->DEV_CH1_conf.CH_current_sense_FSR_reg                   = (tmp_smpl_conf_reg[1] & BITMASK_FOURTH_TWO);          //no shift
-    }
-    if(second_channel_is_active(device_ptr))
-    {
-        device_ptr->DEV_CH2_conf.CH_source_voltage_sampling_time_reg        = (tmp_smpl_conf_reg[0] & BITMASK_FIRST_TWO)            >> SHIFT_SIX_BITS;
-        device_ptr->DEV_CH2_conf.CH_source_voltage_sampling_average_reg     = (tmp_smpl_conf_reg[0] & BITMASK_SECOND_TWO)           >> SHIFT_FOUR_BITS;
-        device_ptr->DEV_CH2_conf.CH_current_sense_sampling_time_reg         = (tmp_smpl_conf_reg[2] & BITMASK_MSB_CURRENT_SAMPLE)   >> SHIFT_FOUR_BITS;
-        device_ptr->DEV_CH2_conf.CH_current_sense_sampling_average_reg      = (tmp_smpl_conf_reg[2] & BITMASK_THIRD_TWO)            >> SHIFT_TWO_BITS;
-        device_ptr->DEV_CH2_conf.CH_current_sense_FSR_reg                   = (tmp_smpl_conf_reg[2] & BITMASK_FOURTH_TWO);          //no shift 
-    }
+{ 
+    device_ptr->DEV_CH1_conf.CH_source_voltage_sampling_time_reg    = (tmp_smpl_conf_reg[0] & BITMASK_THIRD_TWO)            >> SHIFT_TWO_BITS;
+    device_ptr->DEV_CH1_conf.CH_source_voltage_sampling_average_reg = (tmp_smpl_conf_reg[0] & BITMASK_FOURTH_TWO);          //no shift
+    device_ptr->DEV_CH1_conf.CH_current_sense_sampling_time_reg     = (tmp_smpl_conf_reg[1] & BITMASK_MSB_CURRENT_SAMPLE)   >> SHIFT_FOUR_BITS;
+    device_ptr->DEV_CH1_conf.CH_current_sense_sampling_average_reg  = (tmp_smpl_conf_reg[1] & BITMASK_THIRD_TWO)            >> SHIFT_TWO_BITS;
+    device_ptr->DEV_CH1_conf.CH_current_sense_FSR_reg               = (tmp_smpl_conf_reg[1] & BITMASK_FOURTH_TWO);          //no shift
+   
+    device_ptr->DEV_CH2_conf.CH_source_voltage_sampling_time_reg    = (tmp_smpl_conf_reg[0] & BITMASK_FIRST_TWO)            >> SHIFT_SIX_BITS;
+    device_ptr->DEV_CH2_conf.CH_source_voltage_sampling_average_reg = (tmp_smpl_conf_reg[0] & BITMASK_SECOND_TWO)           >> SHIFT_FOUR_BITS;
+    device_ptr->DEV_CH2_conf.CH_current_sense_sampling_time_reg     = (tmp_smpl_conf_reg[2] & BITMASK_MSB_CURRENT_SAMPLE)   >> SHIFT_FOUR_BITS;
+    device_ptr->DEV_CH2_conf.CH_current_sense_sampling_average_reg  = (tmp_smpl_conf_reg[2] & BITMASK_THIRD_TWO)            >> SHIFT_TWO_BITS;
+    device_ptr->DEV_CH2_conf.CH_current_sense_FSR_reg               = (tmp_smpl_conf_reg[2] & BITMASK_FOURTH_TWO);          //no shift
 }
 
 int8_t readin_measurements_registers(struct PAC1720_device *device_ptr)
@@ -744,7 +964,7 @@ void set_measurements_zero(struct PAC1720_device *device_ptr)
     device_ptr->DEV_CH1_measurements.SENSE_VOLTAGE              = device_ptr->DEV_CH2_measurements.SENSE_VOLTAGE                = 0;
     device_ptr->DEV_CH1_measurements.CURRENT                    = device_ptr->DEV_CH2_measurements.CURRENT                      = 0;
     device_ptr->DEV_CH1_measurements.POWER                      = device_ptr->DEV_CH2_measurements.POWER                        = 0;
-}
+} 
 
 int8_t readin_limit_registers(struct PAC1720_device *device_ptr)
 {
@@ -757,36 +977,16 @@ int8_t readin_limit_registers(struct PAC1720_device *device_ptr)
 
 void assign_ch_limit_registers(struct PAC1720_device *device_ptr, uint8_t tmp_lmt_reg[8])
 {
-    if(first_channel_is_active(device_ptr))
-    {
-        device_ptr->DEV_CH1_conf.CH_current_sense_high_limit_reg    = tmp_lmt_reg[0];
-        device_ptr->DEV_CH1_conf.CH_current_sense_low_limit_reg     = tmp_lmt_reg[2];
-        device_ptr->DEV_CH1_conf.CH_source_voltage_high_limit_reg   = tmp_lmt_reg[4];
-        device_ptr->DEV_CH1_conf.CH_source_voltage_low_limit_reg    = tmp_lmt_reg[6];
-    }
-    if(second_channel_is_active(device_ptr))
-    {
-        device_ptr->DEV_CH2_conf.CH_current_sense_high_limit_reg    = tmp_lmt_reg[1];
-        device_ptr->DEV_CH2_conf.CH_current_sense_low_limit_reg     = tmp_lmt_reg[3];
-        device_ptr->DEV_CH2_conf.CH_source_voltage_high_limit_reg   = tmp_lmt_reg[5];
-        device_ptr->DEV_CH2_conf.CH_source_voltage_low_limit_reg    = tmp_lmt_reg[7];
-    }
+    device_ptr->DEV_CH1_conf.CH_current_sense_high_limit_reg = tmp_lmt_reg[0];
+    device_ptr->DEV_CH1_conf.CH_current_sense_low_limit_reg = tmp_lmt_reg[2];
+    device_ptr->DEV_CH1_conf.CH_source_voltage_high_limit_reg = tmp_lmt_reg[4];
+    device_ptr->DEV_CH1_conf.CH_source_voltage_low_limit_reg = tmp_lmt_reg[6];
+
+    device_ptr->DEV_CH2_conf.CH_current_sense_high_limit_reg = tmp_lmt_reg[1];
+    device_ptr->DEV_CH2_conf.CH_current_sense_low_limit_reg = tmp_lmt_reg[3];
+    device_ptr->DEV_CH2_conf.CH_source_voltage_high_limit_reg = tmp_lmt_reg[5];
+    device_ptr->DEV_CH2_conf.CH_source_voltage_low_limit_reg = tmp_lmt_reg[7];
 }
-
-    // uint8_t tmp_lmt_reg[8] = {0};
-    // res = read_registers(device_ptr, ch1_sense_voltage_high_limit_register_address, tmp_lmt_reg, LIMIT_REGISTERS_LENGTH);
-
-    // uint8_t tmp_ch1_lmt[4] = {0};
-    // uint8_t tmp_ch2_lmt[4] = {0};
-    // for(size_t i = 0; i < sizeof(tmp_lmt_reg); i++){
-    //     if(i % 2 == 0){
-    //         tmp_ch1_lmt[i/2] = tmp_lmt_reg[i]; 
-    //     } else {
-    //         tmp_ch2_lmt[(i-1)/2] = tmp_lmt_reg[i];
-    //     }
-    // }
-
-
 
 int8_t readin_sensor_infos_registers(struct PAC1720_device *device_ptr)
 {
@@ -1253,19 +1453,22 @@ const void* get_TEST_DRIVER_FPTR_FIELD(void)
                                                  (void*) &calculate_FSP,
                                                  (void*) &read_registers,
                                                  (void*) &write_registers,
-                                                 (void*) NULL,
-                                                 (void*) NULL,
+                                                 (void*) &assign_ch_limit_registers,//////////
+                                                 (void*) &assign_internal_measurements_registers,/////////
                                                  (void*) &combine_bytes,
-                                                 (void*) NULL,
-                                                 (void*) NULL,
+                                                 (void*) &assign_sampling_config_registers,//////////
+                                                 (void*) &assign_limit_status_registers,///////////
                                                  (void*) &create_internal_ptr,
                                                  (void*) &create_ch_internal_ptr,
                                                  (void*) &destroy_internal_ptr,
                                                  (void*) &destroy_ch_internal_ptr,
                                                  (void*) &peripherals_null_pointer_check,
                                                  (void*) &create_meas_internal_ptr,
-                                                 (void*) &destroy_meas_internal_ptr
+                                                 (void*) &destroy_meas_internal_ptr,
+                                                 (void*) &set_measurements_zero,/////////////////
+                                                 (void*) &assign_tmp_sampling_config_array,////////
+                                                 (void*) &set_active_channels,///////////
+                                                 (void*) &assign_tmp_limit_array
                                             };
-
     return &test_fptr_field;
 }
