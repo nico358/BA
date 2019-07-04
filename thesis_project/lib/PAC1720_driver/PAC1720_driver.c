@@ -13,6 +13,42 @@
  * @return 
  * @retval 1 value -> OK/ 0 value -> Error
  */
+int8_t set_sensor_to_sleep(struct PAC1720_device *device_ptr);
+
+/*!
+ * @brief
+ *
+ * 
+ * @note ..
+ * @param[in] config	: 
+ *
+ * @return 
+ * @retval 1 value -> OK/ 0 value -> Error
+ */
+bool sensor_is_in_sleep(struct PAC1720_device *device_ptr);
+
+/*!
+ * @brief
+ *
+ * 
+ * @note ..
+ * @param[in] config	: 
+ *
+ * @return 
+ * @retval 1 value -> OK/ 0 value -> Error
+ */
+void check_name_opt(struct PAC1720_device *device_ptr);
+
+/*!
+ * @brief
+ *
+ * 
+ * @note ..
+ * @param[in] config	: 
+ *
+ * @return 
+ * @retval 1 value -> OK/ 0 value -> Error
+ */
 int8_t write_all_settings_to_sensor(struct PAC1720_device *device_ptr);
 
 /*!
@@ -667,6 +703,7 @@ int8_t init_device_PAC1720_from_field(struct PAC1720_device *device_ptr, PAC1720
     {   
         destroy_all_internal_ptrs(device_ptr);
         set_measurements_zero(device_ptr);
+        check_name_opt(device_ptr);
         res = create_all_internal_ptrs(device_ptr, ext_write, ext_read, ext_delay);
         if(res != PAC1720_OK) return res;
         res = get_all_settings_from_sensor(device_ptr);
@@ -685,8 +722,19 @@ int8_t init_device_PAC1720_user_defined(struct PAC1720_device *device_ptr, PAC17
     {   
         destroy_all_internal_ptrs(device_ptr);
         set_measurements_zero(device_ptr);
+        check_name_opt(device_ptr);
         res = create_all_internal_ptrs(device_ptr, ext_write, ext_read, ext_delay);
         if(res != PAC1720_OK) return res;
+        res = set_sensor_to_sleep(device_ptr);
+        if(res != PAC1720_OK) return res;
+
+        uint16_t cnt = 0;
+        while(!sensor_is_in_sleep(device_ptr)){
+            if(cnt == MAX_ATTEMPTS_SET_SLEEP_MODE) 
+                return PAC1720_INIT_ERROR;
+            cnt++;
+        };
+
         res = write_all_settings_to_sensor(device_ptr);
         if(res != PAC1720_OK) return res;
         res = readin_sensor_infos_registers(device_ptr);
@@ -724,6 +772,31 @@ int8_t write_out_one_shot_register(struct PAC1720_device *device_ptr)
 }
 
 /******************************* Private function definitions *****************************************/
+
+int8_t set_sensor_to_sleep(struct PAC1720_device *device_ptr)
+{
+    uint8_t config_reg = CONFIG_STANDBY;
+    return write_registers(device_ptr, configuration_register_address, &config_reg, 1);
+}
+
+bool sensor_is_in_sleep(struct PAC1720_device *device_ptr)
+{
+    uint8_t res = PAC1720_OK;
+    uint8_t config_reg = 0;
+    res = read_registers(device_ptr, configuration_register_address, &config_reg, 1);
+    if(res != PAC1720_OK || config_reg != CONFIG_STANDBY) return false;
+    return true;
+}
+
+void check_name_opt(struct PAC1720_device *device_ptr)
+{
+    if(device_ptr->DEV_name_opt == NULL)
+        device_ptr->DEV_name_opt = default_name;
+    if(device_ptr->DEV_CH1_conf.CH_name_opt == NULL)
+        device_ptr->DEV_CH1_conf.CH_name_opt = default_name;
+    if(device_ptr->DEV_CH2_conf.CH_name_opt == NULL)
+        device_ptr->DEV_CH2_conf.CH_name_opt = default_name;
+}
 
 int8_t write_all_settings_to_sensor(struct PAC1720_device *device_ptr)
 {
@@ -837,8 +910,6 @@ int8_t readin_limit_status_registers(struct PAC1720_device *device_ptr)
 
 void assign_limit_status_registers(struct PAC1720_device *device_ptr, uint8_t tmp_limit_reg[2])
 {
-    device_ptr->DEV_CH1_measurements.conversion_done = false;
-    device_ptr->DEV_CH2_measurements.conversion_done = false;
     if(first_channel_is_active(device_ptr))
     {
         device_ptr->DEV_CH1_measurements.conversion_done            = (bool) (tmp_limit_reg[0] & BITMASK_CONVERSION_CMPL); 
@@ -1153,7 +1224,7 @@ int8_t calculate_BUS_CURRENT(const struct PAC1720_CH_config *channel_conf, struc
         float DENOMINATOR = DENOMINATOR_values_current_sense[channel_conf->CH_current_sense_sampling_time_reg];
         float Ibus_current = FSC * (Vsense / DENOMINATOR);
 
-        channel_measurements->SENSE_VOLTAGE = Vsense;
+        channel_measurements->SENSE_VOLTAGE = Ibus_current * channel_conf->CH_current_sense_resistor_value;
         channel_measurements->CURRENT = Ibus_current;
         return PAC1720_OK;
     } else {
@@ -1346,7 +1417,7 @@ uint16_t get_channel_sense_voltage_read(struct PAC1720_CH_measurements *meas_ptr
     return (uint16_t) (PAC1720_UNSIGNED_ERROR << SHIFT_IN_BYTES_OFFSET) | PAC1720_UNSIGNED_ERROR;
 }
 
-uint16_t get_channel_pwr_ratio_read(struct PAC1720_CH_measurements *meas_ptr)
+uint16_t get_channel_pwr_ratio_read(struct PAC1720_CH_measurements *meas_ptr) 
 {
     if(meas_ptr->meas_internal != NULL){
         struct PAC1720_meas_internal * internal = meas_ptr->meas_internal;

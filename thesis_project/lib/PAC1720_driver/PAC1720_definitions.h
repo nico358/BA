@@ -23,6 +23,8 @@ static const uint8_t PAC1720_addresses[16] = {
 												0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F
 											 };
 
+static char *default_name 					= "None";
+
 /** PAC1720 general configuration register constants */
 static const uint8_t 	configuration_register_address 								= 0x00;
 static const uint8_t 	conf_reg_bit_C1VDS 											= 0x00; 
@@ -81,11 +83,13 @@ static const uint8_t 	manufacturer_id_register_address             				= 0xFE;
 static const uint8_t 	revision_register_address                    				= 0xFF;
 
 /* Configuration setting constants */
-enum GLOBAL_CONFIG					 {CONFIG_ALL_CH_ENABLED, CONFIG_ALL_CHANNEL_DISABLED=27, CONFIG_FIRST_CH_ENABLED=24, CONFIG_SECOND_CH_ENABLED=3};
-
-enum CHANNEL_MASK					 {MASK_NO_CH_ALERT_ASSERT, MASK_CH1_ALERT_ASSERT=3, MASK_CH2_ALERT_ASSERT=12, MASK_ALL_CH_ALERT_ASSERT=15};
+enum GLOBAL_CONFIG					 {CONFIG_ALL_CH_ENABLED, CONFIG_STANDBY=27, CONFIG_FIRST_CH_ENABLED=24, CONFIG_SECOND_CH_ENABLED=3};
 
 enum CONVERSION_RATE 				 {CONVERSION_1HZ, CONVERSION_2HZ, CONVERSION_4HZ, CONVERSION_CONTINIOUS, CONVERSION_DEFAULT=3};
+
+enum ONE_SHOT						 {ONE_SHOT_DEFAULT=255};
+
+enum CHANNEL_MASK					 {MASK_NO_CH_ALERT_ASSERT, MASK_CH1_ALERT_ASSERT=3, MASK_CH2_ALERT_ASSERT=12, MASK_ALL_CH_ALERT_ASSERT=15};
 
 enum SOURCE_VOLTAGE_SAMPLING_TIME 	 {VSRC_SAMPLE_TIME_2ms5, VSRC_SAMPLE_TIME_5ms, VSRC_SAMPLE_TIME_10ms, VSRC_SAMPLE_TIME_20ms, VSRC_SAMPLE_TIME_DEFAULT=2};
 
@@ -178,6 +182,8 @@ static const uint8_t 	SHIFT_SIX_BITS												= 6;
 static const uint8_t 	SHIFT_FOUR_BITS												= 4;
 static const uint8_t 	SHIFT_THREE_BITS											= 3;
 static const uint8_t 	SHIFT_TWO_BITS												= 2;
+/* Max cycles to poll config reg */
+static const uint16_t   MAX_ATTEMPTS_SET_SLEEP_MODE									= 1000; 
 
 /** Type definitions */
 /*!
@@ -219,8 +225,7 @@ struct 	PAC1720_CH_measurements
 	float 						POWER;
 
 	struct PAC1720_meas_internal * meas_internal;
-
-	uint32_t meas_cnt;
+	uint32_t 					meas_cnt;
 };
 
 /* Channel specific configuration */

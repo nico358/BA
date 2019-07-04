@@ -8,6 +8,7 @@
  */
 
 /** Header includes **/
+#include <stdio.h>
 #include "adapter_PAC1720.h"
 
 /** The platform dependend bus interface instance used inside this file */
@@ -16,74 +17,98 @@ struct FIELD_BUS_INTERFACE *internal_fieldbus_interface;
 /** The platform dependend delay function used in this file */
 delay_function_ptr internal_delay;
 
-struct PAC1720_device dev_USB_MON = {
-	.DEV_name_opt                                           = "USB_MON",
+// /* Settings required to setup device with currently applied config ('adapter_init_PAC1720_from_field')*/
+// struct PAC1720_device dev_FPGA_VCC = {
+// 	.DEV_sensor_address                                     = 0x4F,
+//     .DEV_CH1_conf.CH_current_sense_resistor_value           = 0.8f,
+//     .DEV_CH2_conf.CH_current_sense_resistor_value           = 0.8f,
+// };
+
+// /* Setup device with default values */
+// struct PAC1720_device dev_FPGA_VCC = {
+// 	.DEV_sensor_address                                     = 0x4F,
+// 	.DEV_conversion_rate_reg                                = CONVERSION_DEFAULT,
+//     .DEV_CH1_conf.CH_current_sense_resistor_value           = 0.8f,
+//     .DEV_CH1_conf.CH_current_sense_sampling_time_reg        = CURRENT_SAMPLE_TIME_DEFAULT,
+//     .DEV_CH1_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_DEFAULT,
+//     .DEV_CH1_conf.CH_source_voltage_sampling_time_reg       = VSRC_SAMPLE_TIME_DEFAULT,
+
+//     .DEV_CH2_conf.CH_current_sense_resistor_value           = 0.8f,
+//     .DEV_CH2_conf.CH_current_sense_sampling_time_reg        = CURRENT_SAMPLE_TIME_DEFAULT,
+//     .DEV_CH2_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_DEFAULT,
+//     .DEV_CH2_conf.CH_source_voltage_sampling_time_reg       = VSRC_SAMPLE_TIME_DEFAULT,
+// };
+
+/* Setup device with all possible settings */
+struct PAC1720_device dev_USB_MON = 
+{
+	.DEV_name_opt                                           = "USB_MONITOR_SENSOR",
 	.DEV_sensor_address                                     = 0x4D,
-    .DEV_configuration_reg                                  = 0,
+    .DEV_configuration_reg                                  = CONFIG_ALL_CH_ENABLED,
 	.DEV_conversion_rate_reg                                = CONVERSION_CONTINIOUS,
-	.DEV_one_shot_reg                                       = 0,
-    .DEV_mask_reg                                           = 0,
+	.DEV_one_shot_reg                                       = ONE_SHOT_DEFAULT,
+    .DEV_mask_reg                                           = MASK_ALL_CH_ALERT_ASSERT,
 
     .DEV_CH1_conf.CH_name_opt                               = "USB_VCC",
     .DEV_CH1_conf.CH_current_sense_resistor_value           = 0.15f,
-    .DEV_CH1_conf.CH_current_sense_sampling_time_reg        = CURRENT_SAMPLE_TIME_80ms,
+    .DEV_CH1_conf.CH_current_sense_sampling_time_reg        = CURRENT_SAMPLE_TIME_2ms5,
     .DEV_CH1_conf.CH_current_sense_sampling_average_reg     = SAMPLE_AVERAGING_DISABLED,
-    .DEV_CH1_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_80mV,
-    .DEV_CH1_conf.CH_current_sense_high_limit_reg           = 0,
-	.DEV_CH1_conf.CH_current_sense_low_limit_reg            = 0,
-    .DEV_CH1_conf.CH_source_voltage_sampling_time_reg       = VSRC_SAMPLE_TIME_20ms,
+    .DEV_CH1_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_20mV,
+    .DEV_CH1_conf.CH_current_sense_high_limit_reg           = CURRENT_SENSE_HIGH_LIMIT_DEFAULT,
+	.DEV_CH1_conf.CH_current_sense_low_limit_reg            = CURRENT_SENSE_LOW_LIMIT_DEFAULT,
+    .DEV_CH1_conf.CH_source_voltage_sampling_time_reg       = VSRC_SAMPLE_TIME_2ms5,
     .DEV_CH1_conf.CH_source_voltage_sampling_average_reg    = SAMPLE_AVERAGING_DISABLED,
-    .DEV_CH1_conf.CH_source_voltage_high_limit_reg          = 0,
-	.DEV_CH1_conf.CH_source_voltage_low_limit_reg           = 0,
+    .DEV_CH1_conf.CH_source_voltage_high_limit_reg          = SOURCE_VOLTAGE_HIGH_LIMIT_DEFAULT,
+	.DEV_CH1_conf.CH_source_voltage_low_limit_reg           = SOURCE_VOLTAGE_LOW_LIMIT_DEFAULT,
 
     .DEV_CH2_conf.CH_name_opt                               = "MON_VCC",
     .DEV_CH2_conf.CH_current_sense_resistor_value           = 0.8f,
-    .DEV_CH2_conf.CH_current_sense_sampling_time_reg        = CURRENT_SAMPLE_TIME_80ms,
+    .DEV_CH2_conf.CH_current_sense_sampling_time_reg        = CURRENT_SAMPLE_TIME_2ms5,
     .DEV_CH2_conf.CH_current_sense_sampling_average_reg     = SAMPLE_AVERAGING_DISABLED,
-    .DEV_CH2_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_80mV,
-    .DEV_CH2_conf.CH_current_sense_high_limit_reg           = 0,
-	.DEV_CH2_conf.CH_current_sense_low_limit_reg            = 0,
-    .DEV_CH2_conf.CH_source_voltage_sampling_time_reg       = VSRC_SAMPLE_TIME_20ms,
+    .DEV_CH2_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_20mV,
+    .DEV_CH2_conf.CH_current_sense_high_limit_reg           = CURRENT_SENSE_HIGH_LIMIT_DEFAULT,
+	.DEV_CH2_conf.CH_current_sense_low_limit_reg            = CURRENT_SENSE_LOW_LIMIT_DEFAULT,
+    .DEV_CH2_conf.CH_source_voltage_sampling_time_reg       = VSRC_SAMPLE_TIME_2ms5,
     .DEV_CH2_conf.CH_source_voltage_sampling_average_reg    = SAMPLE_AVERAGING_DISABLED,
-    .DEV_CH2_conf.CH_source_voltage_high_limit_reg          = 0,
-	.DEV_CH2_conf.CH_source_voltage_low_limit_reg           = 0,
+    .DEV_CH2_conf.CH_source_voltage_high_limit_reg          = SOURCE_VOLTAGE_HIGH_LIMIT_DEFAULT,
+	.DEV_CH2_conf.CH_source_voltage_low_limit_reg           = SOURCE_VOLTAGE_LOW_LIMIT_DEFAULT,
 };
 
 struct PAC1720_device dev_FPGA_VCC = {
-	.DEV_name_opt                                           = "FPGA_VCC",
+	.DEV_name_opt                                           = "FPGA_VCC_SENSOR",
 	.DEV_sensor_address                                     = 0x4F,
     .DEV_configuration_reg                                  = 0,
-	.DEV_conversion_rate_reg                                = CONVERSION_CONTINIOUS,
+	.DEV_conversion_rate_reg                                = CONVERSION_DEFAULT,
 	.DEV_one_shot_reg                                       = 0,
     .DEV_mask_reg                                           = 0,
 
     .DEV_CH1_conf.CH_name_opt                               = "FPGA_VCCINT_MON",
     .DEV_CH1_conf.CH_current_sense_resistor_value           = 0.8f,
-    .DEV_CH1_conf.CH_current_sense_sampling_time_reg        = CURRENT_SAMPLE_TIME_80ms,
+    .DEV_CH1_conf.CH_current_sense_sampling_time_reg        = CURRENT_SAMPLE_TIME_DEFAULT,
     .DEV_CH1_conf.CH_current_sense_sampling_average_reg     = SAMPLE_AVERAGING_DISABLED,
-    .DEV_CH1_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_80mV,
+    .DEV_CH1_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_DEFAULT,
     .DEV_CH1_conf.CH_current_sense_high_limit_reg           = 0,
 	.DEV_CH1_conf.CH_current_sense_low_limit_reg            = 0,
-    .DEV_CH1_conf.CH_source_voltage_sampling_time_reg       = VSRC_SAMPLE_TIME_20ms,
+    .DEV_CH1_conf.CH_source_voltage_sampling_time_reg       = VSRC_SAMPLE_TIME_DEFAULT,
     .DEV_CH1_conf.CH_source_voltage_sampling_average_reg    = SAMPLE_AVERAGING_DISABLED,
     .DEV_CH1_conf.CH_source_voltage_high_limit_reg          = 0,
 	.DEV_CH1_conf.CH_source_voltage_low_limit_reg           = 0,
 
     .DEV_CH2_conf.CH_name_opt                               = "FPGA_VCCAUX_MON",
     .DEV_CH2_conf.CH_current_sense_resistor_value           = 0.8f,
-    .DEV_CH2_conf.CH_current_sense_sampling_time_reg        = CURRENT_SAMPLE_TIME_80ms,
+    .DEV_CH2_conf.CH_current_sense_sampling_time_reg        = CURRENT_SAMPLE_TIME_DEFAULT,
     .DEV_CH2_conf.CH_current_sense_sampling_average_reg     = SAMPLE_AVERAGING_DISABLED,
-    .DEV_CH2_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_80mV,
+    .DEV_CH2_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_DEFAULT,
     .DEV_CH2_conf.CH_current_sense_high_limit_reg           = 0,
 	.DEV_CH2_conf.CH_current_sense_low_limit_reg            = 0,
-    .DEV_CH2_conf.CH_source_voltage_sampling_time_reg       = VSRC_SAMPLE_TIME_20ms,
+    .DEV_CH2_conf.CH_source_voltage_sampling_time_reg       = VSRC_SAMPLE_TIME_DEFAULT,
     .DEV_CH2_conf.CH_source_voltage_sampling_average_reg    = SAMPLE_AVERAGING_DISABLED,
     .DEV_CH2_conf.CH_source_voltage_high_limit_reg          = 0,
 	.DEV_CH2_conf.CH_source_voltage_low_limit_reg           = 0,
 };
 
 struct PAC1720_device dev_WIREL_MCU = {
-	.DEV_name_opt                                           = "WIREL_MCU",
+	.DEV_name_opt                                           = "WIRELESS_MCU_SENSOR",
 	.DEV_sensor_address                                     = 0x29,
     .DEV_configuration_reg                                  = 0,
 	.DEV_conversion_rate_reg                                = CONVERSION_CONTINIOUS,
@@ -466,4 +491,93 @@ const void* get_ADAPTER_TEST_FPTR_FIELD(void)
                                             };
 
     return &test_fptr_field;
+}
+
+void print_measurements_PAC1720(struct PAC1720_device * dev, debugWriteLine_fptr debug_fptr)
+{
+    char msg[256];
+
+    debug_fptr("{\r\n");
+    sprintf(msg, "[COUNTCH1 %d]\r\n", dev->DEV_CH1_measurements.meas_cnt);
+    debug_fptr(msg);
+    sprintf(msg, "[%s: current %fA voltage %fV power %fW]\r\n", dev->DEV_CH1_conf.CH_name_opt, dev->DEV_CH1_measurements.CURRENT, dev->DEV_CH1_measurements.SOURCE_VOLTAGE, dev->DEV_CH1_measurements.POWER);
+    debug_fptr(msg);
+    sprintf(msg, "[COUNTCH2 %d]\r\n", dev->DEV_CH2_measurements.meas_cnt);
+    debug_fptr(msg);
+    sprintf(msg, "[%s: current %fA voltage %fV power %fW]\r\n", dev->DEV_CH2_conf.CH_name_opt, dev->DEV_CH2_measurements.CURRENT, dev->DEV_CH2_measurements.SOURCE_VOLTAGE, dev->DEV_CH2_measurements.POWER);
+    debug_fptr(msg);
+    debug_fptr("}\r\n\r\n\r\n");
+}
+
+void debug_PAC1720(struct PAC1720_device * dev, debugWriteLine_fptr debug_fptr){
+    char msg[512];
+
+    sprintf(msg, "Name: %s,\r\n\r\naddr: %x, conf_reg: %x, conv_rate_reg: %x, oneshot_reg: %x, mask_reg: %x\r\n\r\n", dev->DEV_name_opt, dev->DEV_sensor_address, dev->DEV_configuration_reg, dev->DEV_conversion_rate_reg, dev->DEV_one_shot_reg, dev->DEV_mask_reg);
+    debug_fptr(msg);
+
+    uint8_t high_lim_status_reg = 0;
+    high_lim_status_reg |= dev->DEV_CH1_measurements.conversion_done << 7;
+    high_lim_status_reg |= dev->DEV_CH2_measurements.sense_voltage_high_limit << 3;
+    high_lim_status_reg |= dev->DEV_CH2_measurements.source_voltage_high_limit << 2;
+    high_lim_status_reg |= dev->DEV_CH1_measurements.sense_voltage_high_limit << 1;
+    high_lim_status_reg |= dev->DEV_CH1_measurements.source_voltage_high_limit;
+    uint8_t low_lim_status_reg = 0;
+    low_lim_status_reg |= dev->DEV_CH2_measurements.sense_voltage_low_limit << 3;
+    low_lim_status_reg |= dev->DEV_CH2_measurements.source_voltage_low_limit << 2;
+    low_lim_status_reg |= dev->DEV_CH1_measurements.sense_voltage_low_limit << 1;
+    low_lim_status_reg |= dev->DEV_CH1_measurements.source_voltage_low_limit;
+    sprintf(msg, "high_lim_status_reg: %x, low_lim_status_reg: %x\r\n\r\n", high_lim_status_reg, low_lim_status_reg);
+    debug_fptr(msg);
+
+    uint8_t Vsrc_sample_reg = 0;
+    Vsrc_sample_reg |= dev->DEV_CH2_conf.CH_source_voltage_sampling_time_reg << 6;
+    Vsrc_sample_reg |= dev->DEV_CH2_conf.CH_source_voltage_sampling_average_reg << 4;
+    Vsrc_sample_reg |= dev->DEV_CH1_conf.CH_source_voltage_sampling_time_reg << 2;
+    Vsrc_sample_reg |= dev->DEV_CH1_conf.CH_source_voltage_sampling_average_reg;
+    uint8_t Vsense_ch1_sample_reg = 0;
+    Vsense_ch1_sample_reg |= dev->DEV_CH1_conf.CH_current_sense_sampling_time_reg << 4;
+    Vsense_ch1_sample_reg |= dev->DEV_CH1_conf.CH_current_sense_sampling_average_reg << 2;
+    Vsense_ch1_sample_reg |= dev->DEV_CH1_conf.CH_current_sense_FSR_reg;
+    uint8_t Vsense_ch2_sample_reg = 0;
+    Vsense_ch2_sample_reg |= dev->DEV_CH2_conf.CH_current_sense_sampling_time_reg << 4;
+    Vsense_ch2_sample_reg |= dev->DEV_CH2_conf.CH_current_sense_sampling_average_reg << 2;
+    Vsense_ch2_sample_reg |= dev->DEV_CH2_conf.CH_current_sense_FSR_reg;
+    sprintf(msg, "Vsrc_sample_reg: %x, Vsense_ch1_sample_reg: %x, Vsense_ch2_sample_reg: %x\r\n\r\n", Vsrc_sample_reg, Vsense_ch1_sample_reg, Vsense_ch2_sample_reg);
+    debug_fptr(msg);
+
+    sprintf(msg, "Name: %s,\r\nRes: %f\r\n", dev->DEV_CH1_conf.CH_name_opt, dev->DEV_CH1_conf.CH_current_sense_resistor_value);
+    debug_fptr(msg);
+    sprintf(msg, "FSC: %f, FSV: %f, FSP: %f\r\n", get_channel_FSC(&dev->DEV_CH1_conf), get_channel_FSV(&dev->DEV_CH1_conf), get_channel_FSP(&dev->DEV_CH1_conf));
+    debug_fptr(msg);
+
+    sprintf(msg, "CH1 COUNT: %d,\r\n", dev->DEV_CH1_measurements.meas_cnt);
+    debug_fptr(msg);
+    sprintf(msg, "v_sense_voltage_reg: %x,  v_source_voltage_reg: %x, power_ratio_reg: %x\r\n", get_channel_sense_voltage_read(&dev->DEV_CH1_measurements), get_channel_src_voltage_read(&dev->DEV_CH1_measurements), get_channel_pwr_ratio_read(&dev->DEV_CH1_measurements));
+    debug_fptr(msg);
+    sprintf(msg, "CH1 SENSE_VOLTAGE: %fmV, CURRENT: %fA, SOURCE_VOLTAGE: %fV, POWER: %fW\r\n\r\n", dev->DEV_CH1_measurements.SENSE_VOLTAGE, dev->DEV_CH1_measurements.CURRENT, dev->DEV_CH1_measurements.SOURCE_VOLTAGE, dev->DEV_CH1_measurements.POWER);
+    debug_fptr(msg);
+
+    sprintf(msg, "Name: %s,\r\nRes: %f\r\n", dev->DEV_CH2_conf.CH_name_opt, dev->DEV_CH2_conf.CH_current_sense_resistor_value);
+    debug_fptr(msg);
+    sprintf(msg, "FSC: %f, FSV: %f, FSP: %f\r\n\r\n", get_channel_FSC(&dev->DEV_CH2_conf), get_channel_FSV(&dev->DEV_CH2_conf), get_channel_FSP(&dev->DEV_CH2_conf));
+    debug_fptr(msg);
+
+    sprintf(msg, "CH2 COUNT: %d,\r\n", dev->DEV_CH2_measurements.meas_cnt);
+    debug_fptr(msg);
+    sprintf(msg, "v_sense_voltage_reg: %x,  v_source_voltage_reg: %x, power_ratio_reg: %x\r\n", get_channel_sense_voltage_read(&dev->DEV_CH2_measurements), get_channel_src_voltage_read(&dev->DEV_CH2_measurements), get_channel_pwr_ratio_read(&dev->DEV_CH2_measurements));
+    debug_fptr(msg);
+    sprintf(msg, "CH2 SENSE_VOLTAGE: %fmV, CURRENT: %fA, SOURCE_VOLTAGE: %fV, POWER: %fW\r\n\r\n", dev->DEV_CH2_measurements.SENSE_VOLTAGE, dev->DEV_CH2_measurements.CURRENT, dev->DEV_CH2_measurements.SOURCE_VOLTAGE, dev->DEV_CH2_measurements.POWER);
+    debug_fptr(msg);
+
+    sprintf(msg, "CH1_current_sense_high_limit_reg: %x, CH2_current_sense_high_limit_reg: %x\r\n", dev->DEV_CH1_conf.CH_current_sense_high_limit_reg, dev->DEV_CH2_conf.CH_current_sense_high_limit_reg);
+    debug_fptr(msg);
+    sprintf(msg, "CH1_current_sense_low_limit_reg: %x, CH2_current_sense_low_limit_reg: %x\r\n", dev->DEV_CH1_conf.CH_current_sense_low_limit_reg, dev->DEV_CH2_conf.CH_current_sense_low_limit_reg);
+    debug_fptr(msg);
+    sprintf(msg, "CH1_source_voltage_high_limit_reg: %x, CH2_source_voltage_high_limit_reg: %x\r\n", dev->DEV_CH1_conf.CH_source_voltage_high_limit_reg, dev->DEV_CH2_conf.CH_source_voltage_high_limit_reg);
+    debug_fptr(msg);
+    sprintf(msg, "CH1_source_voltage_low_limit_reg: %x, CH2_source_voltage_low_limit_reg: %x\r\n\r\n", dev->DEV_CH1_conf.CH_source_voltage_low_limit_reg, dev->DEV_CH2_conf.CH_source_voltage_low_limit_reg);
+    debug_fptr(msg);
+
+    sprintf(msg, "id: %x, man: %x, rev: %x\r\n\r\n\r\n\r\n", get_sensor_product_id(dev), get_sensor_manufact_id(dev), get_sensor_revision_id(dev));
+    debug_fptr(msg);
 }
