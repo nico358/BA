@@ -17,17 +17,19 @@ struct FIELD_BUS_INTERFACE *internal_fieldbus_interface;
 /** The platform dependend delay function used in this file */
 delay_function_ptr internal_delay;
 
-// /* Settings required to setup device with currently applied config ('adapter_init_PAC1720_from_field')*/
-// struct PAC1720_device dev_FPGA_VCC = {
-// 	.DEV_sensor_address                                     = 0x4F,
+/* Settings required to setup device with currently applied config ('adapter_init_PAC1720_from_field')*/
+// struct PAC1720_device dev_FPGA_VCC = 
+// {
+// 	   .DEV_sensor_address                                     = 0x4F,
 //     .DEV_CH1_conf.CH_current_sense_resistor_value           = 0.8f,
 //     .DEV_CH2_conf.CH_current_sense_resistor_value           = 0.8f,
 // };
 
-// /* Setup device with default values */
-// struct PAC1720_device dev_FPGA_VCC = {
-// 	.DEV_sensor_address                                     = 0x4F,
-// 	.DEV_conversion_rate_reg                                = CONVERSION_DEFAULT,
+/* Setup device with default values */
+// struct PAC1720_device dev_FPGA_VCC = 
+// {
+//     .DEV_sensor_address                                    = 0x4F,
+//     .DEV_conversion_rate_reg                               = CONVERSION_DEFAULT,
 //     .DEV_CH1_conf.CH_current_sense_resistor_value           = 0.8f,
 //     .DEV_CH1_conf.CH_current_sense_sampling_time_reg        = CURRENT_SAMPLE_TIME_DEFAULT,
 //     .DEV_CH1_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_DEFAULT,

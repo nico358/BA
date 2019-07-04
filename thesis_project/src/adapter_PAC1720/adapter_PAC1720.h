@@ -50,7 +50,9 @@ struct FIELD_BUS_INTERFACE
 };
 
 /** Delay functionpointer define */
-typedef void (*delay_function_ptr) (uint32_t period);
+typedef void (*delay_function_ptr)  (uint32_t period);
+/** Debug functionpointer define */
+typedef void (*debugWriteLine_fptr) (char *s);
 
 
 /******************************** Instances ***********************************************/
@@ -136,11 +138,25 @@ uint8_t adapter_find_sensors(uint8_t *addresses, struct FIELD_BUS_INTERFACE *fie
  *
  * @return 
  */
-const void* get_ADAPTER_TEST_FPTR_FIELD(void);
-
-typedef void (*debugWriteLine_fptr) (char *s);
 void debug_PAC1720(struct PAC1720_device * dev, debugWriteLine_fptr debug_fptr);
+
+/*!
+ * @fn 
+ * @brief 
+ *
+ *
+ * @return 
+ */
 void print_measurements_PAC1720(struct PAC1720_device * dev, debugWriteLine_fptr debug_fptr);
+
+/*!
+ * @fn 
+ * @brief 
+ *
+ *
+ * @return 
+ */
+const void* get_ADAPTER_TEST_FPTR_FIELD(void);
 
 #ifdef __cplusplus
 }
