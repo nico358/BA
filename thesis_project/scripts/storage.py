@@ -23,11 +23,10 @@ class StorageController:
         self.serialAdapter.openSerial()
         self.fileStorageAdapter.openFile(path='readings.txt')
         try:
-
+            self.serialAdapter.writeToSerial('C')
             while True:
-                self.serialAdapter.writeToSerial('C')
                 self.fileStorageAdapter.writeToOpenFile(
-                                                        self.serialAdapter.readFromSerialWithDelay(0.1)
+                                                        self.serialAdapter.readFromSerialWithDelay(0.0)
                                                         )
                 # self.serialAdapter.serialSleep(0.5)
         except KeyboardInterrupt:
