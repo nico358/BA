@@ -70,12 +70,9 @@ int8_t init_platform(void)
     
     res = adapter_init_PAC1720_user_defined(&dev_USB_MON);
     if(res != PAC1720_OK) return res;
-
-    // res = adapter_init_PAC1720_from_field(&dev_USB_MON);
-    // if(res != PAC1720_OK) return res;
-    // res = adapter_init_PAC1720_from_field(&dev_FPGA_VCC);
-    // if(res != PAC1720_OK) return res;
-    // return adapter_init_PAC1720_from_field(&dev_WIREL_MCU);
+    res = adapter_init_PAC1720_user_defined(&dev_FPGA_VCC);
+    if(res != PAC1720_OK) return res;
+    return adapter_init_PAC1720_user_defined(&dev_WIREL_MCU);
 }
 
 void tear_down_platform(void)

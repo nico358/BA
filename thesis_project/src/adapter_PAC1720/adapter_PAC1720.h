@@ -56,7 +56,7 @@ typedef void (*debugWriteLine_fptr) (char *s);
 
 
 /******************************** Instances ***********************************************/
-/** Sensor struct instances, i2c instance and assigned delay function  */
+/** Sensor struct instances */
 extern struct PAC1720_device        dev_USB_MON;
 extern struct PAC1720_device        dev_FPGA_VCC;
 extern struct PAC1720_device        dev_WIREL_MCU;

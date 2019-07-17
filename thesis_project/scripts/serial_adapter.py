@@ -62,7 +62,7 @@ class SerialAdapter:
 
 
 
-    def readFromSerialWithDelay(self, secondsDelay=0.1):
+    def readFromSerialWithDelay(self, secondsDelay=None):
         """TODO."""
         data = None
         if self.connection.is_open: 
