@@ -37,24 +37,26 @@ int main(void)
     char msg[64];
     /** User controlled state */
     uint8_t state = 1;
-    uint16_t t0;
 
     while(state){
+        // user_delay_ms(500);
 
         check_user_input(&state);
 
         if(state == 2)
         {  
-            t0 = elapsed_ms;
-            
+            reset_counter();
             adapter_get_measurements_PAC1720(&dev_USB_MON);
-            print_measurements_PAC1720(&dev_USB_MON, &debugWriteLine);
-            adapter_get_measurements_PAC1720(&dev_FPGA_VCC);
-            print_measurements_PAC1720(&dev_FPGA_VCC, &debugWriteLine);
-            adapter_get_measurements_PAC1720(&dev_WIREL_MCU);
-            print_measurements_PAC1720(&dev_WIREL_MCU, &debugWriteLine);
-
-            sprintf(msg, "Elapsed: %dms\r\n", elapsed_ms - t0);
+            sprintf(msg, "Reset us: %dus\r\n", get_counter());
+            debugWriteLine(msg);
+            // print_measurements_PAC1720(&dev_USB_MON, &debugWriteLine);
+            // adapter_get_measurements_PAC1720(&dev_FPGA_VCC);
+            // print_measurements_PAC1720(&dev_FPGA_VCC, &debugWriteLine);
+            // adapter_get_measurements_PAC1720(&dev_WIREL_MCU);
+            // print_measurements_PAC1720(&dev_WIREL_MCU, &debugWriteLine);
+            // adapter_get_measurements_PAC1720(&dev_FPGA_VCC);
+            // debug_PAC1720(&dev_FPGA_VCC, &debugWriteLine);
+            sprintf(msg, "Elapsed us: %dus\r\n", get_counter());
             debugWriteLine(msg);
         }
 
@@ -71,7 +73,7 @@ int8_t init_platform(void)
     debugInit(NULL);
     external_fieldbus_interface.init();
     adapter_init_peripherals(&external_fieldbus_interface, external_delay_function);
-    timer_init();
+    counter_init();
     
     res = adapter_init_PAC1720_user_defined(&dev_USB_MON);
     if(res != PAC1720_OK) return res;
@@ -85,6 +87,7 @@ void tear_down_platform(void)
     adapter_destroy_PAC1720(&dev_USB_MON);
     adapter_destroy_PAC1720(&dev_FPGA_VCC);
     adapter_destroy_PAC1720(&dev_WIREL_MCU);
+    counter_stop();
 }
 
 void check_user_input(uint8_t *state)
