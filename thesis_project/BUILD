@@ -116,6 +116,18 @@ cc_library(
 )
 
 cc_library(
+	name = "TimerLib",
+	srcs = ["lib/timer/timer.c"],
+	hdrs = ["lib/timer/timer.h"],
+
+	copts = commonCopts,
+	deps = [
+		":DebugLib",
+	],
+)
+
+
+cc_library(
 	name = "CurrentMeasurementLib",
 	srcs = ["lib/current_sense/current_measurement.c"],
 	hdrs = ["lib/current_sense/current_measurement.h"],
@@ -261,6 +273,7 @@ default_embedded_binary(
 
 	deps = [
         ":IncludeLib",
+		":TimerLib",
 	],
 )
 
@@ -279,8 +292,10 @@ default_embedded_binary(
 	],
 )
 
-cc_binary(
+default_embedded_binary(
 	name = "calc",
 	srcs = ["src/calc.c"],
-	deps = [":PAC1720DriverLib"],
+	copts = commonCopts + LUFA_COPTS,
+	linkopts = commonCopts + LUFA_COPTS + ["-Wl,-u,vfprintf -lprintf_flt -lm"],
+	deps = [":DebugLib"],
 )

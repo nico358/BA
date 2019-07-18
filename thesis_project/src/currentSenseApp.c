@@ -1,4 +1,5 @@
 #include "include/currentSenseApp.h"
+#include "lib/timer/timer.h"
 
 /************************************** Dependencies to be injected ************************************/
 /* Instanciate a field bus interface */
@@ -28,12 +29,15 @@ void    print_error(int8_t res);
 
 int main(void)
 {   
+
+    /* Init the hardware, print error if fail */
     int8_t res = init_platform();
     if(res != PAC1720_OK) print_error(res);
-
+    /* Debug */
     char msg[64];
-    /** User input controlled state */
+    /** User controlled state */
     uint8_t state = 1;
+    uint16_t t0;
 
     while(state){
 
@@ -41,16 +45,17 @@ int main(void)
 
         if(state == 2)
         {  
+            t0 = elapsed_ms;
+            
             adapter_get_measurements_PAC1720(&dev_USB_MON);
             print_measurements_PAC1720(&dev_USB_MON, &debugWriteLine);
+            adapter_get_measurements_PAC1720(&dev_FPGA_VCC);
+            print_measurements_PAC1720(&dev_FPGA_VCC, &debugWriteLine);
+            adapter_get_measurements_PAC1720(&dev_WIREL_MCU);
+            print_measurements_PAC1720(&dev_WIREL_MCU, &debugWriteLine);
 
-            // debug_PAC1720(&dev_USB_MON, &debugWriteLine);
-            // adapter_get_measurements_PAC1720(&dev_FPGA_VCC);
-            // debug_PAC1720(&dev_FPGA_VCC, &debugWriteLine);
-            // adapter_get_measurements_PAC1720(&dev_WIREL_MCU);
-            // debug_PAC1720(&dev_WIREL_MCU, &debugWriteLine);
-            
-            // external_delay_function(500);
+            sprintf(msg, "Elapsed: %dms\r\n", elapsed_ms - t0);
+            debugWriteLine(msg);
         }
 
     }
@@ -65,8 +70,8 @@ int8_t init_platform(void)
 
     debugInit(NULL);
     external_fieldbus_interface.init();
-
     adapter_init_peripherals(&external_fieldbus_interface, external_delay_function);
+    timer_init();
     
     res = adapter_init_PAC1720_user_defined(&dev_USB_MON);
     if(res != PAC1720_OK) return res;
