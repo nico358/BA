@@ -18,4 +18,5 @@
 #include "lib/i2cmaster/i2cmaster.h"
 #include "lib/delay/user_delay.h"
 #include "lib/debug/debug.h"
+#include "lib/timer/timer.h"
 

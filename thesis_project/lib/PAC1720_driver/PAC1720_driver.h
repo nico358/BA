@@ -59,6 +59,16 @@ void destroy_device_PAC1720(struct PAC1720_device *device_ptr);
 int8_t get_all_measurements_PAC1720(struct PAC1720_device *device_ptr);
 
 /*!
+ * @fn 
+ * @brief 
+ *
+ * @see
+ *
+ * @return 
+ */
+int8_t get_raw_measurements_PAC1720(struct PAC1720_device *device_ptr);
+
+/*!
  * @brief
  *
  * 

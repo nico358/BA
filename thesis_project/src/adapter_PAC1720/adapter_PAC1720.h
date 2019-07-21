@@ -56,7 +56,7 @@ typedef void (*debugWriteLine_fptr) (char *s);
 
 
 /******************************** Instances ***********************************************/
-/** Sensor struct instances, i2c instance and assigned delay function  */
+/** Sensor struct instances */
 extern struct PAC1720_device        dev_USB_MON;
 extern struct PAC1720_device        dev_FPGA_VCC;
 extern struct PAC1720_device        dev_WIREL_MCU;
@@ -112,6 +112,16 @@ void adapter_destroy_PAC1720(struct PAC1720_device *device_ptr);
 int8_t adapter_get_measurements_PAC1720(struct PAC1720_device *device_ptr);
 
 /*!
+ * @fn 
+ * @brief 
+ *
+ * @see
+ *
+ * @return 
+ */
+int8_t adapter_get_raw_measurements_PAC1720(struct PAC1720_device *device_ptr);
+
+/*!
  * @brief
  *
  * 
@@ -147,7 +157,19 @@ void debug_PAC1720(struct PAC1720_device * dev, debugWriteLine_fptr debug_fptr);
  *
  * @return 
  */
-void print_measurements_PAC1720(struct PAC1720_device * dev, debugWriteLine_fptr debug_fptr);
+void print_measurements_PAC1720(struct PAC1720_device * dev, debugWriteLine_fptr debug_fptr, uint16_t counter);
+// void print_measurements_PAC1720(struct PAC1720_device * dev, debugWriteLine_fptr debug_fptr);
+
+/*!
+ * @fn 
+ * @brief 
+ *
+ *
+ * @return 
+ */
+void print_raw_measurements_PAC1720(struct PAC1720_device * dev, debugWriteLine_fptr debug_fptr);
+
+void print_floats(float meas[2400], debugWriteLine_fptr debug_fptr);
 
 /*!
  * @fn 

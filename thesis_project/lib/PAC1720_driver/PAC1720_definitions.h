@@ -145,7 +145,7 @@ static const int8_t 	PAC1720_ADDRESS_ERROR 										= -2;
 static const int8_t 	PAC1720_NULLPTR_ERROR										= -3;
 static const int8_t 	PAC1720_INIT_ERROR											= -4;
 static const int8_t 	PAC1720_UNSIGNED_ERROR										= 255;
-
+static const int8_t 	PAC1720_CONVERSION_UNDONE									= 254;
 static const uint8_t 	SENSOR_ADDRESS_NUMBER 										= 16;
 static const uint8_t 	SENSOR_REGISTERS_NUMBER 									= 32;
 

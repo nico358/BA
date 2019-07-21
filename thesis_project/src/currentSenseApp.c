@@ -28,54 +28,57 @@ void    print_error(int8_t res);
 
 int main(void)
 {   
+    /* Init the hardware, print error if fail */
     int8_t res = init_platform();
     if(res != PAC1720_OK) print_error(res);
-
+    /* Debug string */
     char msg[64];
-    /** User input controlled state */
+    /** User controlled state */
     uint8_t state = 1;
+    uint8_t meas_fail = 0;
 
     while(state){
-
+            
         check_user_input(&state);
 
         if(state == 2)
-        {  
-            adapter_get_measurements_PAC1720(&dev_USB_MON);
-            print_measurements_PAC1720(&dev_USB_MON, &debugWriteLine);
+        {
+            // meas_fail = adapter_get_measurements_PAC1720(&dev_USB_MON);
+            // if(!meas_fail)  
+            //     print_measurements_PAC1720(&dev_USB_MON, &debugWriteString, get_counter());
+            meas_fail = adapter_get_measurements_PAC1720(&dev_FPGA_VCC);
+            if(!meas_fail)
+                print_measurements_PAC1720(&dev_FPGA_VCC, &debugWriteString, get_counter());
+                
+            // meas_fail = adapter_get_measurements_PAC1720(&dev_WIREL_MCU);
+            // if(!meas_fail)
+            //     print_measurements_PAC1720(&dev_WIREL_MCU, &debugWriteString, get_counter());
 
-            // debug_PAC1720(&dev_USB_MON, &debugWriteLine);
-            // adapter_get_measurements_PAC1720(&dev_FPGA_VCC);
-            // debug_PAC1720(&dev_FPGA_VCC, &debugWriteLine);
-            // adapter_get_measurements_PAC1720(&dev_WIREL_MCU);
-            // debug_PAC1720(&dev_WIREL_MCU, &debugWriteLine);
-            
-            // external_delay_function(500);
+            reset_counter();
         }
-
     }
+
+    debugWriteLine("End measurement\r\n");
     tear_down_platform();
     return 0;
 }
 
-
 int8_t init_platform(void)
 {
     int8_t res = PAC1720_OK;
-
     debugInit(NULL);
     external_fieldbus_interface.init();
-
     adapter_init_peripherals(&external_fieldbus_interface, external_delay_function);
     
     res = adapter_init_PAC1720_user_defined(&dev_USB_MON);
     if(res != PAC1720_OK) return res;
+    res = adapter_init_PAC1720_user_defined(&dev_FPGA_VCC);
+    if(res != PAC1720_OK) return res;
+    res = adapter_init_PAC1720_user_defined(&dev_WIREL_MCU);
 
-    // res = adapter_init_PAC1720_from_field(&dev_USB_MON);
-    // if(res != PAC1720_OK) return res;
-    // res = adapter_init_PAC1720_from_field(&dev_FPGA_VCC);
-    // if(res != PAC1720_OK) return res;
-    // return adapter_init_PAC1720_from_field(&dev_WIREL_MCU);
+    counter_init();
+
+    return res;
 }
 
 void tear_down_platform(void)
@@ -119,4 +122,3 @@ void print_error(int8_t res){
         external_delay_function(1000);
     }
 }
-
