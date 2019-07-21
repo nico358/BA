@@ -2,8 +2,8 @@
 """TODO."""
 
 import sys
-import datetime
-import meas_defines as d
+from datetime import datetime
+from meas_plotter import MeasPlotter
 from exception_handler import ExceptionHandler
 from filestorage_adapter import FileStorageAdapter
 
@@ -34,68 +34,87 @@ class MeasProcessor:
     """TODO."""
 
     meas_id         = None#
+    meas_time       = None#
     meas_timestamp  = None#
     tmp_meas_ch1    = None#
     tmp_meas_ch2    = None#
     name_ch1        = None#
     name_ch2        = None#
+    folderpath      = None
     filepath        = None#
-    filewriter      = None#
 
 
-    def __init__(self, filepath, meas_id):
+    def __init__(self, folderpath='meas/', filepath=None, meas_id=None, meas_time=None):
         """TODO."""
         self.tmp_meas_ch1 = [[], [], [], []]
         self.tmp_meas_ch2 = [[], [], [], []]
         self.meas_id = meas_id
+        self.meas_time = meas_time
+        self.meas_timestamp = datetime.now().strftime("%m-%d-%Y-%H-%M-%S")
         self.filepath = filepath
-        self.meas_timestamp = datetime.datetime.now()
+        self.folderpath = folderpath
 
-    def writeFormattedDataToTxtFile(self):
+    def plotFormattedDataToPngFile(self):
         """TODO."""
-        self.filewriter = FileStorageAdapter()
-        self.filewriter.openFile("{}".format(self.filepath.replace('.txt', '')) + '_' + self.name_ch1 + '_' + "{}".format("{}".format("{}".format(str(self.meas_timestamp).replace(' ', '-')).replace(':', '-')).replace('.', '-')) + '.txt', 'w+')
-        for row in self.tmp_meas_ch1:
-            for elem in row:
-                self.filewriter.writeToOpenFile(str(elem)) 
-        self.filewriter.closeFile()
+        filepath_ch1 = self.formatFilepath(self.name_ch1)
+        filepath_ch2 = self.formatFilepath(self.name_ch2)
+        plotter = MeasPlotter(meas_ch1=self.tmp_meas_ch1, meas_ch2=self.tmp_meas_ch2, filepath1=filepath_ch1, filepath2=filepath_ch2, meas_time=self.meas_time)
+        plotter.plotAll()
 
-        self.filewriter = FileStorageAdapter()
-        self.filewriter.openFile("{}".format(self.filepath.replace('.txt', '')) + '_' + self.name_ch2 + '_' + "{}".format("{}".format("{}".format(str(self.meas_timestamp).replace(' ', '-')).replace(':', '-')).replace('.', '-')) + '.txt', 'w+')
-        for row in self.tmp_meas_ch2:
+    def writeFormattedDataToTxtFile(self, tmp_meas_ch, ch_name):
+        """TODO."""
+        filewriter = FileStorageAdapter()
+        filepath_ch = self.folderpath + self.formatFilepath(ch_name) + '.txt'
+        filewriter.openFile(filepath_ch, 'w+')
+        for row in tmp_meas_ch:
             for elem in row:
-                self.filewriter.writeToOpenFile(str(elem))
-        self.filewriter.closeFile()
+                filewriter.writeToOpenFile(str(elem))
+        filewriter.closeFile()
+
+    def formatFilepath(self, ch_name):
+        """TODO."""
+        pathstr = self.filepath + '_'
+        pathstr += ch_name + '_'
+        pathstr += self.meas_timestamp
+        return pathstr
 
     def processFileByLine(self):
         """TODO."""
-        try:
-            with open (self.filepath, "r") as reader:
-                if reader.mode == 'r':
-                    self.appendHead()
-                    line = reader.readline()                   
-                    while(line):
-                        splinter = self.splitStr("{}".format(line.replace('\r\n', '')))
-                        if len(self.tmp_meas_ch1[LIST_INDEX_META]) == 1:
-                            self.name_ch1 = splinter[CH1_NAME_INDEX]
-                            self.setMetaCh1()
-
-                        if len(self.tmp_meas_ch2[LIST_INDEX_META]) == 1:
-                            self.name_ch2 = splinter[CH2_NAME_INDEX]
-                            self.setMetaCh2()
-
-                        if len(splinter) == 9:
-                            self.setListValues(splinter)
-                        else:
-                            raise ValueError
-
+        if not self.filepath is None:
+            # Assemble measurement location
+            path = self.folderpath + self.filepath + '.txt'
+            try:
+                # Readin of multiple sensor measurements from one file not supported
+                with open (path, "r") as reader:
+                    if reader.mode == 'r':
+                        # Set matadata and measurement header
+                        self.appendHead()
                         line = reader.readline()
-
-                    self.appendFoot()
-        except (ValueError, OSError, IOError) as e:
-            ExceptionHandler(e, "processFileByLine")
-
-        self.writeFormattedDataToTxtFile()
+                        while(line):
+                            # Split incoming line
+                            splinter = self.splitStr("{}".format(line.replace('\r\n', '')))
+                            # Set metadata ch1 at first loop
+                            if len(self.tmp_meas_ch1[LIST_INDEX_META]) == 1:
+                                self.name_ch1 = splinter[CH1_NAME_INDEX]
+                                self.setMetaCh1()
+                            # Set metadata ch2 at first loop
+                            if len(self.tmp_meas_ch2[LIST_INDEX_META]) == 1:
+                                self.name_ch2 = splinter[CH2_NAME_INDEX]
+                                self.setMetaCh2()
+                            # Append measurements, must be 9 values, drop incomplete 
+                            if len(splinter) == 9:
+                                self.setListValues(splinter)
+                            # Read next incoming line
+                            line = reader.readline()
+                        # Set matadata and measurement footer
+                        self.appendFoot()
+            except (ValueError, OSError, IOError) as e:
+                ExceptionHandler(e, "processFileByLine")
+            # Finally store formatted data
+            self.writeFormattedDataToTxtFile(self.tmp_meas_ch1, self.name_ch1)
+            self.writeFormattedDataToTxtFile(self.tmp_meas_ch2, self.name_ch2)
+            # Plot formatted data
+            self.plotFormattedDataToPngFile()
 
     def splitStr(self, strg):
         """TODO."""
@@ -141,29 +160,42 @@ class MeasProcessor:
 
     def appendHead(self):
         """TODO."""
+        # Append record header
         self.tmp_meas_ch1[LIST_INDEX_META].append(REC_BEGIN_DELIMIT)
         self.tmp_meas_ch2[LIST_INDEX_META].append(REC_BEGIN_DELIMIT)
-        self.tmp_meas_ch1[LIST_INDEX_CURRENT].append('current' + VAL_BEGIN_DELIMIT)
-        self.tmp_meas_ch1[LIST_INDEX_VOLTAGE].append('voltage' + VAL_BEGIN_DELIMIT)
-        self.tmp_meas_ch1[LIST_INDEX_POWER].append('power' + VAL_BEGIN_DELIMIT)
-        self.tmp_meas_ch2[LIST_INDEX_CURRENT].append('current' + VAL_BEGIN_DELIMIT)
-        self.tmp_meas_ch2[LIST_INDEX_VOLTAGE].append('voltage' + VAL_BEGIN_DELIMIT)
-        self.tmp_meas_ch2[LIST_INDEX_POWER].append('power' + VAL_BEGIN_DELIMIT)
+        # Append ch1 meas header
+        self.tmp_meas_ch1[LIST_INDEX_CURRENT].append('current')
+        self.tmp_meas_ch1[LIST_INDEX_CURRENT].append(VAL_BEGIN_DELIMIT)
+        self.tmp_meas_ch1[LIST_INDEX_VOLTAGE].append('voltage')
+        self.tmp_meas_ch1[LIST_INDEX_VOLTAGE].append(VAL_BEGIN_DELIMIT)
+        self.tmp_meas_ch1[LIST_INDEX_POWER].append('power')
+        self.tmp_meas_ch1[LIST_INDEX_POWER].append(VAL_BEGIN_DELIMIT)
+        # Append ch2 meas header
+        self.tmp_meas_ch2[LIST_INDEX_CURRENT].append('current')
+        self.tmp_meas_ch2[LIST_INDEX_CURRENT].append(VAL_BEGIN_DELIMIT)
+        self.tmp_meas_ch2[LIST_INDEX_VOLTAGE].append('voltage')
+        self.tmp_meas_ch2[LIST_INDEX_VOLTAGE].append(VAL_BEGIN_DELIMIT)
+        self.tmp_meas_ch2[LIST_INDEX_POWER].append('power')
+        self.tmp_meas_ch2[LIST_INDEX_POWER].append(VAL_BEGIN_DELIMIT)
 
     def appendFoot(self):
         """TODO."""
+        # Append meas footer
         self.tmp_meas_ch1[LIST_INDEX_CURRENT].append(VAL_END_DELIMIT)
         self.tmp_meas_ch1[LIST_INDEX_VOLTAGE].append(VAL_END_DELIMIT)
         self.tmp_meas_ch1[LIST_INDEX_POWER].append(VAL_END_DELIMIT)
         self.tmp_meas_ch2[LIST_INDEX_CURRENT].append(VAL_END_DELIMIT)
         self.tmp_meas_ch2[LIST_INDEX_VOLTAGE].append(VAL_END_DELIMIT)
         self.tmp_meas_ch2[LIST_INDEX_POWER].append(VAL_END_DELIMIT)
+        # Append record footer
         self.tmp_meas_ch1[LIST_INDEX_POWER].append(REC_END_DELIMIT)
         self.tmp_meas_ch2[LIST_INDEX_POWER].append(REC_END_DELIMIT)
 
 
+
+
 if __name__ == "__main__":
-    mp = MeasProcessor('meas/test.txt', "TEST_MEAS")
+    mp = MeasProcessor(filepath='test', meas_id="TEST_MEAS", meas_time=3)
     mp.processFileByLine()
 
     
