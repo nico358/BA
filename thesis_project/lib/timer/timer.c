@@ -7,6 +7,8 @@ void     TIM16_WriteTCNT1(uint16_t val);
 /* Gets the counter value */
 uint16_t TIM16_ReadTCNT1(void);
 
+void     TIM16_WriteOCRA1(uint16_t val);
+
 uint16_t elapsed_ms;
 
 ISR(TIMER3_COMPA_vect){
@@ -22,10 +24,23 @@ ISR(TIMER3_OVF_vect){
 }
 
 
+ISR(TIMER1_COMPA_vect){
+	cli();
+
+	sei();
+}
+
 void TIM16_WriteOCRA3(uint16_t val){
 	cli();
 	/* Set TCNT3 to val */
 	OCR3A = val;
+	sei();
+}
+
+void TIM16_WriteOCRA1(uint16_t val){
+	cli();
+	/* Set TCNT3 to val */
+	OCR1A = val;
 	sei();
 }
 

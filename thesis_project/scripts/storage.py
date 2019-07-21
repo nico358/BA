@@ -6,7 +6,7 @@ from exception_handler      import ExceptionHandler
 from filestorage_adapter    import FileStorageAdapter
 
 
-FILEPATH            = 'readings.txt'
+FILEPATH            = 'meas/FPGA@400Hz20mV.txt'
 PORT_MON            = '/dev/ttyS26'
 PORT_MCU            = '/dev/ttyS22'
 BAUDRATE            = 115200
@@ -29,6 +29,7 @@ class StorageController:
     serialMonAdapter        = None
     serialMcuAdapter        = None
     timer                   = None
+    flag                    = True
 
 
     def __init__(self):
@@ -40,23 +41,22 @@ class StorageController:
         self.serialMonAdapter.openSerial()
         self.serialMcuAdapter.openSerial()
         self.fileStorageAdapter.openFile(FILEPATH)
-    
 
     def storeSerialDataInFile(self, time_limit):
         """TODO."""
         try:
-            self.serialMonAdapter.writeToSerial(START_MON_CMD)
             self.serialMcuAdapter.writeToSerial(TESTMODE_FPGA_CMD)
             self.serialMcuAdapter.serialSleep(0.01)
             self.timer.reset_timer()
+            self.serialMonAdapter.writeToSerial(START_MON_CMD)
             self.serialMcuAdapter.writeToSerial(LEDFLASH_FPGA_CMD)
-            
             while self.timer.get_elapsed_time() < time_limit:
+                t0 = self.timer.get_elapsed_time()
                 self.fileStorageAdapter.writeToOpenFile(
                                                        self.serialMonAdapter.readFromSerialWithDelay()
-                                                       )
-                if self.serialMcuAdapter.getBytesInWaiting() != 0:
-                    print(self.serialMcuAdapter.readFromSerialWithDelay())
+                                                       )                             
+                # if self.serialMcuAdapter.getBytesInWaiting() != 0:
+                #     print(self.serialMcuAdapter.readFromSerialWithDelay())
         except KeyboardInterrupt:
             print("Keyboard interrupt in controller")
         finally:
@@ -68,6 +68,6 @@ class StorageController:
 
 if __name__ == "__main__":
     s = StorageController()
-    s.storeSerialDataInFile(3.0)
+    s.storeSerialDataInFile(2.0)
 
 

@@ -1,7 +1,7 @@
 """TODO."""
 
 import time
- 
+
 class Timer:
     """TODO."""
 
@@ -23,6 +23,13 @@ class Timer:
         # measure wall time
         return time.time() - self.initial_time
 
+    def getNowTime(self):
+        """TODO."""
+        return time.time()
+
+    def timerSleep(self, sec):
+        """TODO."""
+        time.sleep(sec)
 
 if __name__ == "__main__":
     t = Timer()

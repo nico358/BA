@@ -86,24 +86,24 @@ struct PAC1720_device dev_FPGA_VCC = {
 
     .DEV_CH1_conf.CH_name_opt                               = "FPGA_VCCINT_MON",
     .DEV_CH1_conf.CH_current_sense_resistor_value           = 0.8f,
-    .DEV_CH1_conf.CH_current_sense_sampling_time_reg        = CURRENT_SAMPLE_TIME_160ms,
+    .DEV_CH1_conf.CH_current_sense_sampling_time_reg        = CURRENT_SAMPLE_TIME_2ms5,
     .DEV_CH1_conf.CH_current_sense_sampling_average_reg     = SAMPLE_AVERAGING_DISABLED,
-    .DEV_CH1_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_80mV,
+    .DEV_CH1_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_20mV,
     .DEV_CH1_conf.CH_current_sense_high_limit_reg           = CURRENT_SENSE_HIGH_LIMIT_DEFAULT,
 	.DEV_CH1_conf.CH_current_sense_low_limit_reg            = CURRENT_SENSE_LOW_LIMIT_DEFAULT,
-    .DEV_CH1_conf.CH_source_voltage_sampling_time_reg       = VSRC_SAMPLE_TIME_20ms,
+    .DEV_CH1_conf.CH_source_voltage_sampling_time_reg       = VSRC_SAMPLE_TIME_2ms5,
     .DEV_CH1_conf.CH_source_voltage_sampling_average_reg    = SAMPLE_AVERAGING_DISABLED,
     .DEV_CH1_conf.CH_source_voltage_high_limit_reg          = SOURCE_VOLTAGE_HIGH_LIMIT_DEFAULT,
 	.DEV_CH1_conf.CH_source_voltage_low_limit_reg           = SOURCE_VOLTAGE_LOW_LIMIT_DEFAULT,
 
     .DEV_CH2_conf.CH_name_opt                               = "FPGA_VCCAUX_MON",
     .DEV_CH2_conf.CH_current_sense_resistor_value           = 0.8f,
-    .DEV_CH1_conf.CH_current_sense_sampling_time_reg        = CURRENT_SAMPLE_TIME_160ms,
+    .DEV_CH1_conf.CH_current_sense_sampling_time_reg        = CURRENT_SAMPLE_TIME_2ms5,
     .DEV_CH1_conf.CH_current_sense_sampling_average_reg     = SAMPLE_AVERAGING_DISABLED,
-    .DEV_CH1_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_80mV,
+    .DEV_CH1_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_20mV,
     .DEV_CH1_conf.CH_current_sense_high_limit_reg           = CURRENT_SENSE_HIGH_LIMIT_DEFAULT,
 	.DEV_CH1_conf.CH_current_sense_low_limit_reg            = CURRENT_SENSE_LOW_LIMIT_DEFAULT,
-    .DEV_CH1_conf.CH_source_voltage_sampling_time_reg       = VSRC_SAMPLE_TIME_20ms,
+    .DEV_CH1_conf.CH_source_voltage_sampling_time_reg       = VSRC_SAMPLE_TIME_2ms5,
     .DEV_CH1_conf.CH_source_voltage_sampling_average_reg    = SAMPLE_AVERAGING_DISABLED,
     .DEV_CH1_conf.CH_source_voltage_high_limit_reg          = SOURCE_VOLTAGE_HIGH_LIMIT_DEFAULT,
 	.DEV_CH1_conf.CH_source_voltage_low_limit_reg           = SOURCE_VOLTAGE_LOW_LIMIT_DEFAULT,
@@ -313,6 +313,11 @@ int8_t adapter_get_measurements_PAC1720(struct PAC1720_device *device_ptr)
     return get_all_measurements_PAC1720(device_ptr);
 }
 
+int8_t adapter_get_raw_measurements_PAC1720(struct PAC1720_device *device_ptr)
+{
+    return get_raw_measurements_PAC1720(device_ptr);
+}
+
 int8_t adapter_write_one_shot_PAC1720(struct PAC1720_device *device_ptr)
 {
     return write_out_one_shot_register(device_ptr);
@@ -495,22 +500,32 @@ const void* get_ADAPTER_TEST_FPTR_FIELD(void)
     return &test_fptr_field;
 }
 
-void print_measurements_PAC1720(struct PAC1720_device * dev, debugWriteLine_fptr debug_fptr)
+void print_measurements_PAC1720(struct PAC1720_device * dev, debugWriteLine_fptr debug_fptr, uint16_t counter)
+{
+    char msg[256];
+
+    sprintf(msg, "%u ", dev->DEV_CH1_measurements.meas_cnt);
+    debug_fptr(msg);
+    sprintf(msg, "%s %f %f %f ", dev->DEV_CH1_conf.CH_name_opt, dev->DEV_CH1_measurements.CURRENT, dev->DEV_CH1_measurements.SOURCE_VOLTAGE, dev->DEV_CH1_measurements.POWER);
+    debug_fptr(msg);
+    sprintf(msg, "%s %f %f %f\r\n", dev->DEV_CH2_conf.CH_name_opt, dev->DEV_CH2_measurements.CURRENT, dev->DEV_CH2_measurements.SOURCE_VOLTAGE, dev->DEV_CH2_measurements.POWER);
+    debug_fptr(msg);
+}
+
+void print_raw_measurements_PAC1720(struct PAC1720_device * dev, debugWriteLine_fptr debug_fptr)
 {
     char msg[256];
 
     debug_fptr("{\r\n");
-    sprintf(msg, "[COUNTCH1 %d]\r\n", dev->DEV_CH1_measurements.meas_cnt);
+    sprintf(msg, "[Name: %s, COUNT: %d]\r\n", dev->DEV_name_opt, dev->DEV_CH1_measurements.meas_cnt);
     debug_fptr(msg);
-    sprintf(msg, "[%s: current %fA voltage %fV power %fW]\r\n", dev->DEV_CH1_conf.CH_name_opt, dev->DEV_CH1_measurements.CURRENT, dev->DEV_CH1_measurements.SOURCE_VOLTAGE, dev->DEV_CH1_measurements.POWER);
+    sprintf(msg, "Name: %s, v_sense_voltage_reg: %x,  v_source_voltage_reg: %x, power_ratio_reg: %x\r\n", dev->DEV_CH1_conf.CH_name_opt, get_channel_sense_voltage_read(&dev->DEV_CH1_measurements), get_channel_src_voltage_read(&dev->DEV_CH1_measurements), get_channel_pwr_ratio_read(&dev->DEV_CH1_measurements));
     debug_fptr(msg);
-    sprintf(msg, "[COUNTCH2 %d]\r\n", dev->DEV_CH2_measurements.meas_cnt);
-    debug_fptr(msg);
-    sprintf(msg, "[%s: current %fA voltage %fV power %fW]\r\n", dev->DEV_CH2_conf.CH_name_opt, dev->DEV_CH2_measurements.CURRENT, dev->DEV_CH2_measurements.SOURCE_VOLTAGE, dev->DEV_CH2_measurements.POWER);
+    sprintf(msg, "Name: %s, v_sense_voltage_reg: %x,  v_source_voltage_reg: %x, power_ratio_reg: %x\r\n", dev->DEV_CH2_conf.CH_name_opt, get_channel_sense_voltage_read(&dev->DEV_CH2_measurements), get_channel_src_voltage_read(&dev->DEV_CH2_measurements), get_channel_pwr_ratio_read(&dev->DEV_CH2_measurements));
     debug_fptr(msg);
     debug_fptr("}\r\n\r\n\r\n");
 }
-
+ 
 void debug_PAC1720(struct PAC1720_device * dev, debugWriteLine_fptr debug_fptr){
     char msg[512];
 

@@ -761,6 +761,25 @@ int8_t get_all_measurements_PAC1720(struct PAC1720_device *device_ptr)
         if(res != PAC1720_OK) return res;
         res = calculate_all_measurements(device_ptr);
     }
+    else
+    {
+        set_measurements_zero(device_ptr);
+        return PAC1720_CONVERSION_UNDONE;
+    }
+    return res;
+}
+
+int8_t get_raw_measurements_PAC1720(struct PAC1720_device *device_ptr)
+{
+    if(device_ptr->internal == NULL) return PAC1720_NULLPTR_ERROR;
+    int8_t res = PAC1720_OK;
+    res = readin_limit_status_registers(device_ptr);
+    if(res != PAC1720_OK) return res;
+    if(device_ptr->DEV_CH1_measurements.conversion_done || device_ptr->DEV_CH2_measurements.conversion_done)
+    {
+        res = readin_measurements_registers(device_ptr);
+        if(res != PAC1720_OK) return res;
+    }
     else set_measurements_zero(device_ptr);
     return res;
 }

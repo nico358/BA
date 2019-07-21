@@ -13,6 +13,14 @@ class FileStorageAdapter:
         """TODO."""
         self.file = file
 
+    def fileIsOpen(self):
+        """TODO."""
+        if self.file == None:
+            return False
+        if self.file.closed:
+            return False
+        return True
+
     
     def appendPathToHomeDIR(self, path):
         """TODO."""
@@ -66,12 +74,19 @@ class FileStorageAdapter:
              ExceptionHandler(e, "readFileWithOpen")
         return content
 
+    def readFromOpenFile(self):
+        """TODO."""
+        content = None
+        if self.file != None:
+            content = self.file.read()     
+        return content
+
 
 if __name__ == "__main__":
     """TODO."""
     filewriter = FileStorageAdapter()
     print(filewriter.appendPathToHomeDIR("Default"))
-    filewriter.openFile(path="storage.txt")
-    for i in range(1,10):
-        filewriter.writeToOpenFile("test\n")
+    filewriter.openFile(path="meas/test.txt")
+    for i in range(1,100):
+        filewriter.writeToOpenFile(str(i) + " FPGA_VCCINT_MON 0.014683 3.281250 0.047240 FPGA_VCCAUX_MON 0.006349 1.093750 0.006809\r\n")
     filewriter.closeFile()

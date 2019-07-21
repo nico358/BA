@@ -185,6 +185,7 @@ cc_library(
 		":AdapterLib",
 		":I2cLib",
 		":DebugLib",
+		":TimerLib",
     ],
 
 	visibility = [
@@ -273,7 +274,6 @@ default_embedded_binary(
 
 	deps = [
         ":IncludeLib",
-		":TimerLib",
 	],
 )
 

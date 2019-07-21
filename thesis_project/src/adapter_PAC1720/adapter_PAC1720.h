@@ -112,6 +112,16 @@ void adapter_destroy_PAC1720(struct PAC1720_device *device_ptr);
 int8_t adapter_get_measurements_PAC1720(struct PAC1720_device *device_ptr);
 
 /*!
+ * @fn 
+ * @brief 
+ *
+ * @see
+ *
+ * @return 
+ */
+int8_t adapter_get_raw_measurements_PAC1720(struct PAC1720_device *device_ptr);
+
+/*!
  * @brief
  *
  * 
@@ -147,7 +157,19 @@ void debug_PAC1720(struct PAC1720_device * dev, debugWriteLine_fptr debug_fptr);
  *
  * @return 
  */
-void print_measurements_PAC1720(struct PAC1720_device * dev, debugWriteLine_fptr debug_fptr);
+void print_measurements_PAC1720(struct PAC1720_device * dev, debugWriteLine_fptr debug_fptr, uint16_t counter);
+// void print_measurements_PAC1720(struct PAC1720_device * dev, debugWriteLine_fptr debug_fptr);
+
+/*!
+ * @fn 
+ * @brief 
+ *
+ *
+ * @return 
+ */
+void print_raw_measurements_PAC1720(struct PAC1720_device * dev, debugWriteLine_fptr debug_fptr);
+
+void print_floats(float meas[2400], debugWriteLine_fptr debug_fptr);
 
 /*!
  * @fn 
