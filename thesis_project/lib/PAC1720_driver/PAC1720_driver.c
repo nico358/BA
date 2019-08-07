@@ -1,237 +1,234 @@
 /*! @file PAC1720_driver.c
-*   @brief Sensor driver for PAC1720 sensor 
- */
+ @brief Sensor driver for PAC1720 sensor */
+/*!
+ * @defgroup PAC1720 driver API
+ * @{*/
+
 #include "PAC1720_driver.h"
 
 /*!
- * @brief
- *
+ * @fn set_sensor_to_sleep
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Sets the sensor to sleep mode. Deactivates all measurements.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in] device_ptr :  Pointer to structure instance of sensor.
+ *
+ * @return Success or failure.
+ * @retval 0 value -> OK/ !=0 value -> Error
  */
 int8_t set_sensor_to_sleep(struct PAC1720_device *device_ptr);
 
 /*!
- * @brief
- *
+ * @fn sensor_is_in_sleep
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Gets the actual state of the sensor.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in] device_ptr : Pointer to structure instance of sensor.
+ *
+ * @return Sensors operation state.
+ * @retval true -> sensor sleeps / false -> sensor operates
  */
 bool sensor_is_in_sleep(struct PAC1720_device *device_ptr);
 
 /*!
- * @brief
- *
+ * @fn check_name_opt
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Checks if a name is provided in struct instance of sensor and set default name if not. 
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in] device_ptr : Pointer to structure instance of sensor.
+ *
  */
 void check_name_opt(struct PAC1720_device *device_ptr);
 
 /*!
- * @brief
- *
+ * @fn write_all_settings_to_sensor
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Writes the configuration stored in the struct instance to the sensor.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in] device_ptr : Pointer to structure instance of sensor.
+ *
+ * @return Success or failure.
+ * @retval 0 value -> OK/ !=0 value -> Error
  */
 int8_t write_all_settings_to_sensor(struct PAC1720_device *device_ptr);
 
 /*!
- * @brief
- *
+ * @fn write_out_global_config_registers
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Writes the global configuration stored in the struct instance to the sensor.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in] device_ptr : Pointer to structure instance of sensor.
+ *
+ * @return Success or failure.
+ * @retval 0 value -> OK/ !=0 value -> Error
  */
 int8_t write_out_global_config_registers(struct PAC1720_device *device_ptr);
 
 /*!
- * @brief
- *
+ * @fn assign_tmp_global_config_array
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Helper function to create an array of data for the bus write function.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in] device_ptr : Pointer to structure instance of sensor.
+ * @param[in] tmp_config_reg : Array holding the global configration settings temporary.
+ *
  */
 void assign_tmp_global_config_array(struct PAC1720_device *device_ptr, uint8_t tmp_config_reg[4]);
 
 /*!
- * @brief
- *
+ * @fn write_out_sampling_config_registers
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Writes the sampling configuration stored in the struct instance to the sensor.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in] device_ptr : Pointer to structure instance of sensor.
+ *
+ * @return Success or failure.
+ * @retval 0 value -> OK/ !=0 value -> Error
  */
 int8_t write_out_sampling_config_registers(struct PAC1720_device *device_ptr);
 
 /*!
- * @brief
- *
+ * @fn assign_tmp_sampling_config_array
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Helper function to create an array of data for the bus write function.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in] device_ptr : Pointer to structure instance of sensor.
+ * @param[in] tmp_smpl_conf_reg : Array holding the sampling configuration settings temporary.
+ *
  */
 void assign_tmp_sampling_config_array(struct PAC1720_device *device_ptr, uint8_t tmp_smpl_conf_reg[3]);
 
 /*!
- * @brief
- *
+ * @fn write_out_limit_registers
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Writes the limit configuration stored in the struct instance to the sensor.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in] device_ptr : Pointer to structure instance of sensor.
+ *
+ * @return Success or failure.
+ * @retval 0 value -> OK/ !=0 value -> Error
  */
 int8_t write_out_limit_registers(struct PAC1720_device *device_ptr);
 
 /*!
- * @brief
- *
+ * @fn assign_tmp_limit_array
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Helper function to create an array of data for the bus write function.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in] device_ptr : Pointer to structure instance of sensor.
+ * @param[in] tmp_lmt_reg : Array holding the limit configuration settings temporary.
+ *
  */
 void assign_tmp_limit_array(struct PAC1720_device *device_ptr, uint8_t tmp_lmt_reg[8]);
 
 /*!
- * @fn 
- * @brief 
+ * @fn get_all_settings_from_sensor
+ * 
+ * @brief Gets the current configuration from the sensor.
  *
- * @see
+ * @param[in/out] device_ptr : Pointer to structure instance of sensor.
  *
- * @return 
+ * @return Success or failure.
+ * @retval 0 value -> OK/ !=0 value -> Error
  */
 int8_t get_all_settings_from_sensor(struct PAC1720_device *device_ptr);
 
 /*!
- * @brief
- *
+ * @fn readin_global_config_registers
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Reads the global config settings from the sensor into the struct instance of the sensor.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in/out] device_ptr : Pointer to structure instance of sensor.
+ * 
+ * @return Success or failure.
+ * @retval 0 value -> OK/ !=0 value -> Error
  */
 int8_t readin_global_config_registers(struct PAC1720_device *device_ptr);
 
 /*!
- * @brief
- *
+ * @fn assign_global_config_registers
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Helper function to write the data from temporary array of the read function into the struct instance of the sensor.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in/out] device_ptr : Pointer to structure instance of sensor.
+ * @param[in] tmp_config_reg : Array holding the global configuration configuration settings temporary.
+ *
  */
 void assign_global_config_registers(struct PAC1720_device *device_ptr, uint8_t tmp_config_reg[4]);
 
 /*!
- * @brief
- *
+ * @fn readin_limit_status_registers
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Reads the limit status registers from the sensor into the struct instance of the sensor.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in/out] device_ptr : Pointer to structure instance of sensor.
+ * 
+ * @return Success or failure.
+ * @retval 0 value -> OK/ !=0 value -> Error
  */
 int8_t readin_limit_status_registers(struct PAC1720_device *device_ptr);
 
 /*!
- * @brief
- *
+ * @fn assign_limit_status_registers
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Helper function to write the data from temporary array of the read function into the struct instance of the sensor.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in/out] device_ptr : Pointer to structure instance of sensor.
+ * @param[in] tmp_smpl_conf_reg : Array holding the status limit settings temporary.
+ *
  */
 void assign_limit_status_registers(struct PAC1720_device *device_ptr, uint8_t tmp_smpl_conf_reg[3]);
 
 /*!
- * @brief
- *
+ * @fn readin_sampling_config_registers
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Reads the sampling config registers from the sensor into the struct instance of the sensor.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in/out] device_ptr : Pointer to structure instance of sensor.
+ * 
+ * @return Success or failure.
+ * @retval 0 value -> OK/ !=0 value -> Error
  */
 int8_t readin_sampling_config_registers(struct PAC1720_device *device_ptr);
 
 /*!
- * @brief
- *
+ * @fn assign_sampling_config_registers
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Helper function to write the data from temporary array of the read function into the struct instance of the sensor.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in/out] device_ptr : Pointer to structure instance of sensor.
+ * @param[in] tmp_smpl_conf_reg : Array holding the sampling settings temporary.
+ *
  */
 void assign_sampling_config_registers(struct PAC1720_device *device_ptr, uint8_t tmp_smpl_conf_reg[3]);
 
 /*!
- * @brief
- *
+ * @fn readin_measurements_registers
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Reads the measurements registers from the sensor into the struct instance of the sensor.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in/out] device_ptr : Pointer to structure instance of sensor.
+ * 
+ * @return Success or failure.
+ * @retval 0 value -> OK/ !=0 value -> Error
  */
 int8_t readin_measurements_registers(struct PAC1720_device *device_ptr);
 
 /*!
- * @brief
- *
+ * @fn assign_internal_measurements_registers
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Helper function to write the data from temporary array of the read function into the struct instance of the sensor.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in/out] device_ptr : Pointer to structure instance of sensor.
+ * @param[in] tmp_meas_reg : Array holding the sensor measurement results temporary.
+ *
  */
 void assign_internal_measurements_registers(struct PAC1720_device *device_ptr, uint8_t tmp_meas_reg[12]);
 
 /*!
- * @brief
- *
+ * @fn set_measurements_zero
+ * 
+ * @brief Helper function to reset all measurements i
  * 
  * @note ..
  * @param[in] config	: 
