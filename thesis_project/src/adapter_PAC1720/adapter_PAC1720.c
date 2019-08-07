@@ -17,30 +17,6 @@ struct FIELD_BUS_INTERFACE *internal_fieldbus_interface;
 /** The platform dependend delay function used in this file */
 delay_function_ptr internal_delay;
 
-/* Settings required to setup device with currently applied config ('adapter_init_PAC1720_from_field')*/
-// struct PAC1720_device dev_FPGA_VCC = 
-// {
-// 	   .DEV_sensor_address                                     = 0x4F,
-//     .DEV_CH1_conf.CH_current_sense_resistor_value           = 0.8f,
-//     .DEV_CH2_conf.CH_current_sense_resistor_value           = 0.8f,
-// };
-
-/* Setup device with default values */
-// struct PAC1720_device dev_FPGA_VCC = 
-// {
-//     .DEV_sensor_address                                    = 0x4F,
-//     .DEV_conversion_rate_reg                               = CONVERSION_DEFAULT,
-//     .DEV_CH1_conf.CH_current_sense_resistor_value           = 0.8f,
-//     .DEV_CH1_conf.CH_current_sense_sampling_time_reg        = CURRENT_SAMPLE_TIME_DEFAULT,
-//     .DEV_CH1_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_DEFAULT,
-//     .DEV_CH1_conf.CH_source_voltage_sampling_time_reg       = VSRC_SAMPLE_TIME_DEFAULT,
-
-//     .DEV_CH2_conf.CH_current_sense_resistor_value           = 0.8f,
-//     .DEV_CH2_conf.CH_current_sense_sampling_time_reg        = CURRENT_SAMPLE_TIME_DEFAULT,
-//     .DEV_CH2_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_DEFAULT,
-//     .DEV_CH2_conf.CH_source_voltage_sampling_time_reg       = VSRC_SAMPLE_TIME_DEFAULT,
-// };
-
 /* Setup device with all possible settings */
 struct PAC1720_device dev_USB_MON = 
 {
@@ -55,7 +31,7 @@ struct PAC1720_device dev_USB_MON =
     .DEV_CH1_conf.CH_current_sense_resistor_value           = 0.15f,
     .DEV_CH1_conf.CH_current_sense_sampling_time_reg        = CURRENT_SAMPLE_TIME_2ms5,
     .DEV_CH1_conf.CH_current_sense_sampling_average_reg     = SAMPLE_AVERAGING_DISABLED,
-    .DEV_CH1_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_20mV,
+    .DEV_CH1_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_80mV,
     .DEV_CH1_conf.CH_current_sense_high_limit_reg           = CURRENT_SENSE_HIGH_LIMIT_DEFAULT,
 	.DEV_CH1_conf.CH_current_sense_low_limit_reg            = CURRENT_SENSE_LOW_LIMIT_DEFAULT,
     .DEV_CH1_conf.CH_source_voltage_sampling_time_reg       = VSRC_SAMPLE_TIME_2ms5,
@@ -64,10 +40,10 @@ struct PAC1720_device dev_USB_MON =
 	.DEV_CH1_conf.CH_source_voltage_low_limit_reg           = SOURCE_VOLTAGE_LOW_LIMIT_DEFAULT,
 
     .DEV_CH2_conf.CH_name_opt                               = "MON_VCC",
-    .DEV_CH2_conf.CH_current_sense_resistor_value           = 0.8f,
+    .DEV_CH2_conf.CH_current_sense_resistor_value           = 0.82f,
     .DEV_CH2_conf.CH_current_sense_sampling_time_reg        = CURRENT_SAMPLE_TIME_2ms5,
     .DEV_CH2_conf.CH_current_sense_sampling_average_reg     = SAMPLE_AVERAGING_DISABLED,
-    .DEV_CH2_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_20mV,
+    .DEV_CH2_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_80mV,
     .DEV_CH2_conf.CH_current_sense_high_limit_reg           = CURRENT_SENSE_HIGH_LIMIT_DEFAULT,
 	.DEV_CH2_conf.CH_current_sense_low_limit_reg            = CURRENT_SENSE_LOW_LIMIT_DEFAULT,
     .DEV_CH2_conf.CH_source_voltage_sampling_time_reg       = VSRC_SAMPLE_TIME_2ms5,
@@ -84,11 +60,11 @@ struct PAC1720_device dev_FPGA_VCC = {
 	.DEV_one_shot_reg                                       = ONE_SHOT_DEFAULT,
     .DEV_mask_reg                                           = MASK_ALL_CH_ALERT_ASSERT,
 
-    .DEV_CH1_conf.CH_name_opt                               = "FPGA_VCCINT_MON",
-    .DEV_CH1_conf.CH_current_sense_resistor_value           = 0.8f,
+    .DEV_CH1_conf.CH_name_opt                               = "FPGA_VCCAUX_MON",
+    .DEV_CH1_conf.CH_current_sense_resistor_value           = 0.82f,
     .DEV_CH1_conf.CH_current_sense_sampling_time_reg        = CURRENT_SAMPLE_TIME_2ms5,
     .DEV_CH1_conf.CH_current_sense_sampling_average_reg     = SAMPLE_AVERAGING_DISABLED,
-    .DEV_CH1_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_20mV,
+    .DEV_CH1_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_80mV,
     .DEV_CH1_conf.CH_current_sense_high_limit_reg           = CURRENT_SENSE_HIGH_LIMIT_DEFAULT,
 	.DEV_CH1_conf.CH_current_sense_low_limit_reg            = CURRENT_SENSE_LOW_LIMIT_DEFAULT,
     .DEV_CH1_conf.CH_source_voltage_sampling_time_reg       = VSRC_SAMPLE_TIME_2ms5,
@@ -96,11 +72,11 @@ struct PAC1720_device dev_FPGA_VCC = {
     .DEV_CH1_conf.CH_source_voltage_high_limit_reg          = SOURCE_VOLTAGE_HIGH_LIMIT_DEFAULT,
 	.DEV_CH1_conf.CH_source_voltage_low_limit_reg           = SOURCE_VOLTAGE_LOW_LIMIT_DEFAULT,
 
-    .DEV_CH2_conf.CH_name_opt                               = "FPGA_VCCAUX_MON",
-    .DEV_CH2_conf.CH_current_sense_resistor_value           = 0.8f,
+    .DEV_CH2_conf.CH_name_opt                               = "FPGA_VCCINT_MON",
+    .DEV_CH2_conf.CH_current_sense_resistor_value           = 0.82f,
     .DEV_CH1_conf.CH_current_sense_sampling_time_reg        = CURRENT_SAMPLE_TIME_2ms5,
     .DEV_CH1_conf.CH_current_sense_sampling_average_reg     = SAMPLE_AVERAGING_DISABLED,
-    .DEV_CH1_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_20mV,
+    .DEV_CH1_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_80mV,
     .DEV_CH1_conf.CH_current_sense_high_limit_reg           = CURRENT_SENSE_HIGH_LIMIT_DEFAULT,
 	.DEV_CH1_conf.CH_current_sense_low_limit_reg            = CURRENT_SENSE_LOW_LIMIT_DEFAULT,
     .DEV_CH1_conf.CH_source_voltage_sampling_time_reg       = VSRC_SAMPLE_TIME_2ms5,
@@ -118,10 +94,10 @@ struct PAC1720_device dev_WIREL_MCU = {
     .DEV_mask_reg                                           = MASK_ALL_CH_ALERT_ASSERT,
 
     .DEV_CH1_conf.CH_name_opt                               = "WIRELESS_VCC",
-    .DEV_CH1_conf.CH_current_sense_resistor_value           = 0.8f,
+    .DEV_CH1_conf.CH_current_sense_resistor_value           = 0.82f,
     .DEV_CH1_conf.CH_current_sense_sampling_time_reg        = CURRENT_SAMPLE_TIME_2ms5,
     .DEV_CH1_conf.CH_current_sense_sampling_average_reg     = SAMPLE_AVERAGING_DISABLED,
-    .DEV_CH1_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_20mV,
+    .DEV_CH1_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_80mV,
     .DEV_CH1_conf.CH_current_sense_high_limit_reg           = CURRENT_SENSE_HIGH_LIMIT_DEFAULT,
 	.DEV_CH1_conf.CH_current_sense_low_limit_reg            = CURRENT_SENSE_LOW_LIMIT_DEFAULT,
     .DEV_CH1_conf.CH_source_voltage_sampling_time_reg       = VSRC_SAMPLE_TIME_2ms5,
@@ -130,10 +106,10 @@ struct PAC1720_device dev_WIREL_MCU = {
 	.DEV_CH1_conf.CH_source_voltage_low_limit_reg           = SOURCE_VOLTAGE_LOW_LIMIT_DEFAULT,
 
     .DEV_CH2_conf.CH_name_opt                               = "MCU_VCC",
-    .DEV_CH2_conf.CH_current_sense_resistor_value           = 0.8f,
+    .DEV_CH2_conf.CH_current_sense_resistor_value           = 0.82f,
     .DEV_CH1_conf.CH_current_sense_sampling_time_reg        = CURRENT_SAMPLE_TIME_2ms5,
     .DEV_CH1_conf.CH_current_sense_sampling_average_reg     = SAMPLE_AVERAGING_DISABLED,
-    .DEV_CH1_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_20mV,
+    .DEV_CH1_conf.CH_current_sense_FSR_reg                  = CURRENT_SENSE_RANGE_80mV,
     .DEV_CH1_conf.CH_current_sense_high_limit_reg           = CURRENT_SENSE_HIGH_LIMIT_DEFAULT,
 	.DEV_CH1_conf.CH_current_sense_low_limit_reg            = CURRENT_SENSE_LOW_LIMIT_DEFAULT,
     .DEV_CH1_conf.CH_source_voltage_sampling_time_reg       = VSRC_SAMPLE_TIME_2ms5,
@@ -142,6 +118,7 @@ struct PAC1720_device dev_WIREL_MCU = {
 	.DEV_CH1_conf.CH_source_voltage_low_limit_reg           = SOURCE_VOLTAGE_LOW_LIMIT_DEFAULT,
 };
 
+// uint16_t c[500];
 
 /** Function prototypes **/
 
@@ -313,6 +290,14 @@ int8_t adapter_get_measurements_PAC1720(struct PAC1720_device *device_ptr)
     return get_all_measurements_PAC1720(device_ptr);
 }
 
+// int8_t adapter_get_measurements_PAC1720(struct PAC1720_device *device_ptr, uint16_t i)
+// {
+//     // return get_all_measurements_PAC1720(device_ptr);
+//     get_all_measurements_PAC1720(device_ptr);
+//     c[i] = device_ptr->DEV_CH1_measurements.CURRENT;
+//     return 0;
+// }
+
 int8_t adapter_get_raw_measurements_PAC1720(struct PAC1720_device *device_ptr)
 {
     return get_raw_measurements_PAC1720(device_ptr);
@@ -321,6 +306,16 @@ int8_t adapter_get_raw_measurements_PAC1720(struct PAC1720_device *device_ptr)
 int8_t adapter_write_one_shot_PAC1720(struct PAC1720_device *device_ptr)
 {
     return write_out_one_shot_register(device_ptr);
+}
+
+void adapterResetMeasCounts(void)
+{
+    dev_USB_MON.DEV_CH1_measurements.meas_cnt = 0;
+    dev_USB_MON.DEV_CH2_measurements.meas_cnt = 0;
+    dev_FPGA_VCC.DEV_CH1_measurements.meas_cnt = 0;
+    dev_FPGA_VCC.DEV_CH2_measurements.meas_cnt = 0;
+    dev_WIREL_MCU.DEV_CH1_measurements.meas_cnt = 0;
+    dev_WIREL_MCU.DEV_CH2_measurements.meas_cnt = 0;
 }
 
 uint8_t adapter_find_sensors(uint8_t *addresses, struct FIELD_BUS_INTERFACE *fieldbus_interface, delay_function_ptr delay_fptr)
@@ -516,14 +511,12 @@ void print_raw_measurements_PAC1720(struct PAC1720_device * dev, debugWriteLine_
 {
     char msg[256];
 
-    debug_fptr("{\r\n");
-    sprintf(msg, "[Name: %s, COUNT: %d]\r\n", dev->DEV_name_opt, dev->DEV_CH1_measurements.meas_cnt);
+    sprintf(msg, "%u", dev->DEV_CH1_measurements.meas_cnt);
     debug_fptr(msg);
-    sprintf(msg, "Name: %s, v_sense_voltage_reg: %x,  v_source_voltage_reg: %x, power_ratio_reg: %x\r\n", dev->DEV_CH1_conf.CH_name_opt, get_channel_sense_voltage_read(&dev->DEV_CH1_measurements), get_channel_src_voltage_read(&dev->DEV_CH1_measurements), get_channel_pwr_ratio_read(&dev->DEV_CH1_measurements));
+    sprintf(msg, "%s %x %x %x", dev->DEV_CH1_conf.CH_name_opt, get_channel_sense_voltage_read(&dev->DEV_CH1_measurements), get_channel_src_voltage_read(&dev->DEV_CH1_measurements), get_channel_pwr_ratio_read(&dev->DEV_CH1_measurements));
     debug_fptr(msg);
-    sprintf(msg, "Name: %s, v_sense_voltage_reg: %x,  v_source_voltage_reg: %x, power_ratio_reg: %x\r\n", dev->DEV_CH2_conf.CH_name_opt, get_channel_sense_voltage_read(&dev->DEV_CH2_measurements), get_channel_src_voltage_read(&dev->DEV_CH2_measurements), get_channel_pwr_ratio_read(&dev->DEV_CH2_measurements));
+    sprintf(msg, "%s %x %x %x", dev->DEV_CH2_conf.CH_name_opt, get_channel_sense_voltage_read(&dev->DEV_CH2_measurements), get_channel_src_voltage_read(&dev->DEV_CH2_measurements), get_channel_pwr_ratio_read(&dev->DEV_CH2_measurements));
     debug_fptr(msg);
-    debug_fptr("}\r\n\r\n\r\n");
 }
  
 void debug_PAC1720(struct PAC1720_device * dev, debugWriteLine_fptr debug_fptr){

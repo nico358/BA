@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 LINE_STYLE_DOT    = 'o'
 LINE_STYLE_LN     = 'b-'
 PLOT_COLORS       = ['g', 'b', 'c', 'm', 'y', 'k', 'r']
-FONTSIZE          = 10
+FONTSIZE          = 15
 XLABEL            = 'time (ms)'
 ADJUST            = 0.88
 FIRST_COLOR       = 'tab:red' 
@@ -26,18 +26,19 @@ class MeasPlotter:
     show          = None
     meas_time     = None
 
-    def __init__(self, meas_ch1=None, meas_ch2=None, folderpath='plot/', filepath1=None, filepath2=None, show=False, meas_time=None):
+    def __init__(self, meas_ch1=None, meas_ch2=None, folderpath=None, filepath1=None, filepath2=None, show=False, meas_time=None):
         """TODO."""
         self.tmp_meas_ch1  = meas_ch1
         self.tmp_meas_ch2  = meas_ch2
         self.show          = show
         self.meas_time     = meas_time
-        if not filepath1 is None:
-            self.path_ch1 = folderpath + filepath1 + '.png'
-        if not filepath2 is None:
-            self.path_ch2 = folderpath + filepath2 + '.png'
+        if not folderpath is None:
+            if not filepath1 is None:
+                self.path_ch1 = folderpath + 'plot/' + filepath1
+            if not filepath2 is None:
+                self.path_ch2 = folderpath + 'plot/' + filepath2
 
-    def plotAll(self, overlay=False):
+    def plotAll(self, overlay=4):
         """TODO."""
         if not self.meas_time is None:
             if not self.tmp_meas_ch1 is None:
@@ -61,14 +62,42 @@ class MeasPlotter:
             title = self.getTitle(tmp_meas_ch)
             # Get interval by division of meas time by meas number
             yax = self.getYaxis(tmp_meas_lists)
-            if overlay:
+            if overlay == 1:
                 self.plotAllOverlay(tmp_meas_names, tmp_meas_lists, title, yax, path)
-            else:
+            elif overlay == 2:
+                self.plotAllBeside(tmp_meas_names, tmp_meas_lists, title, yax, path)
+            elif overlay == 3:
                 self.plotAllNormal(tmp_meas_names, tmp_meas_lists, title, yax, path)
+            else:
+                self.plotAllOverlay(tmp_meas_names, tmp_meas_lists, title, yax, path)
+                self.plotAllBeside(tmp_meas_names, tmp_meas_lists, title, yax, path)
+                self.plotAllNormal(tmp_meas_names, tmp_meas_lists, title, yax, path)
+
+    def plotAllBeside(self, tmp_meas_names, tmp_meas_lists, title, yax, path):
+        """TODO."""
+        fig, axs = plt.subplots(3, sharex=True, sharey=False, figsize=(10, 5))
+        marker = LINE_STYLE_DOT
+        for i in range(len(tmp_meas_lists)):
+            axs[i].plot(yax, tmp_meas_lists[i], color=PLOT_COLORS[(i % len(PLOT_COLORS)) -1], marker=marker, linewidth=LINEWIDTH, markersize=MARKERSIZE)
+            axs[i].set_ylabel(tmp_meas_names[i])
+            axs[i].grid(axis='both')
+            
+        axs[len(tmp_meas_lists) -1].set_xlabel(XLABEL)
+
+        plt.tight_layout()
+        fig.suptitle(title, fontsize=FONTSIZE)
+        plt.subplots_adjust(top=ADJUST)
+        # Save figure
+        if not path is None:
+            plt.savefig(path + 'beside.png')
+        # If show = True: show
+        if self.show:
+            plt.show()
+
 
     def plotAllNormal(self, tmp_meas_names, tmp_meas_lists, title, yax, path):
         """TODO."""
-        fig, ax1 = plt.subplots(figsize=(15, 15))
+        fig, ax1 = plt.subplots(figsize=(20, 10))
         marker = LINE_STYLE_DOT
         ax1.set_xlabel(XLABEL)
         plt.grid(axis='both')
@@ -96,10 +125,46 @@ class MeasPlotter:
         plt.subplots_adjust(top=ADJUST)
         # Save figure if path is given
         if not path is None:
-            plt.savefig(path)
+            plt.savefig(path + 'normal.png')
         # If show = True: show figure
         if self.show:
             plt.show()
+            
+    def plotAllOverlay(self, tmp_meas_names, tmp_meas_lists, title, yax, path):
+        """TODO."""
+        fig, ax1 = plt.subplots(figsize=(30, 10))
+        color = FIRST_COLOR
+        marker = LINE_STYLE_DOT
+        ax1.set_xlabel(XLABEL)
+        # Set label and plot first graph
+        ax1.set_ylabel(tmp_meas_names[INDEX_FIRST_MEAS], color=color)
+        ax1.plot(yax, tmp_meas_lists[INDEX_FIRST_MEAS], color=color, marker=marker, linewidth=LINEWIDTH+1, markersize=MARKERSIZE+1)
+        ax1.tick_params(axis='y', labelcolor=color)
+        # Plot remaining measurements
+        self.plotLoop(tmp_meas_names, tmp_meas_lists, ax1, yax)
+        # Plot figure
+        fig.tight_layout()
+        plt.title(title, fontsize=FONTSIZE)
+        plt.subplots_adjust(top=ADJUST)
+        # Save figure
+        if not path is None:
+            plt.savefig(path  + 'ovelay.png')
+        # If show = True: show
+        if self.show:
+            plt.show()
+
+    def plotLoop(self, tmp_meas_names, tmp_meas_lists, ax1, yax):
+        """TODO."""
+        for i in range(len(tmp_meas_lists) - 1):
+            # First plot is base
+            ax2 = ax1.twinx()
+            # Choose color repetively
+            color = PLOT_COLORS[i % len(PLOT_COLORS)]
+            marker = LINE_STYLE_DOT
+            # Set name and plot graph
+            ax2.set_ylabel(tmp_meas_names[i+1], color=color)
+            ax2.plot(yax, tmp_meas_lists[i+1], color=color, marker=marker, linewidth=LINEWIDTH/(i+1), markersize=MARKERSIZE/(i+1))
+            ax2.tick_params(axis='y', labelcolor=color)
 
     def getYaxis(self, tmp_meas_lists):
         """TODO."""
@@ -117,43 +182,6 @@ class MeasPlotter:
             title += str(tmp_metadata[i+1])
             title += ' '
         return title
-            
-    def plotAllOverlay(self, tmp_meas_names, tmp_meas_lists, title, yax, path):
-        """TODO."""
-        fig, ax1 = plt.subplots()
-        color = FIRST_COLOR
-        marker = LINE_STYLE_DOT
-        ax1.set_xlabel(XLABEL)
-        # Set label and plot first graph
-        ax1.set_ylabel(tmp_meas_names[INDEX_FIRST_MEAS], color=color)
-        ax1.plot(yax, tmp_meas_lists[INDEX_FIRST_MEAS], color=color, marker=marker, linewidth=LINEWIDTH)
-        ax1.tick_params(axis='y', labelcolor=color)
-        # Plot remaining measurements
-        self.plotLoop(tmp_meas_names, tmp_meas_lists, ax1, yax)
-        # Plot figure
-        fig.tight_layout()
-        plt.title(title, fontsize=FONTSIZE)
-        plt.subplots_adjust(top=ADJUST)
-        # Save figure
-        if not path is None:
-            plt.savefig(path)
-        # If show = True: show
-        if self.show:
-            plt.show()
-
-    def plotLoop(self, tmp_meas_names, tmp_meas_lists, ax1, yax):
-        """TODO."""
-        for i in range(len(tmp_meas_lists) - 1):
-            # First plot is base
-            ax2 = ax1.twinx()
-            # Choose color repetively
-            color = PLOT_COLORS[i % len(PLOT_COLORS)]
-            marker = LINE_STYLE_DOT
-            # Set name and plot graph
-            ax2.set_ylabel(tmp_meas_names[i+1], color=color)
-            ax2.plot(yax, tmp_meas_lists[i+1], color=color, marker=marker, linewidth=LINEWIDTH)
-            ax2.tick_params(axis='y', labelcolor=color)
-
 
     def filterListByFloat(self, lst):
         """TODO."""

@@ -33,18 +33,16 @@ class SerialControllerMcu(threading.Thread):
     """TODO."""
 
     serialAdapter = None
-    data1 = None
-    data2 = None
+    data = None
     flag = None
 
-    def __init__(self, group=None, target='SerialControllerMcu', name='SerialMcuThread', args=(), kwargs=None, verbose=None, port=PORT_MCU, baudrate=BAUDRATE, data1=TESTMODE_FPGA_CMD, data2=LEDFLASH_FPGA_CMD):
+    def __init__(self, group=None, target='SerialControllerMcu', name='SerialMcuThread', args=(), kwargs=None, verbose=None, port=PORT_MCU, baudrate=BAUDRATE, data=TESTMODE_FPGA_CMD):
         """TODO."""
         super(SerialControllerMcu, self).__init__()
         self.target = target
         self.name = name
         self.serialAdapter = SerialAdapter(port=port, baudrate=baudrate)
-        self.data1 = data1
-        self.data2 = data2
+        self.data = data
         self.flag = True
 
 
@@ -52,10 +50,14 @@ class SerialControllerMcu(threading.Thread):
     def run(self):
         """TODO."""
         self.serialAdapter.openSerial()
-        self.serialAdapter.writeToSerial(self.data1)
-        if not self.data2 is None:
-            self.serialAdapter.serialSleep(SLEEP_BETWEEN_MCU_CMDS)
-            self.serialAdapter.writeToSerial(self.data2)
+        # Check if data is a list and send data in loop if
+        if isinstance(self.data, list):
+            for d in self.data:
+                self.serialAdapter.serialSleep(SLEEP_BETWEEN_MCU_CMDS)
+                self.serialAdapter.writeToSerial(d)
+        else:
+            self.serialAdapter.writeToSerial(self.data)
+        # Print incoming data
         while self.flag:
             if self.serialAdapter.getBytesInWaiting() != 0:
                 print(self.serialAdapter.readFromSerialWithDelay())
@@ -67,25 +69,35 @@ class SerialControllerMon(threading.Thread):
     serialAdapterMon = None
     timer = None
     flag = None
+    data = None
 
-    def __init__(self, group=None, target='SerialControllerMon', name='SerialMonThread', args=(), kwargs=None, verbose=None, port=PORT_MON, baudrate=BAUDRATE):
+    def __init__(self, group=None, target='SerialControllerMon', name='SerialMonThread', args=(), kwargs=None, verbose=None, port=PORT_MON, baudrate=BAUDRATE, data=START_MON_CMD):
         """TODO."""
         super(SerialControllerMon, self).__init__()
         self.target = target
         self.name = name
         self.serialAdapterMon = SerialAdapter(port=port, baudrate=baudrate)
         self.flag = True
+        self.data = data
 
 
     def run(self):
         """TODO."""
         self.serialAdapterMon.openSerial()
-        self.serialAdapterMon.writeToSerial(START_MON_CMD)
+        # Check if data is a list and send data in loop if
+        if isinstance(self.data, list):
+            for d in self.data:
+                self.serialAdapterMon.serialSleep(SLEEP_BETWEEN_MCU_CMDS)
+                self.serialAdapterMon.writeToSerial(d)
+        else:
+            self.serialAdapterMon.writeToSerial(self.data)
+        # Push incoming data to queue
         while self.flag:
             if not queue.full() & self.serialAdapterMon.getBytesInWaiting() != 0:
                 queue.put(self.serialAdapterMon.readFromSerialWithDelay(None))
             else:
-                print("Queue full!!!")
+                print("Queue full or no bytes in waiting!")
+        # Finally pause monitoring on platform
         self.serialAdapterMon.writeToSerial(PAUSE_MON_CMD)
         self.serialAdapterMon.closeSerial()
 
@@ -104,6 +116,8 @@ class StorageController(threading.Thread):
         self.target = target
         self.name = name
         self.fileStorageAdapter = FileStorageAdapter()
+        self.fileStorageAdapter.createFolder(folderpath)
+        self.fileStorageAdapter.createFolder(folderpath + '/plot')
         if not filepath is None:
             self.path = folderpath + filepath +'.txt'
         self.flag = True

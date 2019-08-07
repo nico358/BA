@@ -110,7 +110,7 @@ enum SOURCE_VOLTAGE_LOW_LIMIT 		 {SOURCE_VOLTAGE_LOW_LIMIT_DEFAULT=0};
 
 
 
-/** Calculation specific constants */
+/** Lookup tables - calculation specific constants */
 /** Possible Full Scale Range values in current sensing, 
  *  determined by 'current_sense_FSR_reg' */
 static const float 		FSR_values[4] 												= {0.01f, 0.02f, 0.04f, 0.08f};
@@ -188,9 +188,10 @@ static const uint16_t   MAX_ATTEMPTS_SET_SLEEP_MODE									= 1000;
 /** Type definitions */
 /*!
  * Generic communication function pointer
- * @param[in] x: ... .
- * @param[in] y:	... .
- * @param[in/out] z: ... .
+ * @param[in] sensor_address: 7 bit bus address of the sensor.
+ * @param[in] reg_address:	8 bit address of register to be read or written.
+ * @param[in/out] data_ptr:	Pointer to the data to be written or read in .
+ * @param[in] len:	Length of the data field.
  */
 typedef int8_t (*PAC1720_fptr) (const uint8_t sensor_address, const uint8_t reg_address, uint8_t *data_ptr, const uint16_t len);
 
@@ -203,32 +204,34 @@ typedef void (*delay_fptr) (uint32_t period);
 
 /* Structure definitions */
 /*!
- * @brief  
+ * @brief  Datastructures that are used to instanciate a sensor device. Holds configuration and results. 
  */
 /* Internal config values */
 struct 	PAC1720_internal;
 struct  PAC1720_ch_internal;
 struct 	PAC1720_meas_internal;
 
-/*! The channels status flags and calculated measurements */
+/*! Result interface, holds the channels status flags and calculated measurements */
 struct 	PAC1720_CH_measurements 
 {
+	/* Flags for sensor conversion state and limit exceedings */
 	bool 						conversion_done;
 	bool 						source_voltage_high_limit;
 	bool 						source_voltage_low_limit;
 	bool 						sense_voltage_high_limit;
 	bool 						sense_voltage_low_limit;
-
+	/* Actual results after calculation */
 	float 						SOURCE_VOLTAGE;
 	float 						SENSE_VOLTAGE;
 	float 						CURRENT;
 	float 						POWER;
 
 	struct PAC1720_meas_internal * meas_internal;
+	/* Count of actual measurements done */
 	uint32_t 					meas_cnt;
 };
 
-/* Channel specific configuration */
+/* Configuration interface, holds channel specific configuration */
 struct 	PAC1720_CH_config
 {
 	/*! Optional name  */
@@ -257,7 +260,7 @@ struct 	PAC1720_CH_config
 
 };
 
-/*! The struct holding the device setup and measurements */
+/*! Sensor instance, holding the configurations and measurements for each channel*/
 struct 	PAC1720_device
 {
 	/*! Optional name for device */

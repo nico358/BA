@@ -34,27 +34,36 @@ int main(void)
     /* Debug string */
     char msg[64];
     /** User controlled state */
-    uint8_t state = 1;
+    uint8_t state = 2;
     uint8_t meas_fail = 0;
 
     while(state){
             
         check_user_input(&state);
 
-        if(state == 2)
+        if(state > 2)
         {
-            // meas_fail = adapter_get_measurements_PAC1720(&dev_USB_MON);
-            // if(!meas_fail)  
-            //     print_measurements_PAC1720(&dev_USB_MON, &debugWriteString, get_counter());
-            meas_fail = adapter_get_measurements_PAC1720(&dev_FPGA_VCC);
-            if(!meas_fail)
-                print_measurements_PAC1720(&dev_FPGA_VCC, &debugWriteString, get_counter());
-                
-            // meas_fail = adapter_get_measurements_PAC1720(&dev_WIREL_MCU);
-            // if(!meas_fail)
-            //     print_measurements_PAC1720(&dev_WIREL_MCU, &debugWriteString, get_counter());
-
+            if(state == 3 || state == 6){
+                meas_fail = adapter_get_measurements_PAC1720(&dev_USB_MON);
+                if(!meas_fail)  
+                    print_measurements_PAC1720(&dev_USB_MON, &debugWriteString, get_counter());
+            }
+            if(state == 4 || state == 6){
+                meas_fail = adapter_get_measurements_PAC1720(&dev_FPGA_VCC);
+                if(!meas_fail)
+                    print_measurements_PAC1720(&dev_FPGA_VCC, &debugWriteString, get_counter());
+            }   
+            if(state == 5 || state == 6){ 
+                meas_fail = adapter_get_measurements_PAC1720(&dev_WIREL_MCU);
+                if(!meas_fail)
+                print_measurements_PAC1720(&dev_WIREL_MCU, &debugWriteString, get_counter());
+            }
             reset_counter();
+        }
+
+        if(state == 1){
+            adapterResetMeasCounts();
+            state = 2;
         }
     }
 
@@ -86,6 +95,7 @@ void tear_down_platform(void)
     adapter_destroy_PAC1720(&dev_USB_MON);
     adapter_destroy_PAC1720(&dev_FPGA_VCC);
     adapter_destroy_PAC1720(&dev_WIREL_MCU);
+    counter_stop();
 }
 
 void check_user_input(uint8_t *state)
@@ -102,8 +112,14 @@ void set_state(uint8_t data, uint8_t *state)
 {
     switch (data)
     {
-    case 'C':
-        *state = 2;
+    case 'U':
+        *state = 3;
+        break;
+    case 'F':
+        *state = 4;
+        break;
+    case 'W':
+        *state = 5;
         break;
     case 'q':
         *state = 0;

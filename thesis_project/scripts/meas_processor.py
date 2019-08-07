@@ -42,9 +42,11 @@ class MeasProcessor:
     name_ch2        = None#
     folderpath      = None
     filepath        = None#
+    overlay         = None
+    show            = None
 
 
-    def __init__(self, folderpath='meas/', filepath=None, meas_id=None, meas_time=None):
+    def __init__(self, folderpath='meas/', filepath=None, meas_id=None, meas_time=None, plotoverlay=False, showplot=False):
         """TODO."""
         self.tmp_meas_ch1 = [[], [], [], []]
         self.tmp_meas_ch2 = [[], [], [], []]
@@ -53,13 +55,15 @@ class MeasProcessor:
         self.meas_timestamp = datetime.now().strftime("%m-%d-%Y-%H-%M-%S")
         self.filepath = filepath
         self.folderpath = folderpath
+        self.overlay = plotoverlay
+        self.show = showplot
 
-    def plotFormattedDataToPngFile(self):
+    def plotFormattedDataToPngFile(self, overlay):
         """TODO."""
         filepath_ch1 = self.formatFilepath(self.name_ch1)
         filepath_ch2 = self.formatFilepath(self.name_ch2)
-        plotter = MeasPlotter(meas_ch1=self.tmp_meas_ch1, meas_ch2=self.tmp_meas_ch2, filepath1=filepath_ch1, filepath2=filepath_ch2, meas_time=self.meas_time)
-        plotter.plotAll()
+        plotter = MeasPlotter(meas_ch1=self.tmp_meas_ch1, meas_ch2=self.tmp_meas_ch2, folderpath=self.folderpath, filepath1=filepath_ch1, filepath2=filepath_ch2, show=self.show, meas_time=self.meas_time)
+        plotter.plotAll(overlay)
 
     def writeFormattedDataToTxtFile(self, tmp_meas_ch, ch_name):
         """TODO."""
@@ -89,6 +93,7 @@ class MeasProcessor:
                     if reader.mode == 'r':
                         # Set matadata and measurement header
                         self.appendHead()
+                        reader.readline()
                         line = reader.readline()
                         while(line):
                             # Split incoming line
@@ -114,7 +119,7 @@ class MeasProcessor:
             self.writeFormattedDataToTxtFile(self.tmp_meas_ch1, self.name_ch1)
             self.writeFormattedDataToTxtFile(self.tmp_meas_ch2, self.name_ch2)
             # Plot formatted data
-            self.plotFormattedDataToPngFile()
+            self.plotFormattedDataToPngFile(self.overlay)
 
     def splitStr(self, strg):
         """TODO."""
@@ -195,7 +200,7 @@ class MeasProcessor:
 
 
 if __name__ == "__main__":
-    mp = MeasProcessor(filepath='test', meas_id="TEST_MEAS", meas_time=3)
+    mp = MeasProcessor(filepath='test', meas_id="TEST_MEAS", meas_time=3, overlay=False)
     mp.processFileByLine()
 
     

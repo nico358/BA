@@ -78,9 +78,13 @@ class FileStorageAdapter:
         """TODO."""
         content = None
         if self.file != None:
-            content = self.file.read()     
+            content = self.file.read()
         return content
 
+    def createFolder(self, fname):
+        """TODO."""
+        if not os.path.exists(fname):
+            os.makedirs(fname)
 
 if __name__ == "__main__":
     """TODO."""
@@ -90,3 +94,4 @@ if __name__ == "__main__":
     for i in range(1,100):
         filewriter.writeToOpenFile(str(i) + " FPGA_VCCINT_MON 0.014683 3.281250 0.047240 FPGA_VCCAUX_MON 0.006349 1.093750 0.006809\r\n")
     filewriter.closeFile()
+

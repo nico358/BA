@@ -134,6 +134,18 @@ int8_t adapter_get_raw_measurements_PAC1720(struct PAC1720_device *device_ptr);
 int8_t adapter_write_one_shot_PAC1720(struct PAC1720_device *device_ptr);
 
 /*!
+ * @brief
+ *
+ * 
+ * @note ..
+ * @param[in] config	: 
+ *
+ * @return 
+ * @retval 1 value -> OK/ 0 value -> Error
+ */
+void adapterResetMeasCounts(void);
+
+/*!
  * @fn
  * @brief
  *

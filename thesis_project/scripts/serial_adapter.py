@@ -45,6 +45,7 @@ class SerialAdapter:
     def closeSerial(self):
         """TODO."""
         if self.connection.is_open:
+            self.resetConnectionBuffers()
             self.connection.close()
 
 
