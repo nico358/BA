@@ -148,7 +148,7 @@ int8_t readin_global_config_registers(struct PAC1720_device *device_ptr);
 /*!
  * @fn assign_global_config_registers
  * 
- * @brief Helper function to write the data from temporary array of the read function into the struct instance of the sensor.
+ * @brief Helper function to write the data from temporary array of the bus read function into the struct instance of the sensor.
  *
  * @param[in/out] device_ptr : Pointer to structure instance of sensor.
  * @param[in] tmp_config_reg : Array holding the global configuration configuration settings temporary.
@@ -171,7 +171,7 @@ int8_t readin_limit_status_registers(struct PAC1720_device *device_ptr);
 /*!
  * @fn assign_limit_status_registers
  * 
- * @brief Helper function to write the data from temporary array of the read function into the struct instance of the sensor.
+ * @brief Helper function to write the data from temporary array of the bus read function into the struct instance of the sensor.
  *
  * @param[in/out] device_ptr : Pointer to structure instance of sensor.
  * @param[in] tmp_smpl_conf_reg : Array holding the status limit settings temporary.
@@ -194,7 +194,7 @@ int8_t readin_sampling_config_registers(struct PAC1720_device *device_ptr);
 /*!
  * @fn assign_sampling_config_registers
  * 
- * @brief Helper function to write the data from temporary array of the read function into the struct instance of the sensor.
+ * @brief Helper function to write the data from temporary array of the bus read function into the struct instance of the sensor.
  *
  * @param[in/out] device_ptr : Pointer to structure instance of sensor.
  * @param[in] tmp_smpl_conf_reg : Array holding the sampling settings temporary.
@@ -217,7 +217,7 @@ int8_t readin_measurements_registers(struct PAC1720_device *device_ptr);
 /*!
  * @fn assign_internal_measurements_registers
  * 
- * @brief Helper function to write the data from temporary array of the read function into the struct instance of the sensor.
+ * @brief Helper function to write the data from temporary array of the bus read function into the struct instance of the sensor.
  *
  * @param[in/out] device_ptr : Pointer to structure instance of sensor.
  * @param[in] tmp_meas_reg : Array holding the sensor measurement results temporary.
@@ -228,422 +228,424 @@ void assign_internal_measurements_registers(struct PAC1720_device *device_ptr, u
 /*!
  * @fn set_measurements_zero
  * 
- * @brief Helper function to reset all measurements i
+ * @brief Helper function to reset all measurements in the struct.
  * 
- * @note ..
- * @param[in] config	: 
- *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in/out] device_ptr : Pointer to structure instance of sensor.
  */
 void set_measurements_zero(struct PAC1720_device *device_ptr);
 
 /*!
- * @brief
- *
+ * @fn readin_limit_registers
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Reads the limit registers from the sensor into the struct instance of the sensor.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in/out] device_ptr : Pointer to structure instance of sensor.
+ * 
+ * @return Success or failure.
+ * @retval 0 value -> OK/ !=0 value -> Error
  */
 int8_t readin_limit_registers(struct PAC1720_device *device_ptr);
 
 /*!
- * @brief
- *
+ * @fn assign_ch_limit_registers
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Helper function to write the data from temporary array of the bus read function into the struct instance of the sensor.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in/out] device_ptr : Pointer to structure instance of sensor.
+ * @param[in] tmp_lmt_reg : Array holding the limit registers temporary.
+ *
  */
 void assign_ch_limit_registers(struct PAC1720_device *device_ptr, uint8_t tmp_lmt_reg[8]);
 
 /*!
- * @brief
- *
+ * @fn readin_sensor_infos_registers
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Reads the info registers from the sensor into the struct instance of the sensor.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in/out] device_ptr : Pointer to structure instance of sensor.
+ * 
+ * @return Success or failure.
+ * @retval 0 value -> OK/ !=0 value -> Error
  */
 int8_t readin_sensor_infos_registers(struct PAC1720_device *device_ptr);
 
 /*!
- * @brief
- *
+ * @fn assign_sensor_infos_registers
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Helper function to write the data from temporary array of the bus read function into the struct instance of the sensor.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in/out] device_ptr : Pointer to structure instance of sensor.
+ * @param[in] tmp_read : Array holding the info registers temporary.
+ *
  */
 void assign_sensor_infos_registers(struct PAC1720_internal *internal, uint8_t tmp_read[3]);
 
 /*!
- * @brief
- *
+ * @fn create_all_internal_ptrs
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Assigns all internal pointers in the sensor struct instance.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in/out] device_ptr : Pointer to structure instance of sensor.
+ * @param[in] ext_write : Pointer to the user defined bus write function.
+ * @param[in] ext_read : Pointer to the user defined bus read function.
+ * @param[in] ext_delay : Pointer to the user defined delay function.
+ * 
+ * @see adapter_PAC1720.h
+ * 
+ * @return Success or failure.
+ * @retval 0 value -> OK/ !=0 value -> Error
  */
 int8_t create_all_internal_ptrs(struct PAC1720_device *device_ptr, const PAC1720_fptr ext_write, const PAC1720_fptr ext_read, const delay_fptr ext_delay);
 
 /*!
- * @brief
- *
+ * @fn create_internal_ptr
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Allocates memory for internal pointer of the sensor struct instance and assigns peripheral pointers to the struct.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in] ext_write : Pointer to the user defined bus write function.
+ * @param[in] ext_read : Pointer to the user defined bus read function.
+ * @param[in] ext_delay : Pointer to the user defined delay function.
+ * 
+ * @see PAC1720_internal.
+ * 
+ * @return Pointer to allocated memory for PAC1720_internal struct.
+ * @retval Pointer.
  */
 struct PAC1720_internal * create_internal_ptr(const PAC1720_fptr ext_write, const PAC1720_fptr ext_read, const delay_fptr ext_delay);
 
 /*!
- * @brief
- *
+ * @fn create_ch_internal_ptr
  * 
- * @note ..
- * @param[in] config	: 
- *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @brief Allocates memory for the internal channel configuration pointer of the sensor struct instance.
+ * 
+ * @see PAC1720_ch_internal.
+ * 
+ * @return Pointer to allocated memory for PAC1720_ch_internal struct.
+ * @retval Pointer.
  */
 struct PAC1720_ch_internal * create_ch_internal_ptr(void);
 
 /*!
- * @brief
- *
+ * @fn create_meas_internal_ptr
  * 
- * @note ..
- * @param[in] config	: 
- *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @brief Allocates memory for the internal measurement pointer of the sensor struct instance.
+ * 
+ * @see PAC1720_meas_internal.
+ * 
+ * @return Pointer to allocated memory for PAC1720_meas_internal struct.
+ * @retval Pointer.
  */
 struct PAC1720_meas_internal * create_meas_internal_ptr(void);
 
 /*!
- * @brief
- *
+ * @fn destroy_all_internal_ptrs
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Frees all memory allocated to internal pointers in the sensor struct instance.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in/out] device_ptr : Pointer to structure instance of sensor.
+ * 
  */
 void destroy_all_internal_ptrs(struct PAC1720_device * dev_ptr);
 
 /*!
- * @brief
- *
+ * @fn destroy_all_internal_ptrs
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Frees memory allocated to the internal pointer in the sensor struct instance and sets values to zero.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in/out] internal : Pointer to internal struct instance of sensor.
+ * 
  */
 void destroy_internal_ptr(struct PAC1720_internal *internal);
 
 /*!
- * @brief
- *
+ * @fn destroy_ch_internal_ptr
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Frees memory allocated to the channel internal pointer in the sensor struct instance and sets values to zero.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in/out] ch_internal : Pointer to internal channel struct instance of sensor.
+ * 
  */
 void destroy_ch_internal_ptr(struct PAC1720_ch_internal *ch_internal);
 
 /*!
- * @brief
- *
+ * @fn destroy_meas_internal_ptr
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Frees memory allocated to the channel measurement internal pointer in the sensor struct instance and sets values to zero.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in/out] meas_internal : Pointer to internal measurement struct instance of sensor.
+ * 
  */
 void destroy_meas_internal_ptr(struct PAC1720_meas_internal *meas_internal);
 
 /*!
- * @brief
- *
+ * @fn calculate_all_measurements
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Calculate all actual values from sensor measurement results.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in/out] device_ptr : Pointer to structure instance of sensor.
+ * 
+ * @return Success or failure.
+ * @retval 0 value -> OK/ !=0 value -> Error
  */
 int8_t calculate_all_measurements(struct PAC1720_device *device_ptr);
 
 /*!
- * @brief
- *
+ * @fn calculate_channel_measurements
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Calculate actual values for a channel from sensor measurement results.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in] channel_conf : Pointer to channel config structure instance of sensor.
+ * @param[in/out] channel_measurements : Pointer to measurement structure instance of sensor.
+ * 
+ * @return Success or failure.
+ * @retval 0 value -> OK/ !=0 value -> Error
  */
 int8_t calculate_channel_measurements(const struct PAC1720_CH_config *channel_conf, struct PAC1720_CH_measurements *channel_measurements);
 
 /*!
- * @brief
- *
+ * @fn calculate_channel_measurements
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Calculates all Full Scale values for sensor channels.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in/out] device_ptr : Pointer to structure instance of sensor.
+ * 
+ * @return Success or failure.
+ * @retval 0 value -> OK/ !=0 value -> Error
  */
 int8_t set_all_FSx_coefficients(struct PAC1720_device *device_ptr);
 
 /*!
- * @brief
- *
+ * @fn set_channel_FSx_coefficients
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Calculates all Full Scale values for a single sensor channel.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in/out] config_ptr : Pointer to channel configuration structure instance of sensor.
+ * 
+ * @return Success or failure.
+ * @retval 0 value -> OK/ !=0 value -> Error
  */
 int8_t set_channel_FSx_coefficients(struct PAC1720_CH_config *config_ptr);
 
 /*!
- * @brief
- *
+ * @fn read_registers
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Internal bus read function.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in/out] device_ptr : Pointer to structure instance of sensor.
+ * @param[in] reg_address : Address of the sensor register to be read from.
+ * @param[in/out] data_ptr : Pointer to the data structure where the data are to be read in.
+ * @param[in] len : Lenght of data_ptr in bytes.
+ * 
+ * @return Success or failure.
+ * @retval 0 value -> OK/ !=0 value -> Error
  */
 int8_t read_registers(const struct PAC1720_device *device_ptr, uint8_t reg_address, uint8_t *data_ptr, uint8_t len);
 
 /*!
- * @brief
- *
+ * @fn write_registers
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Internal bus write function.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in/out] device_ptr : Pointer to structure instance of sensor.
+ * @param[in] reg_address : Address of the sensor register to be written.
+ * @param[in/out] data_ptr : Pointer to the data structure where the data are to be written from.
+ * @param[in] len : Lenght of data_ptr in bytes.
+ * 
+ * @return Success or failure.
+ * @retval 0 value -> OK/ !=0 value -> Error
  */
 int8_t write_registers(const struct PAC1720_device *device_ptr, uint8_t reg_address, uint8_t *data_ptr, uint8_t len);
 
 /*!
- * @brief
- *
+ * @fn calculate_BUS_CURRENT
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Calculates the actual current for a channel from the sensor results.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in] channel_conf : Pointer to channel configuration structure instance of sensor.
+ * @param[in/out] channel_measurements : Pointer to the channel measurement structure that holds the results.
+ * 
+ * @return Success or failure.
+ * @retval 0 value -> OK/ !=0 value -> Error
  */
 int8_t calculate_BUS_CURRENT(const struct PAC1720_CH_config *channel_conf, struct PAC1720_CH_measurements *channel_measurements);
 
 /*!
- * @brief
- *
+ * @fn calculate_BUS_VOLTAGE
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Calculates the actual source voltage for a channel from the sensor results.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in] channel_conf : Pointer to channel configuration structure instance of sensor.
+ * @param[in/out] channel_measurements : Pointer to the channel measurement structure that holds the results.
+ * 
+ * @return Success or failure.
+ * @retval 0 value -> OK/ !=0 value -> Error
  */
 int8_t calculate_BUS_VOLTAGE(const struct PAC1720_CH_config *channel_conf, struct PAC1720_CH_measurements *channel_measurements); 
 
 /*!
- * @brief
- *
+ * @fn calculate_BUS_POWER
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Calculates the actual power for a channel from the sensor results.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in] channel_conf : Pointer to channel configuration structure instance of sensor.
+ * @param[in/out] channel_measurements : Pointer to the channel measurement structure that holds the results.
+ * 
+ * @return Success or failure.
+ * @retval 0 value -> OK/ !=0 value -> Error
  */
 int8_t calculate_BUS_POWER(const struct PAC1720_CH_config *channel_conf, struct PAC1720_CH_measurements *channel_measurements);
 
 /*!
- * @brief
- *
+ * @fn calculate_SENSED_VOLTAGE
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Calculates the differential (sense) voltage for a channel from the sensor results.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in] v_sense_voltage_reg_ptr : Pointer to the sense voltage result (internal measurement struct) of a measurement.
+ * @param[in] current_sense_sampling_time_reg_ptr : Pointer to the current sampling time in channel configuration.
+ * 
+ * @return Sense voltage.
  */
 float calculate_SENSED_VOLTAGE(const uint16_t *v_sense_voltage_reg_ptr, const uint8_t *current_sense_sampling_time_reg_ptr);
 
 /*!
- * @brief
- *
+ * @fn calculate_SOURCE_VOLTAGE
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Calculates the source voltage for a channel from the sensor results.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in] v_source_voltage_reg_ptr : Pointer to the source voltage result (internal measurement struct) of a measurement.
+ * @param[in] source_voltage_sampling_time_reg_ptr : Pointer to the source voltage sampling time in channel configuration.
+ * 
+ * @return Source voltage.
  */
 float calculate_SOURCE_VOLTAGE(const uint16_t *v_source_voltage_reg_ptr, const uint8_t *source_voltage_sampling_time_reg_ptr);
 
 /*!
- * @brief
- *
+ * @fn calculate_FSC
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Calculates the FSC for a channel.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in/out] config_ptr : Pointer to the channel configuration structure.
+ * 
+ * @return Success or failure.
+ * @retval 0 value -> OK/ !=0 value -> Error
  */
 int8_t calculate_FSC(struct PAC1720_CH_config *config_ptr);
 
 /*!
- * @brief
- *
+ * @fn calculate_FSV
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Calculates the FSV for a channel.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in/out] config_ptr : Pointer to the channel configuration structure.
+ * 
+ * @return Success or failure.
+ * @retval 0 value -> OK/ !=0 value -> Error
  */
 int8_t calculate_FSV(struct PAC1720_CH_config *config_ptr);
 
 /*!
- * @brief
- *
+ * @fn calculate_FSP
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Calculates the FSP for a channel.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in/out] ch_internal_ptr : Pointer to the internal channel configuration structure.
+ * 
+ * @return Success or failure.
+ * @retval 0 value -> OK/ !=0 value -> Error
  */
 int8_t calculate_FSP(struct PAC1720_ch_internal *ch_internal_ptr);
 
 
 /*!
- * @brief
- *
+ * @fn combine_bytes
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Helper function to shift two 8 bit values in a 16 bit value.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in] lsb : Least significant byte.
+ * @param[in] msb : Most significant byte.
+ * 
+ * @return 16 bit value.
  */
 uint16_t combine_bytes(const uint8_t *lsb, const uint8_t *msb);
 
 /*!
- * @brief
- *
+ * @fn twos_complement
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Helper function to get the two's complement from a 16 bit value.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in] complement : Value to complement.
+ * 
+ * @return The two's complement of the input.
  */
 uint16_t twos_complement(const uint16_t *complement);
 
 /*!
- * @brief
- *
+ * @fn is_negative_value
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Helper function to get the sign bit of a 16 bit value.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in] value : Value to check.
+ * 
+ * @return The 16th bit.
+ * @retval 1 value -> negative/ 0 value -> positive
  */
 bool is_negative_value(const uint16_t *value);
 
 /*!
- * @brief
- *
+ * @fn right_bit_shift
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Helper function to shift bits in a 16 bit value.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in] doublebyte : Value to shift.
+ * @param[in] shift : Number of bits to shift.
+ * 
+ * @return The shifted value.
  */
 uint16_t right_bit_shift(const uint16_t *doublebyte, uint8_t shift);
 
 /*!
- * @brief
- *
+ * @fn device_null_pointer_check
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Helper function to control if struct internal pointers are allocated.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in] device_ptr : Pointer to the device structure.
+ * 
+ * @retval 0 value -> success/ !=0 value -> error
  */
 int8_t device_null_pointer_check(const struct PAC1720_device *device_ptr);
 
 /*!
- * @brief
- *
+ * @fn peripherals_null_pointer_check
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Helper function to control if external provided pointers are allocated.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in] write : Pointer to the external bus write function.
+ * @param[in] read : Pointer to the external bus read function.
+ * @param[in] delay : Pointer to the external delay function.
+ * 
+ * @retval 0 value -> success/ !=0 value -> error
  */
 int8_t peripherals_null_pointer_check(const PAC1720_fptr write, const PAC1720_fptr read, const delay_fptr delay);
 
 /*!
- * @brief
- *
+ * @fn first_channel_is_active
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Helper function to check if first measurement channel is active or disabled.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in] device_ptr : Pointer to the device structure.
+ * 
+ * @retval true -> active/ false -> disabled
  */
 bool first_channel_is_active(const struct PAC1720_device *device_ptr);
 
 /*!
- * @brief
- *
+ * @fn second_channel_is_active
  * 
- * @note ..
- * @param[in] config	: 
+ * @brief Helper function to check if second measurement channel is disabled.
  *
- * @return 
- * @retval 1 value -> OK/ 0 value -> Error
+ * @param[in] device_ptr : Pointer to the device structure.
+ * 
+ * @retval true -> active/ false -> disabled
  */
 bool second_channel_is_active(const struct PAC1720_device *device_ptr);
 
@@ -651,7 +653,12 @@ bool second_channel_is_active(const struct PAC1720_device *device_ptr);
 
 
 /******************************** Private data types ******************************************/
-/*! Struct holding the calculated Full Scale values of a channel*/
+
+/* Structure definitions */
+/*!
+ * @brief  Datastructures that are holding private data. 
+ */
+/*! Struct holding the pointers to bus communication fuctions, delay function and  sensor information */
 struct 	PAC1720_internal
 {
     /* Bus read function pointer */
@@ -669,6 +676,7 @@ struct 	PAC1720_internal
 	uint8_t      sensor_revision;
 };
 
+/*! Struct holding theFull Scale values of a channel */
 struct PAC1720_ch_internal
 {
     /* Full Scale Current (FSC) */
@@ -679,6 +687,7 @@ struct PAC1720_ch_internal
 	float 		power_sense_FSP;
 };
 
+/*! Struct holding the sensors measurement results of a channel */
 struct 	PAC1720_meas_internal
 {
     /* Current sense voltage register */
@@ -691,119 +700,172 @@ struct 	PAC1720_meas_internal
 
 /******************************* Public function definitions *****************************************/
 
+/*!
+ * @brief Initializes the internal struct instance with the config from the sensor.
+ */
 int8_t init_device_PAC1720_from_field(struct PAC1720_device *device_ptr, PAC1720_fptr ext_write, PAC1720_fptr ext_read, delay_fptr ext_delay)
 {
+    /* Check if provided pointers valid */
     int8_t res = device_null_pointer_check(device_ptr);
     if(res != PAC1720_OK) return res;
     res = peripherals_null_pointer_check(ext_write, ext_read, ext_delay);
     if(res == PAC1720_OK)
     {   
+        /* Destroy all current internal pointers, reset measurements and set name to default if none is provided */
         destroy_all_internal_ptrs(device_ptr);
         set_measurements_zero(device_ptr);
         check_name_opt(device_ptr);
+        /* Create all pointers */
         res = create_all_internal_ptrs(device_ptr, ext_write, ext_read, ext_delay);
         if(res != PAC1720_OK) return res;
+        /* Read the settings from sensor */
         res = get_all_settings_from_sensor(device_ptr);
         if(res != PAC1720_OK) return res;
+        /* Calculate all Full Scale Values from provided configuration */
         res = set_all_FSx_coefficients(device_ptr);
     }
     return res;
 }
 
+/*!
+ * @brief Initializes the sensor with the config from internal struct.
+ */
 int8_t init_device_PAC1720_user_defined(struct PAC1720_device *device_ptr, PAC1720_fptr ext_write, PAC1720_fptr ext_read, delay_fptr ext_delay)
 {
+    /* Check if provided pointers valid */
     int8_t res = device_null_pointer_check(device_ptr);
     if(res != PAC1720_OK) return res;
     res = peripherals_null_pointer_check(ext_write, ext_read, ext_delay);
     if(res == PAC1720_OK)
     {   
+        /* Destroy all current internal pointers, reset measurements and set name to default if none is provided */
         destroy_all_internal_ptrs(device_ptr);
         set_measurements_zero(device_ptr);
         check_name_opt(device_ptr);
+        /* Create all pointers */
         res = create_all_internal_ptrs(device_ptr, ext_write, ext_read, ext_delay);
+        /* Set sleep mode to allow writing the config registers of the sensor */
         if(res != PAC1720_OK) return res;
         res = set_sensor_to_sleep(device_ptr);
         if(res != PAC1720_OK) return res;
-
+        /* Poll sensor state and return error if sensor ins't sleeping after MAX_ATTEMPTS_SET_SLEEP_MODE */
         uint16_t cnt = 0;
         while(!sensor_is_in_sleep(device_ptr)){
             if(cnt == MAX_ATTEMPTS_SET_SLEEP_MODE) 
                 return PAC1720_INIT_ERROR;
             cnt++;
         };
-
+        /* Configure the sensor */
         res = write_all_settings_to_sensor(device_ptr);
         if(res != PAC1720_OK) return res;
+        /* Assign sensor information to internal struct instance */
         res = readin_sensor_infos_registers(device_ptr);
         if(res != PAC1720_OK) return res;
+        /* Calculate all Full Scale Values from provided configuration */
         res = set_all_FSx_coefficients(device_ptr);
     }
     return res;
 }
 
+/*!
+ * @brief Free all allocated memory and reset values of internal struct pointers.
+ */
 void destroy_device_PAC1720(struct PAC1720_device *device_ptr)
 {
     destroy_all_internal_ptrs(device_ptr);
 }
 
+/*!
+ * @brief Fetch the measurement results from sensor and calculate actual values.
+ */
 int8_t get_all_measurements_PAC1720(struct PAC1720_device *device_ptr)
 {
+    /* Null pointer check */
     if(device_ptr->internal == NULL) return PAC1720_NULLPTR_ERROR;
     int8_t res = PAC1720_OK;
+    /* Read the limit statuses of the sensor (conversion cycle done flag) */
     res = readin_limit_status_registers(device_ptr);
     if(res != PAC1720_OK) return res;
+    /* Check if sensor conversion cycle flag of sensor is set */
     if(device_ptr->DEV_CH1_measurements.conversion_done || device_ptr->DEV_CH2_measurements.conversion_done)
     {
+        /* Fetch mesaurement results from sensor and calculate actual values */
         res = readin_measurements_registers(device_ptr);
         if(res != PAC1720_OK) return res;
         res = calculate_all_measurements(device_ptr);
     }
     else
     {
+        /* If sensor hasn't finished conversion reset measurements to avoid wrong results*/
         set_measurements_zero(device_ptr);
         return PAC1720_CONVERSION_UNDONE;
     }
     return res;
 }
 
+/*!
+ * @brief Fetch the measurement results from sensor but don't calculate actual values.
+ */
 int8_t get_raw_measurements_PAC1720(struct PAC1720_device *device_ptr)
 {
+    /* Null pointer check */
     if(device_ptr->internal == NULL) return PAC1720_NULLPTR_ERROR;
     int8_t res = PAC1720_OK;
+    /* Read the limit statuses of the sensor (conversion cycle done flag) */
     res = readin_limit_status_registers(device_ptr);
     if(res != PAC1720_OK) return res;
+    /* Check if sensor conversion cycle flag of sensor is set */
     if(device_ptr->DEV_CH1_measurements.conversion_done || device_ptr->DEV_CH2_measurements.conversion_done)
     {
+        /* Fetch mesaurement results from sensor and calculate actual values */
         res = readin_measurements_registers(device_ptr);
         if(res != PAC1720_OK) return res;
     }
+    /* If sensor hasn't finished conversion reset measurements to avoid wrong results*/
     else set_measurements_zero(device_ptr);
     return res;
 }
 
+/* Write the value of the sensor struct instance's one shot register to the sensor one shot register */
 int8_t write_out_one_shot_register(struct PAC1720_device *device_ptr)
 {
+    /* Null pointer check */
     if(device_ptr->internal == NULL) return PAC1720_NULLPTR_ERROR;
+    /* Write single register and return result of bus write function */
     return write_registers(device_ptr, one_shot_register_address, &device_ptr->DEV_one_shot_reg, 1);
 }
 
 /******************************* Private function definitions *****************************************/
 
+/*!
+ * @brief Set sensor to sleep mode.
+ */
 int8_t set_sensor_to_sleep(struct PAC1720_device *device_ptr)
 {
+    /* Set standby mode in configuration */
     uint8_t config_reg = CONFIG_STANDBY;
+    /* Write configuration to sensor */
     return write_registers(device_ptr, configuration_register_address, &config_reg, 1);
 }
 
+/*!
+ * @brief Return if sensor sleeps.
+ */
 bool sensor_is_in_sleep(struct PAC1720_device *device_ptr)
 {
     uint8_t res = PAC1720_OK;
+    /* Temporary result */
     uint8_t config_reg = 0;
+    /* Read the config resgister of sensor */
     res = read_registers(device_ptr, configuration_register_address, &config_reg, 1);
+    /* If communication fails or config isn't set to sleep return false*/
     if(res != PAC1720_OK || config_reg != CONFIG_STANDBY) return false;
     return true;
 }
 
+/*!
+ * @brief If no name is provided by user the default name is set to the name options in sensor struct instance. 
+ */
 void check_name_opt(struct PAC1720_device *device_ptr)
 {
     if(device_ptr->DEV_name_opt == NULL)
@@ -814,6 +876,9 @@ void check_name_opt(struct PAC1720_device *device_ptr)
         device_ptr->DEV_CH2_conf.CH_name_opt = default_name;
 }
 
+/*!
+ * @brief Writes the configuration of the sensor struct instance to the sensor. 
+ */
 int8_t write_all_settings_to_sensor(struct PAC1720_device *device_ptr)
 {
     uint8_t res = PAC1720_OK;
@@ -825,13 +890,22 @@ int8_t write_all_settings_to_sensor(struct PAC1720_device *device_ptr)
     return res;
 }
 
+/*!
+ * @brief Writes the global configuration of the sensor struct instance to the sensor. 
+ */
 int8_t write_out_global_config_registers(struct PAC1720_device *device_ptr)
 {
+    /* Temporary data for write function */
     uint8_t tmp_config_reg[4] = {0};
+    /* Read config from sensor to temporary data */
     assign_tmp_global_config_array(device_ptr, tmp_config_reg);
+    /* Write temporary data to sensor */
     return write_registers(device_ptr, configuration_register_address, tmp_config_reg, GLOBAL_CONFIG_REGISTERS_LENGTH);
 }
 
+/*!
+ * @brief Writes global config from sensor to temporary data array. 
+ */
 void assign_tmp_global_config_array(struct PAC1720_device *device_ptr, uint8_t tmp_config_reg[4])
 {
     tmp_config_reg[0] = device_ptr->DEV_configuration_reg;
@@ -840,15 +914,25 @@ void assign_tmp_global_config_array(struct PAC1720_device *device_ptr, uint8_t t
     tmp_config_reg[3] = device_ptr->DEV_mask_reg;
 }
 
+/*!
+ * @brief Writes the sampling settings of the sensor struct instance to the sensor. 
+ */
 int8_t write_out_sampling_config_registers(struct PAC1720_device *device_ptr)
 {
+    /* Temporary data for write function */
     uint8_t tmp_smpl_conf_reg[3] = {0};
+    /* Read config from sensor to temporary data */
     assign_tmp_sampling_config_array(device_ptr, tmp_smpl_conf_reg);
+    /* Write temporary data to sensor */
     return write_registers(device_ptr, v_source_sampling_configuration_register_address, tmp_smpl_conf_reg, SAMPLING_CONFIG_REGISTERS_LENGTH);
 }
 
+/*!
+ * @brief Writes sampling settings from sensor channels to temporary data array. 
+ */
 void assign_tmp_sampling_config_array(struct PAC1720_device *device_ptr, uint8_t tmp_smpl_conf_reg[3])
 { 
+    /* Values are shifted into the correct order within bytes to write them to a register*/
     tmp_smpl_conf_reg[0] |= device_ptr->DEV_CH1_conf.CH_source_voltage_sampling_time_reg        <<  SHIFT_TWO_BITS;
     tmp_smpl_conf_reg[0] |= device_ptr->DEV_CH1_conf.CH_source_voltage_sampling_average_reg;    //no shift
     
@@ -864,15 +948,25 @@ void assign_tmp_sampling_config_array(struct PAC1720_device *device_ptr, uint8_t
     tmp_smpl_conf_reg[2] |= device_ptr->DEV_CH2_conf.CH_current_sense_FSR_reg;                  //no shift
 }
 
+/*!
+ * @brief Writes the limit values of the sensor struct instance to the sensor. 
+ */
 int8_t write_out_limit_registers(struct PAC1720_device *device_ptr)
 {
+    /* Temporary data for write function */
     uint8_t tmp_lmt_reg[8] = {0};
+    /* Read config from sensor to temporary data */
     assign_tmp_limit_array(device_ptr, tmp_lmt_reg);
+    /* Write temporary data to sensor */
     return write_registers(device_ptr, ch1_sense_voltage_high_limit_register_address, tmp_lmt_reg, LIMIT_REGISTERS_LENGTH);
 }
 
+/*!
+ * @brief Writes limit values from sensor channels to temporary data array. 
+ */
 void assign_tmp_limit_array(struct PAC1720_device *device_ptr, uint8_t tmp_lmt_reg[8])
-{
+
+{   /* Interleave array according to sensor register */
     tmp_lmt_reg[0] = device_ptr->DEV_CH1_conf.CH_current_sense_high_limit_reg;
     tmp_lmt_reg[2] = device_ptr->DEV_CH1_conf.CH_current_sense_low_limit_reg;
     tmp_lmt_reg[4] = device_ptr->DEV_CH1_conf.CH_source_voltage_high_limit_reg;
@@ -884,6 +978,9 @@ void assign_tmp_limit_array(struct PAC1720_device *device_ptr, uint8_t tmp_lmt_r
     tmp_lmt_reg[7] = device_ptr->DEV_CH2_conf.CH_source_voltage_low_limit_reg;
 }
 
+/*!
+ * @brief Gets all actual settings from the sensor. 
+ */
 int8_t get_all_settings_from_sensor(struct PAC1720_device *device_ptr)
 {
     uint8_t res = PAC1720_OK;
@@ -898,6 +995,9 @@ int8_t get_all_settings_from_sensor(struct PAC1720_device *device_ptr)
     return res;
 }
 
+/*!
+ * @brief . 
+ */
 int8_t readin_global_config_registers(struct PAC1720_device *device_ptr)
 {
     uint8_t res = PAC1720_OK;
