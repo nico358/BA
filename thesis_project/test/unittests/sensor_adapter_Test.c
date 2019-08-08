@@ -297,10 +297,3 @@ void test_check_mandatory_dev_settings(void){
     dummy_dev.DEV_CH2_conf.CH_current_sense_resistor_value = 0.8f;
     TEST_ASSERT_TRUE(check_mandatory_dev_settings_func(&dummy_dev));
 }
-
-void test_fail(void){
-    // struct PAC1720_device dev;
-    // char msg[500];
-    // sprintf(msg, "Test: %d", cnt);
-    // TEST_FAIL_MESSAGE(msg);
-}
