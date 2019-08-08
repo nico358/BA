@@ -11,7 +11,7 @@
 /******************************** Instances ******************************************/
 
 /*!
- * @brief  Application dependend instances. 
+ * @brief  Application dependent instances. 
  */
 /* The struct holding communication function pointers used in this file */
 struct FIELD_BUS_INTERFACE *internal_fieldbus_interface;
