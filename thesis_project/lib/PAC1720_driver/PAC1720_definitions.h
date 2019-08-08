@@ -92,9 +92,9 @@ enum CONVERSION_RATE 				 {CONVERSION_1HZ, CONVERSION_2HZ, CONVERSION_4HZ, CONVE
 enum ONE_SHOT						 {ONE_SHOT_DEFAULT=255};
 /* Channel alert output masks  */
 enum CHANNEL_MASK					 {MASK_NO_CH_ALERT_ASSERT, MASK_CH1_ALERT_ASSERT=3, MASK_CH2_ALERT_ASSERT=12, MASK_ALL_CH_ALERT_ASSERT=15};
-/* Possible sampling times for current measurement */
-enum SOURCE_VOLTAGE_SAMPLING_TIME 	 {VSRC_SAMPLE_TIME_2ms5, VSRC_SAMPLE_TIME_5ms, VSRC_SAMPLE_TIME_10ms, VSRC_SAMPLE_TIME_20ms, VSRC_SAMPLE_TIME_DEFAULT=2};
 /* Possible sampling times for voltage measurement */
+enum SOURCE_VOLTAGE_SAMPLING_TIME 	 {VSRC_SAMPLE_TIME_2ms5, VSRC_SAMPLE_TIME_5ms, VSRC_SAMPLE_TIME_10ms, VSRC_SAMPLE_TIME_20ms, VSRC_SAMPLE_TIME_DEFAULT=2};
+/* Possible sampling times for current measurement */
 enum CURRENT_SENSE_SAMPLING_TIME 	 {CURRENT_SAMPLE_TIME_2ms5, CURRENT_SAMPLE_TIME_5ms, CURRENT_SAMPLE_TIME_10ms, CURRENT_SAMPLE_TIME_20ms, 
 									  CURRENT_SAMPLE_TIME_40ms, CURRENT_SAMPLE_TIME_80ms, CURRENT_SAMPLE_TIME_160ms, CURRENT_SAMPLE_TIME_320ms, CURRENT_SAMPLE_TIME_DEFAULT=5};
 /* Possible full scale ranges for current measurement */
@@ -188,10 +188,10 @@ static const uint16_t   MAX_ATTEMPTS_SET_SLEEP_MODE									= 1000;
 
 /** Type definitions */
 /*!
- * Generic communication function pointer
+ * Generic function pointer for bus communication
  * @param[in] sensor_address: 7 bit bus address of the sensor.
  * @param[in] reg_address:	8 bit address of register to be read or written.
- * @param[in/out] data_ptr:	Pointer to the data to be written or read in .
+ * @param[in/out] data_ptr:	Pointer to the data to be written or read.
  * @param[in] len:	Length of the data field.
  */
 typedef int8_t (*PAC1720_fptr) (const uint8_t sensor_address, const uint8_t reg_address, uint8_t *data_ptr, const uint16_t len);
@@ -241,7 +241,7 @@ struct 	PAC1720_CH_measurements
 	struct PAC1720_meas_internal * meas_internal;
 	/* Count of actual measurements done */
 	uint32_t 					meas_cnt;
-};
+};//PAC1720_CH_measurements
 
 /* Configuration interface, holds channel specific configuration */
 struct 	PAC1720_CH_config
@@ -269,8 +269,7 @@ struct 	PAC1720_CH_config
 	uint8_t 					 CH_source_voltage_low_limit_reg;
 	/* Internal config */
 	struct PAC1720_ch_internal * ch_internal;
-
-};
+};//PAC1720_CH_config
 
 /*! Device interface, holding the configurations and measurements for each channel*/
 struct 	PAC1720_device
@@ -299,7 +298,7 @@ struct 	PAC1720_device
 	struct PAC1720_CH_measurements	DEV_CH2_measurements;
 	/* Internal values */
 	struct PAC1720_internal *		internal;
-};
+};//PAC1720_device
 
 /** @}*/
 /** @}*/
