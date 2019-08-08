@@ -20,7 +20,7 @@ extern "C"
 
 /*!
  * @fn init_device_PAC1720_from_field
- * @brief This API initializes the provided sensor struct with the values that are actual on the sensor.
+ * @brief This API initializes the provided sensor struct with the configuration that is actual on the sensor.
  *
  *  @param[in,out] device_ptr : Pointer to structure instance of sensor.
  *  @param[in] ext_write : Pointer to the user defined bus write function.
@@ -39,7 +39,7 @@ int8_t init_device_PAC1720_from_field(struct PAC1720_device *device_ptr, PAC1720
 /*!
  *  @fn init_device_PAC1720_user_defined
  * 
- *  @brief This API initializes the sensor with the values in the provided sensor struct.
+ *  @brief This API configures the sensor with the values in the provided sensor struct.
  *
  *  @param[in,out] device_ptr : Pointer to structure instance of sensor.
  *  @param[in] ext_write : Pointer to the user defined bus write function.

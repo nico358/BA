@@ -1,9 +1,9 @@
 #include "include/currentSenseApp.h"
 
 /************************************** Dependencies to be injected ************************************/
-/* Instanciate a field bus interface */
+/* Instantiate a bus interface */
 struct FIELD_BUS_INTERFACE external_fieldbus_interface = {
-    /** Assign i2cmaster library to pointers */
+    /** Assign i2cmaster library function pointer to members */
     .init       = &i2c_init,
     .stop       = &i2c_stop,
     .start      = &i2c_start,
@@ -35,69 +35,72 @@ int main(void)
     char msg[64];
     /** User controlled state */
     uint8_t state = 2;
+    /* Result of get_measurements */
     uint8_t meas_fail = 0;
 
     while(state){
             
         check_user_input(&state);
-
+        /* Enter measurement mode, get measurements and print them in every loop */
         if(state > 2)
         {
             if(state == 3 || state == 6){
                 meas_fail = adapter_get_measurements_PAC1720(&dev_USB_MON);
                 if(!meas_fail)  
-                    print_measurements_PAC1720(&dev_USB_MON, &debugWriteString, get_counter());
+                print_measurements_PAC1720(&dev_USB_MON, &debugWriteString);
             }
             if(state == 4 || state == 6){
                 meas_fail = adapter_get_measurements_PAC1720(&dev_FPGA_VCC);
                 if(!meas_fail)
-                    print_measurements_PAC1720(&dev_FPGA_VCC, &debugWriteString, get_counter());
+                    print_measurements_PAC1720(&dev_FPGA_VCC, &debugWriteString);
             }   
             if(state == 5 || state == 6){ 
                 meas_fail = adapter_get_measurements_PAC1720(&dev_WIREL_MCU);
                 if(!meas_fail)
-                print_measurements_PAC1720(&dev_WIREL_MCU, &debugWriteString, get_counter());
+                print_measurements_PAC1720(&dev_WIREL_MCU, &debugWriteString);
             }
-            reset_counter();
         }
-
+        /* Reset measurement counter when leaving measurement mode */
         if(state == 1){
-            adapterResetMeasCounts();
+            adapterResetMeasCounts(&dev_WIREL_MCU);
+            adapterResetMeasCounts(&dev_FPGA_VCC);
+            adapterResetMeasCounts(&dev_USB_MON);
             state = 2;
         }
     }
-
+    /* End of program */
     debugWriteLine("End measurement\r\n");
     tear_down_platform();
     return 0;
 }
 
+/* Initialize hardware */
 int8_t init_platform(void)
 {
     int8_t res = PAC1720_OK;
+    /* Init debug */
     debugInit(NULL);
     external_fieldbus_interface.init();
+    /* Inject bus communication and delay function pointer to adapter */
     adapter_init_peripherals(&external_fieldbus_interface, external_delay_function);
-    
+    /* Configure sensors, struct instances are located in adapter */
     res = adapter_init_PAC1720_user_defined(&dev_USB_MON);
     if(res != PAC1720_OK) return res;
     res = adapter_init_PAC1720_user_defined(&dev_FPGA_VCC);
     if(res != PAC1720_OK) return res;
     res = adapter_init_PAC1720_user_defined(&dev_WIREL_MCU);
-
-    counter_init();
-
     return res;
 }
 
+/* Clean up */
 void tear_down_platform(void)
 {
     adapter_destroy_PAC1720(&dev_USB_MON);
     adapter_destroy_PAC1720(&dev_FPGA_VCC);
     adapter_destroy_PAC1720(&dev_WIREL_MCU);
-    counter_stop();
 }
 
+/* Check if user sets another application state */
 void check_user_input(uint8_t *state)
 {
     debugReadChar();
@@ -108,27 +111,29 @@ void check_user_input(uint8_t *state)
     }
 }
 
+/* Switch state according to user input */
 void set_state(uint8_t data, uint8_t *state)
 {
     switch (data)
     {
-    case 'U':
+    case 'U': // USB monitoring
         *state = 3;
         break;
-    case 'F':
+    case 'F': // FPGA monitoring
         *state = 4;
         break;
-    case 'W':
+    case 'W': // Wireless monitoring
         *state = 5;
         break;
-    case 'q':
+    case 'q': // Leave program
         *state = 0;
         break;
-    default:
+    default: // Reset measurement counters and loop without monitoring
         *state = 1;
     }
 }
 
+/* Print error in loop */
 void print_error(int8_t res){
     for (;;)
     {

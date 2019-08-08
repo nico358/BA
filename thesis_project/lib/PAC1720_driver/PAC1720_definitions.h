@@ -272,7 +272,7 @@ struct 	PAC1720_CH_config
 
 };
 
-/*! Sensor instance, holding the configurations and measurements for each channel*/
+/*! Device interface, holding the configurations and measurements for each channel*/
 struct 	PAC1720_device
 {
 	/*! Optional name for device */

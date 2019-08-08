@@ -1,8 +1,6 @@
 #include <util/delay.h>
 #include "user_delay.h"
 
-// #include "avr/interrupt.h"
-
 /** Function Definition **/
 /*!
  *@brief This internal API provides the platform dependend delay functionality.

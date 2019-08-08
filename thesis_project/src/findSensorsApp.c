@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 
+/************************************** Dependencies to be injected ************************************/
+/* Instantiate a bus interface */
 struct FIELD_BUS_INTERFACE i2c_interface = {
     .init       = &i2c_init,
     .stop       = &i2c_stop,
@@ -13,25 +15,30 @@ struct FIELD_BUS_INTERFACE i2c_interface = {
     .readNak    = &i2c_readNak
 };
 
+/** Assign user provided delay function to pointer */
 delay_function_ptr ext_delay_func = &user_delay_ms;
 
+/*********************************************** Main ****************************************************/
 int main(void)
 {
+    /* Init hardware */
     debugInit(NULL);
     i2c_interface.init();
-
+    /* Result array */
     char addr[16] = {0};
     char msg[248];
 
     for(;;){
-
+        /* Poll sensor addresses */
         uint8_t res = adapter_find_sensors(addr, &i2c_interface, ext_delay_func);
         sprintf(msg, "Found sensors: %d, ", res);
+        /* Loop over array and print address if address found */
         for(uint8_t i = 0; i < SENSOR_ADDRESS_NUMBER; i++){
             if(addr[i]){
                 sprintf(msg + strlen(msg), "found addr: [%x], ", addr[i]);
             }
         }
+        /* Print count of found sensors */
         sprintf(msg + strlen(msg), "%s","\r\n");
         debugWriteLine(msg);
 
