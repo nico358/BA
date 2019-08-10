@@ -246,8 +246,6 @@ void print_measurements_PAC1720(struct PAC1720_device * dev, debugWriteLine_fptr
  */
 void print_raw_measurements_PAC1720(struct PAC1720_device * dev, debugWriteLine_fptr debug_fptr);
 
-void print_floats(float meas[2400], debugWriteLine_fptr debug_fptr);
-
 /*!
  * @fn debug_PAC1720
  * 

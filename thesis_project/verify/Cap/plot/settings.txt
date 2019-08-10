@@ -1,0 +1,17 @@
+10mV 2,5ms
+First: 100 ohm, 1000uf
+Second: 1100 ohm, 1000uf
+Third: 10100 ohm, 10uF
+Fourth: : 10100 ohm, 100uF
+Fifth: : 10100 ohm, 1uF
+Sixth: : 10100 ohm, 100uF 2. Kondensator
+Seventh: 100 ohm, 100uf 80mV 10ms höchste Auflösung
+10mV 80ms ab 18.05h
+eigths: 100 ohm, 100uf 80mV 10ms höchste Auflösung 1s
+ninth:  100 ohm, 100uf 10mV 2.5ms 1s
+
+100ohm
+
+10,06k
+
+1092 ohm

@@ -39,7 +39,7 @@ int main(void)
     uint8_t meas_fail = 0;
 
     while(state){
-            
+
         check_user_input(&state);
         /* Enter measurement mode, get measurements and print them in every loop */
         if(state > 2)

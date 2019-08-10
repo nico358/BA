@@ -1569,6 +1569,7 @@ float calculate_SENSED_VOLTAGE(const uint16_t *v_sense_voltage_reg_ptr, const ui
     /* Shift unused bits out of sensor result according to resolution, 
     shift is determined by lookuptable that is indexed by configured sampling time value */
     uint16_t tmp = right_bit_shift(v_sense_voltage_reg_ptr, CURRENT_RESOLUTION_IGNORE_BITS[*current_sense_sampling_time_reg_ptr]);
+    // uint16_t tmp = *v_sense_voltage_reg_ptr >> 4;
     /* Check if the (signed) sense voltage result of the sensor is a negative number */
     if(is_negative_value(v_sense_voltage_reg_ptr)){
         /* If number is negative build two's complement */

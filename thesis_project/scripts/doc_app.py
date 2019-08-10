@@ -28,13 +28,14 @@ LEDFLASH_FPGA_CMD       = 'L'
 
 if __name__ == "__main__":
     time_limit = 3.0
-    # mcu_data = [TESTMODE_FPGA_CMD, LEDFLASH_FPGA_CMD]
+    mcu_data = [TESTMODE_FPGA_CMD, LEDFLASH_FPGA_CMD]
     mcu_data = RESET_FPGA_CMD
     scmcu = ts.SerialControllerMcu(port=PORT_MCU, baudrate=BAUDRATE, data=mcu_data)
     sc = ts.StorageController(folderpath=FOLDERPATH, filepath=FILEPATH)
-    scmon = ts.SerialControllerMon(port=PORT_MON, baudrate=BAUDRATE, data=START_MON_WIREL)
+    scmon = ts.SerialControllerMon(port=PORT_MON, baudrate=BAUDRATE, data=START_MON_USB)
 
     threads = [scmon, sc, scmcu]
+    # threads = [scmon, sc]
     ts.startThreads(threads)
     timer = Timer()
     while timer.get_elapsed_time() < time_limit:
