@@ -6,7 +6,7 @@ from timer               import Timer
 from meas_processor      import MeasProcessor
 
 FOLDERPATH              = 'meas/resetFPGA/'
-FILEPATH                = '400Hz20mV3s'
+FILEPATH                = '400Hz10mV200ms'
 PORT_MON                =  'COM26'#'/dev/ttyS26'#
 PORT_MCU                =  'COM22'#'/dev/ttyS22'#
 BAUDRATE                = 115200
@@ -27,12 +27,12 @@ LEDFLASH_FPGA_CMD       = 'L'
 
 
 if __name__ == "__main__":
-    time_limit = 3.0
-    mcu_data = [TESTMODE_FPGA_CMD, LEDFLASH_FPGA_CMD]
+    time_limit = 0.200
+    # mcu_data = [TESTMODE_FPGA_CMD, LEDFLASH_FPGA_CMD]
     mcu_data = RESET_FPGA_CMD
     scmcu = ts.SerialControllerMcu(port=PORT_MCU, baudrate=BAUDRATE, data=mcu_data)
     sc = ts.StorageController(folderpath=FOLDERPATH, filepath=FILEPATH)
-    scmon = ts.SerialControllerMon(port=PORT_MON, baudrate=BAUDRATE, data=START_MON_USB)
+    scmon = ts.SerialControllerMon(port=PORT_MON, baudrate=BAUDRATE, data=START_MON_FPGA)
 
     threads = [scmon, sc, scmcu]
     # threads = [scmon, sc]
