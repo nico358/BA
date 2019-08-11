@@ -3,11 +3,12 @@
 
 from __future__ import division
 import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 LINE_STYLE_DOT    = 'o'
 LINE_STYLE_LN     = 'b-'
 PLOT_COLORS       = ['g', 'b', 'c', 'm', 'y', 'k', 'r']
-FONTSIZE          = 15
+FONTSIZE          = 10
 XLABEL            = 'time (ms)'
 ADJUST            = 0.88
 FIRST_COLOR       = 'tab:red' 
@@ -71,7 +72,7 @@ class MeasPlotter:
             else:
                 self.plotAllOverlay(tmp_meas_names, tmp_meas_lists, title, yax, path)
                 self.plotAllBeside(tmp_meas_names, tmp_meas_lists, title, yax, path)
-                self.plotAllNormal(tmp_meas_names, tmp_meas_lists, title, yax, path)
+                # self.plotAllNormal(tmp_meas_names, tmp_meas_lists, title, yax, path)
 
     def plotAllBeside(self, tmp_meas_names, tmp_meas_lists, title, yax, path):
         """TODO."""
@@ -130,28 +131,31 @@ class MeasPlotter:
         if self.show:
             plt.show()
             
-    def plotAllOverlay(self, tmp_meas_names, tmp_meas_lists, title, yax, path):
-        """TODO."""
-        fig, ax1 = plt.subplots(figsize=(30, 10))
-        color = FIRST_COLOR
-        marker = LINE_STYLE_DOT
-        ax1.set_xlabel(XLABEL)
-        # Set label and plot first graph
-        ax1.set_ylabel(tmp_meas_names[INDEX_FIRST_MEAS], color=color)
-        ax1.plot(yax, tmp_meas_lists[INDEX_FIRST_MEAS], color=color, marker=marker, linewidth=LINEWIDTH+1, markersize=MARKERSIZE+1)
-        ax1.tick_params(axis='y', labelcolor=color)
-        # Plot remaining measurements
-        self.plotLoop(tmp_meas_names, tmp_meas_lists, ax1, yax)
-        # Plot figure
-        fig.tight_layout()
-        plt.title(title, fontsize=FONTSIZE)
-        plt.subplots_adjust(top=ADJUST)
-        # Save figure
-        if not path is None:
-            plt.savefig(path  + 'ovelay.png')
-        # If show = True: show
-        if self.show:
-            plt.show()
+    # def plotAllOverlay(self, tmp_meas_names, tmp_meas_lists, title, yax, path):
+    #     """TODO."""
+    #     fig, ax1 = plt.subplots(figsize=(30, 10))
+
+    #     color = FIRST_COLOR
+    #     marker = LINE_STYLE_DOT
+    #     ax1.set_xlabel(XLABEL)
+    #     # Set label and plot first graph
+    #     ax1.set_ylabel(tmp_meas_names[INDEX_FIRST_MEAS], color=color)
+    #     ax1.plot(yax, tmp_meas_lists[INDEX_FIRST_MEAS], color=color, marker=marker, linewidth=LINEWIDTH+1, markersize=MARKERSIZE+1)
+    #     ax1.tick_params(axis='y', labelcolor=color)
+    #     # Plot remaining measurements
+    #     self.plotLoop(tmp_meas_names, tmp_meas_lists, ax1, yax)
+
+    #     # Plot figure
+    #     fig.tight_layout()
+    #     plt.title(title, fontsize=FONTSIZE)
+    #     plt.subplots_adjust(top=ADJUST)
+
+    #     # Save figure
+    #     if not path is None:
+    #         plt.savefig(path  + 'ovelay.png')
+    #     # If show = True: show
+    #     if self.show:
+    #         plt.show()
 
     def plotLoop(self, tmp_meas_names, tmp_meas_lists, ax1, yax):
         """TODO."""
@@ -165,6 +169,73 @@ class MeasPlotter:
             ax2.set_ylabel(tmp_meas_names[i+1], color=color)
             ax2.plot(yax, tmp_meas_lists[i+1], color=color, marker=marker, linewidth=LINEWIDTH/(i+1), markersize=MARKERSIZE/(i+1))
             ax2.tick_params(axis='y', labelcolor=color)
+            # fig.align_ylabels()
+
+    def make_patch_spines_invisible(self, ax):
+        ax.set_frame_on(True)
+        ax.patch.set_visible(False)
+        for sp in ax.spines.values():
+            sp.set_visible(False)
+            
+    def plotAllOverlay(self, tmp_meas_names, tmp_meas_lists, title, yax, path):   
+        fig, host = plt.subplots()
+        fig.subplots_adjust(right=0.75)
+            
+        par1 = host.twinx()
+        par2 = host.twinx()
+            
+        # Offset the right spine of par2.  The ticks and label have already been
+        # placed on the right by twinx above.
+        par2.spines["right"].set_position(("axes", 1.2))
+        # Having been created by twinx, par2 has its frame off, so the line of its
+        # detached spine is invisible.  First, activate the frame but make the patch
+        # and spines invisible.
+        self.make_patch_spines_invisible(par2)
+        # Second, show the right spine.
+        par2.spines["right"].set_visible(True)
+
+        color = FIRST_COLOR
+        marker = LINE_STYLE_DOT
+        host.set_xlabel(XLABEL)
+            
+        color = FIRST_COLOR
+        p1, = host.plot(yax, tmp_meas_lists[INDEX_FIRST_MEAS], color=color, marker=marker, linewidth=LINEWIDTH+1, markersize=MARKERSIZE+1)
+
+        color = PLOT_COLORS[0]
+        p2, = par1.plot(yax, tmp_meas_lists[1], color=color, marker=marker, linewidth=LINEWIDTH/(2), markersize=MARKERSIZE/(2))
+
+        color = PLOT_COLORS[2]
+        p3, = par2.plot(yax, tmp_meas_lists[2], color=color, marker=marker, linewidth=LINEWIDTH/(3), markersize=MARKERSIZE/(3))
+            
+            
+        host.set_xlabel(XLABEL)
+        host.set_ylabel(tmp_meas_names[0])
+        par1.set_ylabel(tmp_meas_names[1])
+        par2.set_ylabel(tmp_meas_names[2])
+            
+        host.yaxis.label.set_color(FIRST_COLOR)
+        par1.yaxis.label.set_color(color = PLOT_COLORS[0])
+        par2.yaxis.label.set_color(color = PLOT_COLORS[2])
+            
+        tkw = dict(size=4, width=1.5)
+        host.tick_params(axis='y', colors=p1.get_color(), **tkw)
+        par1.tick_params(axis='y', colors=p2.get_color(), **tkw)
+        par2.tick_params(axis='y', colors=p3.get_color(), **tkw)
+        host.tick_params(axis='x', **tkw)
+            
+         # Plot figure
+        fig.tight_layout()
+        plt.title(title, fontsize=FONTSIZE, y=1.03)
+        plt.subplots_adjust(top=ADJUST)
+
+        # Save figure
+        if not path is None:
+            plt.savefig(path  + 'ovelay.png')
+        # If show = True: show
+        if self.show:
+            plt.show()
+
+
 
     def getYaxis(self, tmp_meas_lists):
         """TODO."""
@@ -192,5 +263,5 @@ if __name__ == "__main__":
 
     l = [['af ae', 'df'], ['current', '[', '01', -0.1, '02', -0.2, '03', -0.3, '04', -0.686844, ']'], ['voltage', '[', '01', 1.2, '02', 2.12, '03', 2.3, '04', 2.686844, ']'], ['power', '[', '01', 0.133, '02', 0.2123, '03', 0.311, '04', 0.486844, ']']]
     l2 = [['{', 'FPGA_VCCAUX_MON TEST_MEAS', '2019-07-21 18:59:02.965000', 'float'], ['current', '[', '1', 0.006349, '2', 0.006349, '3', 0.006349, '4', 0.006349, '5', 0.006349, '6', 0.006349, ']'] , ['voltage', '[', '1', 1.09375, '2', 1.09375, '3', 1.09375, '4', 1.09375, '5', 1.09375, '6', 1.09375, ']'], ['power', '[', '1', 0.006809, '2', 0.006809, '3', 0.006809, '4', 0.006809, '5', 0.006809, '6', 0.006809, ']', '}']]
-    mp = MeasPlotter(meas_ch1=l2, filepath1='test', filepath2='test', meas_time=1, show=False)
+    mp = MeasPlotter(meas_ch1=l2, filepath1='test', filepath2='test', meas_time=1, show=True)
     mp.plotAll()
