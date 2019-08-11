@@ -1,0 +1,1 @@
+{ 1 08-11-2019-23-39-09 float current[]voltage[]power[]}
