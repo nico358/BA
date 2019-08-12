@@ -1,0 +1,1 @@
+{FPGA_VCCAUX_MON 1 08-12-2019-04-03-35 float current['2'0.0]voltage['2'3.28125]power['2'0.0]}

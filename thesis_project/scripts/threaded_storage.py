@@ -49,6 +49,7 @@ class SerialControllerMcu(threading.Thread):
     # Set data2 = None to transmit only one cmd
     def run(self):
         """TODO."""
+        # self.serialAdapter.serialSleep(0.8)
         # self.serialAdapter.serialSleep(1)
         self.serialAdapter.openSerial()
         # Check if data is a list and send data in loop if

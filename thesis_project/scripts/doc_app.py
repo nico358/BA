@@ -5,7 +5,7 @@ import threaded_storage  as ts
 from timer               import Timer
 from meas_processor      import MeasProcessor
 
-FOLDERPATH              = 'meas/flashLEDsFPGA2/'
+FOLDERPATH              = 'meas/reset/'
 FILEPATH                = '400Hz10mV2s'
 PORT_MON                =  'COM26'#'/dev/ttyS26'#
 PORT_MCU                =  'COM22'#'/dev/ttyS22'#
@@ -27,10 +27,12 @@ LEDFLASH_FPGA_CMD       = 'L'#
 
 
 if __name__ == "__main__":
-    time_limit = 2
-    mcu_data = [TESTMODE_FPGA_CMD, LEDFLASH_FPGA_CMD]
+    time_limit = 5
+    # mcu_data = [TESTMODE_FPGA_CMD, LEDFLASH_FPGA_CMD]
     # mcu_data = UNSUSPEND_FPGA_CMD
     # mcu_data = SUSPEND_FPGA_CMD
+    mcu_data = RESET_FPGA_CMD
+    # mcu_data = SHUT_ON_FPGA_CMD
 
     for i in range(1):
         
@@ -43,7 +45,7 @@ if __name__ == "__main__":
         sc = ts.StorageController(folderpath=FOLDERPATH, filepath=FILEPATH)
         scmon = ts.SerialControllerMon(port=PORT_MON, baudrate=BAUDRATE, data=START_MON_FPGA)
 
-        threads = [scmon, sc, scmcu]
+        threads = [scmon, sc]
         
         ts.startThreads(threads)
         timer = Timer()
