@@ -55,7 +55,7 @@ cc_library(
 	deps = select({
 
         ":test": [
-			"@ExtMockLib",
+			
 		],
 
         "//conditions:default": [
@@ -80,7 +80,6 @@ cc_library(
 	deps = select({
 
         ":test": [
-			"@ExtMockLib",
 		],
         "//conditions:default": [],	
     }),
@@ -103,7 +102,6 @@ cc_library(
 	deps = select({
 
         ":test": [
-			"@ExtMockLib",
 		],
         "//conditions:default": [],	
     }),
@@ -248,19 +246,7 @@ config_setting(
 )
 
 ### Binary rules ###
-default_embedded_binary(
-	name = "Main",
-	srcs = ["src/main.c"],
 
-	copts = commonCopts + LUFA_COPTS,
-
-	linkopts = commonCopts + LUFA_COPTS + ["-Wl,-u,vfprintf -lprintf_flt -lm"],
-
-	deps = [
-		":DebugLib",
-        ":CurrentSenseLib",
-	],
-)
 
 default_embedded_binary(
 	name = "CurrentSenseApp",
@@ -290,12 +276,4 @@ default_embedded_binary(
 	deps = [
         ":IncludeLib",
 	],
-)
-
-default_embedded_binary(
-	name = "calc",
-	srcs = ["src/calc.c"],
-	copts = commonCopts + LUFA_COPTS,
-	linkopts = commonCopts + LUFA_COPTS + ["-Wl,-u,vfprintf -lprintf_flt -lm"],
-	deps = [":DebugLib"],
 )
