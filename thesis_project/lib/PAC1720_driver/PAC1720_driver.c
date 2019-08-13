@@ -1937,3 +1937,5 @@ const void* get_TEST_DRIVER_FPTR_FIELD(void)
                                             };
     return &test_fptr_field;
 }
+
+/** @}*/

@@ -1,7 +1,8 @@
-/*! @file 	adapter_PAC1720.h
- *  @brief Sensor adapter for PAC1720 sensor driver */
+/*! @file  adapter_PAC1720.h
+ *  @brief Adapter for PAC1720 sensor driver 
+ */
 /*!
- * @defgroup PAC1720 driver API
+ * @defgroup PAC1720 adapter API
  * @{*/
 
 #pragma once
@@ -270,4 +271,7 @@ const void* get_ADAPTER_TEST_FPTR_FIELD(void);
 #ifdef __cplusplus
 }
 #endif /* End of CPP guard */
-/** @}*/
+
+/*
+* @}
+*/

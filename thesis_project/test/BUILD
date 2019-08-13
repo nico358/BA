@@ -17,12 +17,6 @@ shipped with unity to generate for every file specified a test runner
 for every file specified and  a cc_test (the bazel test entity for c/c++).
 """
 
-# unity_test(
-#     file_name = "My_Test.c",
-#     deps = [
-#         "@CException",
-#     ],
-# )
 
 """
 We have every *_Test.c seperately build as an executable.
@@ -51,7 +45,6 @@ A: Well... if you have you're test depending on a file you'd
 test_suite(
     name = "ALL",
     tests = [
-        # ":My_Test",
         "//test/unittests:sensor_driver_Test",
         "//test/unittests:sensor_adapter_Test",
     ],

@@ -3,7 +3,7 @@
 */
 /*!
  * @defgroup PAC1720 driver API
- * @brief
+ * @brief Driver for PAC1720 current sensors.
  * 
  * @{*/
 
@@ -301,4 +301,4 @@ struct 	PAC1720_device
 };//PAC1720_device
 
 /** @}*/
-/** @}*/
+

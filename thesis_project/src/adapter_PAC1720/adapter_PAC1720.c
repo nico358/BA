@@ -1,8 +1,10 @@
-/*! @file adapter_PAC1720.c
- *  @brief Sensor adapter for PAC1720 sensor driver */
+/*! @file  adapter_PAC1720.c
+ *  @brief Adapter for PAC1720 sensor driver 
+ */
 /*!
- * @defgroup PAC1720 driver API
- * @{*/
+ * @defgroup PAC1720 adapter API
+ * @{
+ */
 
 /** Header includes **/
 #include <stdio.h>
@@ -704,3 +706,7 @@ const void* get_ADAPTER_TEST_FPTR_FIELD(void)
 
     return &test_fptr_field;
 }
+
+/*
+* @}
+*/
