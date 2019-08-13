@@ -43,8 +43,3 @@ http_archive(
     urls = ["http://fourwalledcubicle.com/files/LUFA/LUFA-170418.zip"],
 )
 
-### Load mock repository ###
-local_repository(
-    name = "ExtMockLib",
-    path = "test/mocks",
-)
