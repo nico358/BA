@@ -5,7 +5,7 @@ import threaded_storage  as ts
 from timer               import Timer
 from meas_processor      import MeasProcessor
 
-FOLDERPATH              = 'meas/reset/'
+FOLDERPATH              = 'meas/test/'
 FILEPATH                = '400Hz10mV2s'
 PORT_MON                =  'COM26'#'/dev/ttyS26'#
 PORT_MCU                =  'COM22'#'/dev/ttyS22'#

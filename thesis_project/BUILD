@@ -44,30 +44,6 @@ cc_library(
 	],
 )
 
-cc_library(
-	name = "CircularBufferLib",
-	srcs = glob(["lib/circular_buffer/*.c"]),
-	hdrs = glob(["lib/circular_buffer/*.h"]),
-
-	copts = commonCopts,
-
-## For testing add '--define test=true ' to include MockLib ##
-	deps = select({
-
-        ":test": [
-			
-		],
-
-        "//conditions:default": [
-	 		":DebugLib",
-		],	
-    }),
-	visibility = [
-		"//test:__pkg__",
-		"//test:__subpackages__",
-		"@CMock//CMock:__pkg__",
-	],
-)
 
 cc_library(
 	name = "I2cLib",
@@ -124,36 +100,6 @@ cc_library(
 	],
 )
 
-
-cc_library(
-	name = "CurrentMeasurementLib",
-	srcs = ["lib/current_sense/current_measurement.c"],
-	hdrs = ["lib/current_sense/current_measurement.h"],
-
-	copts = commonCopts,
-
-    deps = [
-		":CircularBufferLib",
-	],
-	visibility = ["//test:__pkg__"],
-)
-
-cc_library(
-	name = "CurrentSenseLib",
-	srcs = ["lib/current_sense/current_sense.c"],
-	hdrs = ["lib/current_sense/current_sense.h"],
-
-	copts = commonCopts,
-
-	deps = [
-	 ":CircularBufferLib", 
-	 ":I2cLib",
-	 ":CurrentMeasurementLib", 
-	 ":DebugLib",
-	],
-	visibility = ["//test:__pkg__"],
-)
-
 cc_library(
 	name = "PAC1720DriverLib",
 	srcs = ["lib/PAC1720_driver/PAC1720_driver.c"],
@@ -178,7 +124,6 @@ cc_library(
     copts = commonCopts,
 
     deps = [
-        ":CircularBufferLib",
 		":DelayLib",
 		":AdapterLib",
 		":I2cLib",
