@@ -45,6 +45,7 @@ class SerialAdapter:
     def closeSerial(self):
         """TODO."""
         if self.connection.is_open:
+            self.resetConnectionBuffers()
             self.connection.close()
 
 
@@ -62,7 +63,7 @@ class SerialAdapter:
 
 
 
-    def readFromSerialWithDelay(self, secondsDelay=0.1):
+    def readFromSerialWithDelay(self, secondsDelay=None):
         """TODO."""
         data = None
         if self.connection.is_open: 
@@ -103,7 +104,7 @@ class SerialAdapter:
 
     def setUserDefinedConnection(self):
         """TODO."""
-        if self.connection != None:
+        if not self.connection is None:
             try:
                 self.connection.port = self.checkSerialPortAvailable(sys.argv[1])
                 self.connection.baudrate = int(sys.argv[2])
@@ -126,13 +127,13 @@ class SerialAdapter:
 
     def setConnectionReadTimeout(self, seconds):
         """TODO."""
-        if self.connection != None:
+        if not self.connection is None:
             self.connection.timeout = seconds
     
 
     def setConnectionWriteTimeout(self, seconds):
         """TODO."""
-        if self.connection != None:
+        if not self.connection is None:
             self.connection.write_timeout = seconds
 
 
@@ -143,7 +144,7 @@ class SerialAdapter:
 
     def serialSleep(self, seconds):
         """TODO."""
-        if seconds != None:
+        if not seconds is None:
             time.sleep(seconds)
 
 

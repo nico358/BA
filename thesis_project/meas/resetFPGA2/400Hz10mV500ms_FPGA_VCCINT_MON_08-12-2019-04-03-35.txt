@@ -1,0 +1,1 @@
+{FPGA_VCCINT_MON 1 08-12-2019-04-03-35 float current['2'0.0]voltage['2'1.09375]power['2'0.0]}

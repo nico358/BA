@@ -6,14 +6,6 @@ load(
     "unity_test",
 )
 
-mock(
-    name = "DriverMock",
-    srcs = [
-        "//:lib/PAC1720_driver/PAC1720_driver.h", 
-        "//:lib/PAC1720_driver/PAC1720_definitions.h",
-    ],
-    deps = ["//:PAC1720DriverLib"],
-)
 
 unity_test(
     file_name = "sensor_driver_Test.c",

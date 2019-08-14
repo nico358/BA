@@ -1,44 +1,73 @@
 """TODO."""
 
-from serial_adapter import SerialAdapter
-from exception_handler import ExceptionHandler
-from filestorage_adapter import FileStorageAdapter
+from timer                  import Timer
+from serial_adapter         import SerialAdapter
+from exception_handler      import ExceptionHandler
+from filestorage_adapter    import FileStorageAdapter
+
+
+FILEPATH            = 'meas/FPGA@400Hz20mV.txt'
+PORT_MON            = '/dev/ttyS26'
+PORT_MCU            = '/dev/ttyS22'
+BAUDRATE            = 115200
+START_MON_CMD       = 'C'
+PAUSE_MON_CMD       = 'p'
+STOP_MON_CMD        = 'q'
+SUSPEND_FPGA_CMD    = 'S'
+UNSUSPEND_FPGA_CMD  = 's'
+RESET_FPGA_CMD      = 'R'
+SHUT_ON_FPGA_CMD    = 'C'
+SHUT_OFF_FPGA_CMD   = 'c'
+TESTMODE_FPGA_CMD   = 'T'
+LEDFLASH_FPGA_CMD   = 'L'
 
 
 class StorageController:
     """TODO."""
 
-    serialAdapter = None
-    fileStorageAdapter = None
+    fileStorageAdapter      = None
+    serialMonAdapter        = None
+    serialMcuAdapter        = None
+    timer                   = None
+    flag                    = True
 
 
-    def __init__(self, port, baudrate):
+    def __init__(self):
         """TODO."""
-        self.serialAdapter = SerialAdapter(port, baudrate)
+        self.serialMonAdapter   = SerialAdapter(PORT_MON, BAUDRATE)
+        self.serialMcuAdapter   = SerialAdapter(PORT_MCU, BAUDRATE)
         self.fileStorageAdapter = FileStorageAdapter()
-    
+        self.timer              = Timer()
+        self.serialMonAdapter.openSerial()
+        self.serialMcuAdapter.openSerial()
+        self.fileStorageAdapter.openFile(FILEPATH)
 
-    def storeSerialDataInFile(self):
+    def storeSerialDataInFile(self, time_limit):
         """TODO."""
-        self.serialAdapter.openSerial()
-        self.fileStorageAdapter.openFile(path='readings.txt')
         try:
-
-            while True:
-                self.serialAdapter.writeToSerial('C')
+            self.serialMcuAdapter.writeToSerial(TESTMODE_FPGA_CMD)
+            self.serialMcuAdapter.serialSleep(0.01)
+            self.timer.reset_timer()
+            self.serialMonAdapter.writeToSerial(START_MON_CMD)
+            self.serialMcuAdapter.writeToSerial(LEDFLASH_FPGA_CMD)
+            while self.timer.get_elapsed_time() < time_limit:
+                t0 = self.timer.get_elapsed_time()
                 self.fileStorageAdapter.writeToOpenFile(
-                                                        self.serialAdapter.readFromSerialWithDelay(0.1)
-                                                        )
-                # self.serialAdapter.serialSleep(0.5)
+                                                       self.serialMonAdapter.readFromSerialWithDelay()
+                                                       )                             
+                # if self.serialMcuAdapter.getBytesInWaiting() != 0:
+                #     print(self.serialMcuAdapter.readFromSerialWithDelay())
         except KeyboardInterrupt:
-            self.serialAdapter.writeToSerial('p')
             print("Keyboard interrupt in controller")
         finally:
-            self.serialAdapter.closeSerial()
+            self.serialMonAdapter.writeToSerial(PAUSE_MON_CMD)
             self.fileStorageAdapter.closeFile()
+            self.serialMonAdapter.closeSerial()
+            self.serialMcuAdapter.closeSerial()
+
 
 if __name__ == "__main__":
-    s = StorageController(port='/dev/ttyS26', baudrate=9600)
-    s.storeSerialDataInFile()
+    s = StorageController()
+    s.storeSerialDataInFile(2.0)
 
 

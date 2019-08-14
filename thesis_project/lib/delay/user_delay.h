@@ -9,13 +9,14 @@
 */
 
 #pragma once
-#include <inttypes.h>
 
 /*! CPP guard */
 #ifdef __cplusplus
 extern "C"
 {
 #endif
+
+#include <inttypes.h>
 
 /* function prototype declarations */
 /*!

@@ -44,30 +44,6 @@ cc_library(
 	],
 )
 
-cc_library(
-	name = "CircularBufferLib",
-	srcs = glob(["lib/circular_buffer/*.c"]),
-	hdrs = glob(["lib/circular_buffer/*.h"]),
-
-	copts = commonCopts,
-
-## For testing add '--define test=true ' to include MockLib ##
-	deps = select({
-
-        ":test": [
-			"@ExtMockLib",
-		],
-
-        "//conditions:default": [
-	 		":DebugLib",
-		],	
-    }),
-	visibility = [
-		"//test:__pkg__",
-		"//test:__subpackages__",
-		"@CMock//CMock:__pkg__",
-	],
-)
 
 cc_library(
 	name = "I2cLib",
@@ -80,7 +56,6 @@ cc_library(
 	deps = select({
 
         ":test": [
-			"@ExtMockLib",
 		],
         "//conditions:default": [],	
     }),
@@ -103,7 +78,6 @@ cc_library(
 	deps = select({
 
         ":test": [
-			"@ExtMockLib",
 		],
         "//conditions:default": [],	
     }),
@@ -116,32 +90,14 @@ cc_library(
 )
 
 cc_library(
-	name = "CurrentMeasurementLib",
-	srcs = ["lib/current_sense/current_measurement.c"],
-	hdrs = ["lib/current_sense/current_measurement.h"],
+	name = "TimerLib",
+	srcs = ["lib/timer/timer.c"],
+	hdrs = ["lib/timer/timer.h"],
 
 	copts = commonCopts,
-
-    deps = [
-		":CircularBufferLib",
-	],
-	visibility = ["//test:__pkg__"],
-)
-
-cc_library(
-	name = "CurrentSenseLib",
-	srcs = ["lib/current_sense/current_sense.c"],
-	hdrs = ["lib/current_sense/current_sense.h"],
-
-	copts = commonCopts,
-
 	deps = [
-	 ":CircularBufferLib", 
-	 ":I2cLib",
-	 ":CurrentMeasurementLib", 
-	 ":DebugLib",
+		":DebugLib",
 	],
-	visibility = ["//test:__pkg__"],
 )
 
 cc_library(
@@ -168,11 +124,11 @@ cc_library(
     copts = commonCopts,
 
     deps = [
-        ":CircularBufferLib",
 		":DelayLib",
 		":AdapterLib",
 		":I2cLib",
 		":DebugLib",
+		":TimerLib",
     ],
 
 	visibility = [
@@ -235,19 +191,7 @@ config_setting(
 )
 
 ### Binary rules ###
-default_embedded_binary(
-	name = "Main",
-	srcs = ["src/main.c"],
 
-	copts = commonCopts + LUFA_COPTS,
-
-	linkopts = commonCopts + LUFA_COPTS + ["-Wl,-u,vfprintf -lprintf_flt -lm"],
-
-	deps = [
-		":DebugLib",
-        ":CurrentSenseLib",
-	],
-)
 
 default_embedded_binary(
 	name = "CurrentSenseApp",
@@ -277,10 +221,4 @@ default_embedded_binary(
 	deps = [
         ":IncludeLib",
 	],
-)
-
-cc_binary(
-	name = "calc",
-	srcs = ["src/calc.c"],
-	deps = [":PAC1720DriverLib"],
 )
