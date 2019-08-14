@@ -2,7 +2,7 @@
  *  @brief Adapter for PAC1720 sensor driver 
  */
 /*!
- * @defgroup PAC1720 adapter API
+ * @defgroup adapter API PAC1720
  * @{*/
 
 #pragma once
