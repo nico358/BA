@@ -1,7 +1,7 @@
 /*! @file PAC1720_driver.c
- @brief Sensor driver for PAC1720 sensor */
+ *  @brief Sensor driver for PAC1720 sensor */
 /*!
- * @defgroup PAC1720 driver API
+ * @defgroup driver
  * @{*/
 
 #include "PAC1720_driver.h"

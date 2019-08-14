@@ -1,8 +1,8 @@
 /*! @file PAC1720_definitions.h
-*    @brief Definitions for PAC1720 sensors 
+*   @brief Definitions for PAC1720 sensors 
 */
 /*!
- * @defgroup PAC1720 driver API
+ * @defgroup driver
  * @brief Driver for PAC1720 current sensors.
  * 
  * @{*/
