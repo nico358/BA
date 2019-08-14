@@ -84,58 +84,58 @@ static const uint8_t 	manufacturer_id_register_address             				= 0xFE;
 static const uint8_t 	revision_register_address                    				= 0xFF;
 
 /*! @name PAC1720 configuration setting constants */
-/* Settings of global sensor configuration */
+/*! @brief Settings of global sensor configuration */
 enum GLOBAL_CONFIG					 {CONFIG_ALL_CH_ENABLED, CONFIG_STANDBY=27, CONFIG_FIRST_CH_ENABLED=24, CONFIG_SECOND_CH_ENABLED=3};
-/* Possible conversion rates of sensor */
+/*! @brief Possible conversion rates of sensor */
 enum CONVERSION_RATE 				 {CONVERSION_1HZ, CONVERSION_2HZ, CONVERSION_4HZ, CONVERSION_CONTINIOUS, CONVERSION_DEFAULT=3};
-/* Number that will written to the one shot register */
+/*! @brief Number that will written to the one shot register */
 enum ONE_SHOT						 {ONE_SHOT_DEFAULT=255};
-/* Channel alert output masks  */
+/*! @brief Channel alert output masks  */
 enum CHANNEL_MASK					 {MASK_NO_CH_ALERT_ASSERT, MASK_CH1_ALERT_ASSERT=3, MASK_CH2_ALERT_ASSERT=12, MASK_ALL_CH_ALERT_ASSERT=15};
-/* Possible sampling times for voltage measurement */
+/*! @brief Possible sampling times for voltage measurement */
 enum SOURCE_VOLTAGE_SAMPLING_TIME 	 {VSRC_SAMPLE_TIME_2ms5, VSRC_SAMPLE_TIME_5ms, VSRC_SAMPLE_TIME_10ms, VSRC_SAMPLE_TIME_20ms, VSRC_SAMPLE_TIME_DEFAULT=2};
-/* Possible sampling times for current measurement */
+/*! @brief Possible sampling times for current measurement */
 enum CURRENT_SENSE_SAMPLING_TIME 	 {CURRENT_SAMPLE_TIME_2ms5, CURRENT_SAMPLE_TIME_5ms, CURRENT_SAMPLE_TIME_10ms, CURRENT_SAMPLE_TIME_20ms, 
 									  CURRENT_SAMPLE_TIME_40ms, CURRENT_SAMPLE_TIME_80ms, CURRENT_SAMPLE_TIME_160ms, CURRENT_SAMPLE_TIME_320ms, CURRENT_SAMPLE_TIME_DEFAULT=5};
-/* Possible full scale ranges for current measurement */
+/*! @brief Possible full scale ranges for current measurement */
 enum CURRENT_SENSE_RANGE 			 {CURRENT_SENSE_RANGE_10mV, CURRENT_SENSE_RANGE_20mV, CURRENT_SENSE_RANGE_40mV, CURRENT_SENSE_RANGE_80mV, CURRENT_SENSE_RANGE_DEFAULT=3};
-/* Number of measurements that will be averaged */
+/*! @brief Number of measurements that will be averaged */
 enum SAMPLE_AVERAGING 				 {SAMPLE_AVERAGING_DISABLED, SAMPLE_AVERAGES_2, SAMPLE_AVERAGES_4, SAMPLE_AVERAGES_8};
-/* Maximum of current before setting limit flag */
+/*! @brief Maximum of current before setting limit flag */
 enum CURRENT_SENSE_HIGH_LIMIT        {CURRENT_SENSE_HIGH_LIMIT_DEFAULT=127};
-/* Minimum of current before setting limit flag */
+/*! @brief Minimum of current before setting limit flag */
 enum CURRENT_SENSE_LOW_LIMIT         {CURRENT_SENSE_LOW_LIMIT_DEFAULT=128};
-/* Maximum of source voltage before setting limit flag */
+/*! @brief Maximum of source voltage before setting limit flag */
 enum SOURCE_VOLTAGE_HIGH_LIMIT 		 {SOURCE_VOLTAGE_HIGH_LIMIT_DEFAULT=255};
-/* Minimum of source voltage before setting limit flag */
+/*! @brief Minimum of source voltage before setting limit flag */
 enum SOURCE_VOLTAGE_LOW_LIMIT 		 {SOURCE_VOLTAGE_LOW_LIMIT_DEFAULT=0};
 
 
 /*! @name PAC1720 lookup tables - calculation specific constants*/
-/** Possible Full Scale Range values in current sensing, 
+/*! @brief Possible Full Scale Range values in current sensing, 
  *  determined by 'current_sense_FSR_reg' */
 static const float 		FSR_values[4] 												= {0.01f, 0.02f, 0.04f, 0.08f};
-/** Possible BUS current formula denominators, 
+/*! @brief Possible BUS current formula denominators, 
  *  determined by 'current_sense_sampling_time_reg' */
 static const float 		DENOMINATOR_values_current_sense[8] 						= {63.0f, 127.0f, 255.0f, 511.0f, 1023.0f, 2047.0f, 2047.0f, 2047.0f};
-/** Ignore register bits (sense resolution) in BUS current formula, 
+/*! @brief Ignore register bits (sense resolution) in BUS current formula, 
  *  determined by 'current_sense_sampling_time_reg' */
 static const uint8_t 	CURRENT_RESOLUTION_IGNORE_BITS[8] 							= {9,8,7,6,5,4,4,4};
-/** Ignore upper bits in two's complement calculation of Vsense, 
+/*! @brief Ignore upper bits in two's complement calculation of Vsense, 
  *  determined by 'current_sense_sampling_time_reg' */
 static const uint16_t 	NEGATIVE_CURRENT_RESOLUTION_MASK[8] 						= {0x007F, 0x00FF, 0x01FF, 0x03FF, 0x07FF, 0x0FFF, 0x0FFF, 0x0FFF};
-/** Sign bit in int8_t, used to check polarity of Vsense reg */
+/*! @brief Sign bit in int8_t, used to check polarity of Vsense reg */
 static const uint8_t 	SHIFT_TO_SIGN_BIT 											= 15;
 
-/** Possible FSV formula denominators, 
- *  determined by 'source_voltage_sampling_time_reg' */
-/** Note: Vsource formula denominators are equal to these 
+/*! @brief Possible FSV formula denominators, 
+ *  determined by 'source_voltage_sampling_time_reg' 
+ *  @note Vsource formula denominators are equal to these 
  * 	minus 'DENOMINATOR_correction_source_voltage' */
 static const float 		DENOMINATOR_values_source_voltage[4] 						= {256.0f, 512.0f, 1024.0f, 2048.0f};
-/** Ignore register bits (sense resolution) in BUS voltage formula, 
+/*! @brief Ignore register bits (sense resolution) in BUS voltage formula, 
  *  determined by 'source_voltage_sampling_time_reg' */
 static const uint8_t 	VSOURCE_RESOLUTION_IGNORE_BITS[4] 							= {8,7,6,5};
-/** The DENOMINATOR correction value for Vsource calculation */
+/*! @brief The DENOMINATOR correction value for Vsource calculation */
 static const float 		DENOMINATOR_correction_source_voltage 						= 1.0f;
 
 /*! @name PAC1720 Application constants */
@@ -214,7 +214,7 @@ struct  PAC1720_ch_internal;
 /* Internal measurement values */
 struct 	PAC1720_meas_internal;
 
-/*! Result interface, holds the channels status flags and calculated measurements */
+/*! @brief Result interface, holds the channels status flags and calculated measurements */
 struct 	PAC1720_CH_measurements 
 {
 	/* Flags for sensor conversion state and limit exceedings */
@@ -243,7 +243,7 @@ struct 	PAC1720_CH_measurements
 	uint32_t 					meas_cnt;
 };//PAC1720_CH_measurements
 
-/* Configuration interface, holds channel specific configuration */
+/*! @brief Configuration interface, holds channel specific configuration */
 struct 	PAC1720_CH_config
 {
 	/*! Optional name  */
@@ -256,22 +256,24 @@ struct 	PAC1720_CH_config
 	uint8_t 					 CH_current_sense_sampling_average_reg;
 	/*! Full Scale Range (FSR): current sensing range */
 	uint8_t 					 CH_current_sense_FSR_reg;
-	/* Sense voltage limit register */
+	/* Sense voltage high limit register */
 	uint8_t 					 CH_current_sense_high_limit_reg;
+	/* Sense voltage low limit register */
 	uint8_t 					 CH_current_sense_low_limit_reg;
 
 	/*! Source voltage sampling time settings */
 	uint8_t 					 CH_source_voltage_sampling_time_reg;
 	/*! Source voltage averaging settings */
 	uint8_t 					 CH_source_voltage_sampling_average_reg;
-	/* Source voltage limit register */
+	/* Source voltage high limit register */
 	uint8_t 					 CH_source_voltage_high_limit_reg;
+	/* Source voltage low limit register */
 	uint8_t 					 CH_source_voltage_low_limit_reg;
 	/* Internal config */
 	struct PAC1720_ch_internal * ch_internal;
 };//PAC1720_CH_config
 
-/*! Device interface, holding the configurations and measurements for each channel*/
+/*! @brief Device interface, holding the configurations and measurements for each channel*/
 struct 	PAC1720_device
 {
 	/*! Optional name for device */

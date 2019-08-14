@@ -1,6 +1,7 @@
 var searchData=
 [
   ['adapter',['Adapter',['../group__adapter.html',1,'']]],
+  ['adapter_5fdelay',['adapter_delay',['../group__adapter.html#ga93ed01b7d8018bf3925e2d747b17a1ec',1,'adapter_PAC1720.c']]],
   ['adapter_5fdestroy_5fpac1720',['adapter_destroy_PAC1720',['../group__adapter.html#ga32b7b3731128d51f23e7af678c31b858',1,'adapter_PAC1720.c']]],
   ['adapter_5ffbus_5fread',['adapter_fbus_read',['../group__adapter.html#gaef0bf1eea9bd464a5fab66ec297b132b',1,'adapter_PAC1720.c']]],
   ['adapter_5ffbus_5fwrite',['adapter_fbus_write',['../group__adapter.html#ga1957b9fcfeb089cd7eb4fbd8b24e27b8',1,'adapter_PAC1720.c']]],

@@ -7,7 +7,7 @@
 
 #pragma once
 
-/*! CPP guard */
+/* CPP guard */
 #ifdef __cplusplus
 extern "C"
 {
@@ -38,7 +38,7 @@ static const uint8_t max_search_attempts = 10;
 /******************************** Application specific implementation **********************/
 /* Structure definition */
 /*!
- * @brief  Struct that is used to define bus communication interface. 
+ * @brief  Struct that is used to define TWI communication. 
  * 
  * @param init : A pointer to the init function of an application specific bus interface.
  * @param stop : A pointer to the stop communication function of an application specific bus interface.
@@ -49,17 +49,25 @@ static const uint8_t max_search_attempts = 10;
  * @param readAck : A pointer to the read-and-send-ACK function of an application specific bus interface.
  * @param readNak : A pointer to the read-and-send-NACK function of an application specific bus interface.
  * 
- * @note Instantiate this struct in the application and assign the members to implementations of bus communication.
+ * @note Instantiate this struct in the application and assign the members to an implementation of TWI communication.
  */
 struct FIELD_BUS_INTERFACE
 {
+    /* Hardware initialisation of TWI module */
     void            (*init)     (void);
+    /* Stop communication */
     void            (*stop)     (void);
+    /* Start communication */
     unsigned char   (*start)    (unsigned char address);
+    /* Repeated start of communication */
     unsigned char   (*repStart) (unsigned char address);
+    /* Starts communication and blocks until ACK received*/
     void            (*startWait)(unsigned char address);
+    /* Writes the data to a slave */
     unsigned char   (*write)    (unsigned char data);
+    /* Reads data from slave and send ACK */
     unsigned char   (*readAck)  (void);
+    /* Reads data from slave and send NACK */
     unsigned char   (*readNak)  (void);
 };
 

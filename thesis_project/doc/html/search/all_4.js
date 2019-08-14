@@ -13,5 +13,6 @@ var searchData=
   ['get_5fsensor_5fmanufact_5fid',['get_sensor_manufact_id',['../group__driver.html#gad9d07a84ebea528aa98428e2b920c1c3',1,'PAC1720_driver.c']]],
   ['get_5fsensor_5fproduct_5fid',['get_sensor_product_id',['../group__driver.html#gad0d694794adfe12d8ac39a499304becc',1,'PAC1720_driver.c']]],
   ['get_5fsensor_5frevision_5fid',['get_sensor_revision_id',['../group__driver.html#ga79f8768c868b5919418bd3699bedcd97',1,'PAC1720_driver.c']]],
-  ['get_5ftest_5fdriver_5ffptr_5ffield',['get_TEST_DRIVER_FPTR_FIELD',['../group__driver.html#gaf2ab2ef3b81a6aca0f4cc77d82cccc9d',1,'PAC1720_driver.c']]]
+  ['get_5ftest_5fdriver_5ffptr_5ffield',['get_TEST_DRIVER_FPTR_FIELD',['../group__driver.html#gaf2ab2ef3b81a6aca0f4cc77d82cccc9d',1,'PAC1720_driver.c']]],
+  ['global_5fconfig',['GLOBAL_CONFIG',['../group__driver.html#ga107066ffe8d41729596e8f0721d47754',1,'PAC1720_definitions.h']]]
 ];

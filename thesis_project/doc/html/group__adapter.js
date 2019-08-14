@@ -14,6 +14,7 @@ var group__adapter =
     [ "I2C_WRITE", "group__adapter.html#ga9536bf85bced4f4e549a82fb18eb6140", null ],
     [ "debugWriteLine_fptr", "group__adapter.html#ga521c349d183fdaf055769bac38cca745", null ],
     [ "delay_function_ptr", "group__adapter.html#ga87111bfd5f50b4aa1cf9d61f86d4dde6", null ],
+    [ "adapter_delay", "group__adapter.html#ga93ed01b7d8018bf3925e2d747b17a1ec", null ],
     [ "adapter_destroy_PAC1720", "group__adapter.html#ga32b7b3731128d51f23e7af678c31b858", null ],
     [ "adapter_fbus_read", "group__adapter.html#gaef0bf1eea9bd464a5fab66ec297b132b", null ],
     [ "adapter_fbus_write", "group__adapter.html#ga1957b9fcfeb089cd7eb4fbd8b24e27b8", null ],

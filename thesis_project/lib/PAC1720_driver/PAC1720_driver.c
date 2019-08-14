@@ -177,7 +177,7 @@ int8_t readin_limit_status_registers(struct PAC1720_device *device_ptr);
  * @param[in] tmp_smpl_conf_reg : Array holding the status limit settings temporary.
  *
  */
-void assign_limit_status_registers(struct PAC1720_device *device_ptr, uint8_t tmp_smpl_conf_reg[3]);
+void assign_limit_status_registers(struct PAC1720_device *device_ptr, uint8_t tmp_smpl_conf_reg[2]);
 
 /*!
  * @fn readin_sampling_config_registers
@@ -654,11 +654,7 @@ bool second_channel_is_active(const struct PAC1720_device *device_ptr);
 
 /******************************** Private data types ******************************************/
 
-/* Structure definitions */
-/*!
- * @brief  Datastructures that are holding private data. 
- */
-/*! Struct holding the pointers to bus communication fuctions, delay function and  sensor information */
+/*! @brief Struct holding the pointers to bus communication fuctions, delay function and  sensor information. */
 struct 	PAC1720_internal
 {
     /* Bus read function pointer */
@@ -676,7 +672,7 @@ struct 	PAC1720_internal
 	uint8_t      sensor_revision;
 };
 
-/*! Struct holding theFull Scale values of a channel */
+/*! @brief Struct holding theFull Scale values of a channel. */
 struct PAC1720_ch_internal
 {
     /* Full Scale Current (FSC) */
@@ -687,7 +683,7 @@ struct PAC1720_ch_internal
 	float 		power_sense_FSP;
 };
 
-/*! Struct holding the sensors measurement results of a channel */
+/*! @brief Struct holding the sensors measurement results of a channel */
 struct 	PAC1720_meas_internal
 {
     /* Current sense voltage register */
@@ -826,7 +822,7 @@ int8_t get_raw_measurements_PAC1720(struct PAC1720_device *device_ptr)
     return res;
 }
 
-/* Write the value of the sensor struct instance's one shot register to the sensor one shot register */
+/*! @brief Write the value of the sensor struct instance's one shot register to the sensor one shot register */
 int8_t write_out_one_shot_register(struct PAC1720_device *device_ptr)
 {
     /* Null pointer check */
@@ -1023,7 +1019,7 @@ void assign_global_config_registers(struct PAC1720_device *device_ptr, uint8_t t
 }
 
 /*!
- * @brief Reads limit status registers from the senor. 
+ * @brief Reads limit status registers from the sensor. 
  */
 int8_t readin_limit_status_registers(struct PAC1720_device *device_ptr)
 {

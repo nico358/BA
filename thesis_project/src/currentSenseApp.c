@@ -3,7 +3,7 @@
 /************************************** Dependencies to be injected ************************************/
 /* Instantiate a bus interface */
 struct FIELD_BUS_INTERFACE external_fieldbus_interface = {
-    /** Assign i2cmaster library function pointer to members */
+    /** Assign i2cmaster library function addresses to members */
     .init       = &i2c_init,
     .stop       = &i2c_stop,
     .start      = &i2c_start,

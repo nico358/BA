@@ -463,7 +463,7 @@ int8_t adapter_fbus_read(const uint8_t sensor_address, const uint8_t reg_address
     return result;
 }
 
-/* User defined delay function */
+/*! @brief User defined delay function */
 void adapter_delay(uint32_t period)
 {
     /* Provided delay function */

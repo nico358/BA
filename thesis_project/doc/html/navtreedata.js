@@ -24,8 +24,10 @@ for the JavaScript code in this file
 var NAVTREE =
 [
   [ "Current Monitor API", "index.html", [
-    [ "Initialization with settings from sensor", "index.html#sec1", null ],
-    [ "Initialization with settings from struct instance", "index.html#sec2", null ],
+    [ "Driver initialization with settings from sensor", "index.html#sec1", null ],
+    [ "Driver initialization with settings from struct instance", "index.html#sec2", null ],
+    [ "Initialization process", "index.html#sec3", null ],
+    [ "Take measurements", "index.html#sec4", null ],
     [ "Modules", "modules.html", "modules" ],
     [ "Data Structures", "annotated.html", [
       [ "Data Structures", "annotated.html", "annotated_dup" ],
@@ -42,6 +44,7 @@ var NAVTREE =
         [ "Functions", "globals_func.html", null ],
         [ "Variables", "globals_vars.html", null ],
         [ "Typedefs", "globals_type.html", null ],
+        [ "Enumerations", "globals_enum.html", null ],
         [ "Macros", "globals_defs.html", null ]
       ] ]
     ] ]
@@ -51,7 +54,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "_p_a_c1720__definitions_8h.html",
-"group__driver.html#ga9611cd116c965eaee8b2ad068dc9448c"
+"group__driver.html#ga845260f49676e6d317e13eb426de4ac9"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
