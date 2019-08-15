@@ -12,7 +12,7 @@
  * 
  *  The simple way for an initialization is a call of the function adapter_init_PAC1720_from_field. Here, the configuration stored in the struct instance 
  *  is overwritten by the settings on the sensor. The values DEV_name_opt, CH_name_opt, DEV_sensor_address, CH_current_sense_resistor_value remain untouched. 
- *  This is the simplest way to initialize the driver module since all settings are captured from the sensor and only three mandatory settings are rqeuired as shown below:
+ *  This is the simplest way to initialize the driver module since all settings are captured from the sensor and only three mandatory settings are rqeuired as shown below.
  * 
  * @code
  * // Absolute minimum settings required for an initialization:
@@ -30,7 +30,7 @@
  *  
  * The second possibility to initialize the driver module is to provide the struct instance at a call of the function adapter_init_PAC1720_user_defined.
  * This function takes the configuration that is stored in the struct and initializes the sensor with it. Basically can the configuration be made with default
- * values which are almost equal to zero within this context. To achive this, the struct is to be initialized accordingly. The setting of some values has to be 
+ * values which are almost equal to zero in this context. To achive this, the struct is to be initialized accordingly. The setting of some values has to be 
  * different from zero to make the configuration default. The minimum required setting for this way of initialization is depicted in the minimum example. 
  * If the configuration of the sensor is to be further adjusted, all other settings can be made in the corresponding instance. The full configuration is shown in
  * the large example. Note that all values are just samples and must be changed to your own needs.
