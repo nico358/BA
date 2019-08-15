@@ -782,7 +782,7 @@ int8_t get_all_measurements_PAC1720(struct PAC1720_device *device_ptr)
     /* Read the limit statuses of the sensor (conversion cycle done flag) */
     res = readin_limit_status_registers(device_ptr);
     if(res != PAC1720_OK) return res;
-    /* Check if sensor conversion cycle flag of sensor is set */
+    /* Check if conversion cycle flag of sensor is set */
     if(device_ptr->DEV_CH1_measurements.conversion_done || device_ptr->DEV_CH2_measurements.conversion_done)
     {
         /* Fetch mesaurement results from sensor and calculate actual values */
@@ -1562,22 +1562,21 @@ int8_t calculate_BUS_POWER(const struct PAC1720_CH_config *channel_conf, struct 
  */
 float calculate_SENSED_VOLTAGE(const uint16_t *v_sense_voltage_reg_ptr, const uint8_t *current_sense_sampling_time_reg_ptr)
 {
-    /* Shift unused bits out of sensor result according to resolution, 
-    shift is determined by lookuptable that is indexed by configured sampling time value */
-    uint16_t tmp = right_bit_shift(v_sense_voltage_reg_ptr, CURRENT_RESOLUTION_IGNORE_BITS[*current_sense_sampling_time_reg_ptr]);
-    // uint16_t tmp = *v_sense_voltage_reg_ptr >> 4;
     /* Check if the (signed) sense voltage result of the sensor is a negative number */
     if(is_negative_value(v_sense_voltage_reg_ptr)){
         /* If number is negative build two's complement */
-        uint16_t complement = twos_complement(&tmp);
-        /* Mask unused bits out of two's complement to avoid false result, 
-        mask is determined by lookup-table that is indexed by configured sampling time */
-        tmp = complement & NEGATIVE_CURRENT_RESOLUTION_MASK[*current_sense_sampling_time_reg_ptr];
+        uint16_t complement = twos_complement(v_sense_voltage_reg_ptr);
+        /* Shift unused bits out of result according to resolution, 
+        shift is determined by lookuptable indexed by configured sampling time value */
+        uint16_t tmp = right_bit_shift(&complement, CURRENT_RESOLUTION_IGNORE_BITS[*current_sense_sampling_time_reg_ptr]);
         /* Cast result to float */
         float res = (float) tmp;
         /* Sign result */
         return - res;
     } else {
+        /* Shift unused bits out of sensor result according to resolution, 
+        shift is determined by lookuptable that is indexed by configured sampling time value */
+        uint16_t tmp = right_bit_shift(v_sense_voltage_reg_ptr, CURRENT_RESOLUTION_IGNORE_BITS[*current_sense_sampling_time_reg_ptr]);
         /* If (signed) sense voltage result of the sensor is a positive number just cast it to float */
         return (float) tmp;
     } 

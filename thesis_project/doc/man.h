@@ -94,12 +94,12 @@
  *  @section sec3 Initialization process
  * 
  * The adapter module connects the driver to your application. In order to enable the required bus communication via TWI (or similar) create an instance
- * of the struct FIELD_BUS_INTERFACE and assign its members to the addresses of the bus interface functions. A reference to an implementation of a 
+ * of the struct BUS_INTERFACE and assign its members to the addresses of the bus interface functions. A reference to an implementation of a 
  * delay function is also required. Call the function adapter_init_peripherals with the references as parameters in order to initialize the adapter.
  * 
  * @code
  * // Instantiate a bus interface 
- * struct FIELD_BUS_INTERFACE external_bus_interface = {
+ * struct BUS_INTERFACE external_bus_interface = {
  *    // Assign i2cmaster library function addresses to members 
  *    .init       = &i2c_init,
  *    .stop       = &i2c_stop,

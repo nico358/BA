@@ -4,7 +4,7 @@
 
 /************************************** Dependencies to be injected ************************************/
 /* Instantiate a bus interface */
-struct FIELD_BUS_INTERFACE i2c_interface = {
+struct BUS_INTERFACE i2c_interface = {
     .init       = &i2c_init,
     .stop       = &i2c_stop,
     .start      = &i2c_start,

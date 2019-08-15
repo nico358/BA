@@ -2,7 +2,7 @@
 
 /************************************** Dependencies to be injected ************************************/
 /* Instantiate a bus interface */
-struct FIELD_BUS_INTERFACE external_fieldbus_interface = {
+struct BUS_INTERFACE external_bus_interface = {
     /** Assign i2cmaster library function addresses to members */
     .init       = &i2c_init,
     .stop       = &i2c_stop,
@@ -80,9 +80,9 @@ int8_t init_platform(void)
     int8_t res = PAC1720_OK;
     /* Init debug */
     debugInit(NULL);
-    external_fieldbus_interface.init();
+    external_bus_interface.init();
     /* Inject bus communication and delay function pointer to adapter */
-    adapter_init_peripherals(&external_fieldbus_interface, external_delay_function);
+    adapter_init_peripherals(&external_bus_interface, external_delay_function);
     /* Configure sensors, struct instances are located in adapter */
     res = adapter_init_PAC1720_user_defined(&dev_USB_MON);
     if(res != PAC1720_OK) return res;
@@ -116,6 +116,9 @@ void set_state(uint8_t data, uint8_t *state)
 {
     switch (data)
     {
+    case 'A': // Monitor all
+        *state = 6;
+        break;
     case 'U': // USB monitoring
         *state = 3;
         break;
