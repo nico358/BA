@@ -2,6 +2,44 @@
 #include "src/adapter_PAC1720/adapter_PAC1720.h"
 #include <stdio.h>
 
+/* Declare internal structs to allow access in this file */
+struct 	PAC1720_internal
+{
+    /* Bus read function pointer */
+	PAC1720_fptr read;
+	/* Bus write function pointer */
+	PAC1720_fptr write;
+	/* Delay function pointer */
+	delay_fptr 	 delay_ms;
+
+    /* Sensor product id */
+	uint8_t      sensor_product_id;
+	/* Sensor manufacturer id */
+	uint8_t      sensor_manufact_id;
+	/* Sensor revision */
+	uint8_t      sensor_revision;
+};
+
+struct PAC1720_ch_internal
+{
+    /* Full Scale Current (FSC) */
+	float 		current_sense_FSC;
+    /* Full Scale Voltage (FSV) */
+	float 		source_voltage_FSV;
+	/* Full Scale Power (FSP)  */
+	float 		power_sense_FSP;
+};
+
+struct 	PAC1720_meas_internal
+{
+    /* Current sense voltage register */
+    uint16_t    v_source_voltage_reg;
+    /* Source voltage sense register */
+    uint16_t    v_sense_voltage_reg;
+    /* Power ratio register */
+    uint16_t    power_ratio_reg; 
+};
+
 /* Verification parameters set by spies */
 uint8_t mock_i2c_start_call;
 uint8_t mock_i2c_start_arg;
@@ -19,6 +57,7 @@ uint32_t mock_delay_arg;
 uint8_t  mock_delay_call;
 
 uint8_t readNak_call_global = 0;
+
 
 /** Field- Bus communication spies */
 unsigned char mock_i2c_start(unsigned char address){
@@ -50,18 +89,25 @@ unsigned char mock_i2c_write( unsigned char data ){
 
 unsigned char mock_i2c_readAck(void){
     mock_i2c_readAck_call++;
-    return 0xDD;
+    return 0xD;
 }
 
 unsigned char mock_i2c_readNak(void){
-    if(readNak_call_global == 0){
+    // Return sensor not sleeping in 1st initialization call
+    if(readNak_call_global <= MAX_ATTEMPTS_SET_SLEEP_MODE){
         readNak_call_global++;
         return 0x1;
     } 
+    // Return sensor sleeps in 2nd initialization call 
+    if(readNak_call_global == MAX_ATTEMPTS_SET_SLEEP_MODE +1){
+        mock_i2c_readNak_call++;
+        readNak_call_global++;
+        return CONFIG_STANDBY;
+    } 
     mock_i2c_readNak_call++;
     readNak_call_global++;
-    TEST_ASSERT_MESSAGE( 1 , "a isn't 2, end of the world!");
-    return CONFIG_STANDBY;
+    
+    return 0xA;
 }
 
 /* External delay function spy */
@@ -144,11 +190,12 @@ struct PAC1720_device test_dev =
 };
 
 void setUp(void) {
-    TEST_ASSERT_MESSAGE("a isn't 2, end of the world!");
+    // Set up bus communication and delay function in adapter
     adapter_init_peripherals(&dummy_i2c, &mock_user_delay);
 }
 
 void tearDown(void) {
+    // Reset all verification params
     mock_i2c_start_call = 0;
     mock_i2c_start_arg = 0;
     mock_i2c_start_wait_call = 0;
@@ -165,61 +212,26 @@ void tearDown(void) {
     mock_delay_call = 0;
 }
 
+// Test init fail by using sensor sleep mode request (mock_i2c_readNak return 0x1 in 1st run)
 void test_driver_initialize_fail(void){
     TEST_ASSERT_EQUAL(PAC1720_INIT_ERROR, adapter_init_PAC1720_user_defined(&test_dev));  
 }
 
-
+// Test init function of adapter & driver
 void test_driver_initialize(void){
     TEST_ASSERT_EQUAL(PAC1720_OK, adapter_init_PAC1720_user_defined(&test_dev));  
-
+    // Check spy calls of init 
     TEST_ASSERT_EQUAL(6, mock_i2c_start_wait_call);
     TEST_ASSERT_EQUAL(22, mock_i2c_write_call);
     TEST_ASSERT_EQUAL(6, mock_i2c_stop_call);
     TEST_ASSERT_EQUAL(2, mock_i2c_rep_start_call);
     TEST_ASSERT_EQUAL(2, mock_i2c_readAck_call);
     TEST_ASSERT_EQUAL(2, mock_i2c_readNak_call);
-
-
-
-    // set_sensor_to_sleep
-    // Start Wait: 0x18
-    // Write: configuration_register_address
-    // Write: CONFIG_STANDBY
-    // Stop 
-
-    // sensor_is_in_sleep
-    // start wait: 0x18
-    // Write: configuration_register_address
-    // RepStart: 0x18
-    // 1x readNak: CONFIG_STANDBY else PAC1720_INIT_ERROR
-    // stop
-
-    // write_all_settings_to_sensor:
-    // write_out_global_config_registers
-    // Start Wait: 0x18
-    // Write: configuration_register_address
-    // 4x  Write: tmp_config_reg[4]
-    // Stop 
-
-    // write_out_sampling_config_registers
-    // Start Wait: 0x18
-    // Write: v_source_sampling_configuration_register_address
-    // 3x  Write: tmp_smpl_conf_reg[3]
-    // Stop 
-
-    // write_out_limit_registers
-    // Start Wait: 0x18
-    // Write: ch1_sense_voltage_high_limit_register_address
-    // 8x  Write: tmp_lmt_reg[8]
-    // Stop 
-
-    // readin_sensor_infos_registers
-    // start wait: 0x18
-    // Write: product_id_register_address
-    // RepStart: 0x18
-    // 2x readAck:  uint8_t tmp_read[3] = {0};
-    // 1x readNak:  uint8_t tmp_read[3] = {0};
-    // stop
-
+    // Test assignment to empty name
+    TEST_ASSERT_EQUAL_STRING("None", test_dev.DEV_CH2_conf.CH_name_opt);
+    // Check returned values of spies in internal pointer
+    struct 	PAC1720_internal *internal = test_dev.internal;
+    TEST_ASSERT_EQUAL(0xD, internal->sensor_product_id);
+    TEST_ASSERT_EQUAL(0xD, internal->sensor_manufact_id);
+    TEST_ASSERT_EQUAL(0xA, internal->sensor_revision);
 }
