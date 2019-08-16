@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 """TODO."""
 
-from __future__ import division
 import sys
 import matplotlib.pyplot as plt
-from exception_handler import ExceptionHandler
+from __future__ import division
+from storage.adapter.exception_handler import ExceptionHandler
 
 RESISTANCE = 0.82
 PLOT_COLORS       = ['g', 'b', 'c', 'm', 'y', 'k', 'r']

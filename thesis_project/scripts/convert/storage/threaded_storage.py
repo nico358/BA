@@ -3,10 +3,10 @@
 
 import Queue
 import threading
-from timer               import Timer
-from serial_adapter      import SerialAdapter
-from exception_handler   import ExceptionHandler
-from filestorage_adapter import FileStorageAdapter
+from adapter.timer.timer         import Timer
+from adapter.serial_adapter      import SerialAdapter
+from adapter.exception_handler   import ExceptionHandler
+from adapter.filestorage_adapter import FileStorageAdapter
 
 BUF_SIZE = 2048
 queue = Queue.Queue(BUF_SIZE)
@@ -49,13 +49,11 @@ class SerialControllerMcu(threading.Thread):
     # Set data2 = None to transmit only one cmd
     def run(self):
         """TODO."""
-        # self.serialAdapter.serialSleep(0.8)
-        # self.serialAdapter.serialSleep(1)
         self.serialAdapter.openSerial()
         # Check if data is a list and send data in loop if
         if isinstance(self.data, list):
             for d in self.data:
-                self.serialAdapter.serialSleep(0.5)
+                self.serialAdapter.serialSleep(SLEEP_BETWEEN_MCU_CMDS)
                 self.serialAdapter.writeToSerial(d)
         else:
             self.serialAdapter.writeToSerial(self.data)

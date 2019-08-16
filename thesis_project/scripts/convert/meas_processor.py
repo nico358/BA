@@ -4,8 +4,9 @@
 import sys
 from datetime import datetime
 from meas_plotter import MeasPlotter
-from exception_handler import ExceptionHandler
-from filestorage_adapter import FileStorageAdapter
+from storage.adapter.filestorage_adapter import FileStorageAdapter
+from storage.adapter.exception_handler import ExceptionHandler
+
 
 LIST_INDEX_META    = 0
 LIST_INDEX_CURRENT = 1

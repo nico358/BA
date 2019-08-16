@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 """TODO."""
 
-import threaded_storage  as ts
-from timer               import Timer
-from meas_processor      import MeasProcessor
+import convert.storage.threaded_storage     as ts
+from convert.storage.adapter.timer.timer    import Timer
+from convert.meas_processor                 import MeasProcessor
 
 FOLDERPATH              = 'meas/test/'
 FILEPATH                = '400Hz10mV2s'
@@ -27,7 +27,7 @@ LEDFLASH_FPGA_CMD       = 'L'#
 
 
 if __name__ == "__main__":
-    time_limit = 5
+    time_limit = 2
     # mcu_data = [TESTMODE_FPGA_CMD, LEDFLASH_FPGA_CMD]
     # mcu_data = UNSUSPEND_FPGA_CMD
     # mcu_data = SUSPEND_FPGA_CMD
@@ -45,7 +45,7 @@ if __name__ == "__main__":
         sc = ts.StorageController(folderpath=FOLDERPATH, filepath=FILEPATH)
         scmon = ts.SerialControllerMon(port=PORT_MON, baudrate=BAUDRATE, data=START_MON_FPGA)
 
-        threads = [scmon, sc]
+        threads = [scmon, sc, scmcu]
         
         ts.startThreads(threads)
         timer = Timer()

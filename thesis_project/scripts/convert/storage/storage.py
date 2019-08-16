@@ -1,9 +1,9 @@
 """TODO."""
 
-from timer                  import Timer
-from serial_adapter         import SerialAdapter
-from exception_handler      import ExceptionHandler
-from filestorage_adapter    import FileStorageAdapter
+from adapter.timer.timer            import Timer
+from adapter.serial_adapter         import SerialAdapter
+from adapter.exception_handler      import ExceptionHandler
+from adapter.filestorage_adapter    import FileStorageAdapter
 
 
 FILEPATH            = 'meas/FPGA@400Hz20mV.txt'
