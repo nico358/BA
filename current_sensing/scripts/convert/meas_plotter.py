@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-"""TODO."""
+
+"""This module ."""
 
 from __future__ import division
 import matplotlib.pyplot as plt
