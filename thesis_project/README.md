@@ -47,14 +47,14 @@ The entry point of the driver API is the function `adapter_init_PAC1720_user_def
 
 ## Adapter
 
-The adapter needs to be initialized before the use of its functionality. Provide an instance of the `struct FIELD_BUS_INTERFACE` to the function `adapter_init_peripherals`. This initializes the required communication interface of the adapter. The instance of the struct must be supplied by references to an implementation of bus communication. Basically the adapter wraps the driver API and provides an interface to it. The function `adapter_init_PAC1720_user_defined` is to be called with an `struct PAC1720_device` instance as described above. Internally the function `adapter_init_PAC1720_user_defined`is called. The measurements can be triggered by the function `adapter_get_measurements_PAC1720` and the reading of the results is the same as described above.
+The adapter needs to be initialized before the use of its functionality. Provide an instance of the `struct BUS_INTERFACE` to the function `adapter_init_peripherals`. This initializes the required communication interface of the adapter. The instance of the struct must be supplied by references to an implementation of bus communication. Basically the adapter wraps the driver API and provides an interface to it. The function `adapter_init_PAC1720_user_defined` is to be called with an `struct PAC1720_device` instance as described above. Internally the function `adapter_init_PAC1720_user_defined`is called. The measurements can be triggered by the function `adapter_get_measurements_PAC1720` and the reading of the results is the same as described above.
 
 ## Initialization process
 
-Instanciate a `struct FIELD_BUS_INTERFACE` and assign the addresses of the bus communication functions to the struct members. 
+Instanciate a `struct BUS_INTERFACE` and assign the addresses of the bus communication functions to the struct members. 
 ```c
 /* Instantiate a bus interface */
-struct FIELD_BUS_INTERFACE external_bus_interface = {
+struct BUS_INTERFACE external_bus_interface = {
     /** Assign i2cmaster library function pointer to members */
     .init       = &i2c_init,
     .stop       = &i2c_stop,

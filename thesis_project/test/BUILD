@@ -47,5 +47,6 @@ test_suite(
     tests = [
         "//test/unittests:sensor_driver_Test",
         "//test/unittests:sensor_adapter_Test",
+        "//test/integration:sensor_integration_Test",
     ],
 )

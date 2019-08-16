@@ -3,7 +3,6 @@ var _p_a_c1720__driver_8c =
     [ "assign_ch_limit_registers", "group__driver.html#ga2ca761e9150cc140595f98bd293ae0f3", null ],
     [ "assign_global_config_registers", "group__driver.html#ga1fc8c5f80b8775a02e09e6c26d0c1e2a", null ],
     [ "assign_internal_measurements_registers", "group__driver.html#gad6f2088d0d252c8d9c16380ab1cf5d7b", null ],
-    [ "assign_limit_status_registers", "group__driver.html#gaf81638606415def74e5b69df0d1df79a", null ],
     [ "assign_limit_status_registers", "group__driver.html#ga932a0050d7758bd8e574e39e56e4f7a9", null ],
     [ "assign_sampling_config_registers", "group__driver.html#ga43d6330938a0fd1e15671f32b8bc11fd", null ],
     [ "assign_sensor_infos_registers", "group__driver.html#ga86d9efdc937b119f4abc7edf51491678", null ],

@@ -16,7 +16,7 @@
  * @brief  Application dependent instances. 
  */
 /* The struct holding communication function pointers used in this file */
-struct FIELD_BUS_INTERFACE *internal_fieldbus_interface;
+struct BUS_INTERFACE *internal_bus_interface;
 
 /** The platform dependend delay function used in this file */
 delay_function_ptr internal_delay;
@@ -241,13 +241,13 @@ bool check_mandatory_dev_settings(struct PAC1720_device *dev_ptr);
  * @brief Helper function to poll sensors in the find_sensors function.
  *
  * @param[in/out] addresses : Pointer to an array with size of 32*sizeof(unit8_t).
- * @param[in] fieldbus_interface : Pointer to instance of struct FIELD_BUS_INTERFACE.
+ * @param[in] bus_interface : Pointer to instance of struct BUS_INTERFACE.
  * @param[in] loop_var : The actual loop count.
  * 
  * @return Result of API execution status
  * @retval 0 -> Success / != 0 value -> Error 
  */
-uint8_t poll_fbus(uint8_t *addresses, struct FIELD_BUS_INTERFACE *fieldbus_interface, uint8_t loop_var);
+uint8_t poll_fbus(uint8_t *addresses, struct BUS_INTERFACE *bus_interface, uint8_t loop_var);
 
 /*!
  * @fn check_peripherals_initialized
@@ -277,10 +277,10 @@ bool sensor_address_out_of_range(const uint8_t address);
  * 
  * @brief Helper function to initialize the internal bus communication instance.
  * 
- * @param[in] external_fieldbus_interface : Pointer to an instance of struct FIELD_BUS_INTERFACE.
+ * @param[in] external_bus_interface : Pointer to an instance of struct BUS_INTERFACE.
  * 
  */
-void set_fieldbus_ptr(struct FIELD_BUS_INTERFACE *external_fieldbus_interface);
+void set_fieldbus_ptr(struct BUS_INTERFACE *external_bus_interface);
 
 /*!
  * @fn set_delay_ptr
@@ -298,11 +298,11 @@ void set_delay_ptr(delay_function_ptr external_delay);
 /*!
  * @brief Initializes the internal bus communication interface and delay function.
  */
-void adapter_init_peripherals(struct FIELD_BUS_INTERFACE *fieldbus_interface, delay_function_ptr delay_fptr)
+void adapter_init_peripherals(struct BUS_INTERFACE *bus_interface, delay_function_ptr delay_fptr)
 {
-    if (fieldbus_interface != NULL && delay_fptr != NULL)
+    if (bus_interface != NULL && delay_fptr != NULL)
     {
-        set_fieldbus_ptr(fieldbus_interface);
+        set_fieldbus_ptr(bus_interface);
         set_delay_ptr(delay_fptr);
     } 
 }
@@ -381,7 +381,7 @@ void adapterResetMeasCounts(struct PAC1720_device *device_ptr)
 /*!
  * @brief Searches for sensors (addresses) on the platform.
  */
-uint8_t adapter_find_sensors(uint8_t *addresses, struct FIELD_BUS_INTERFACE *fieldbus_interface, delay_function_ptr delay_fptr)
+uint8_t adapter_find_sensors(uint8_t *addresses, struct BUS_INTERFACE *bus_interface, delay_function_ptr delay_fptr)
 {
     uint8_t no_match = 1;
     uint8_t count = 0;
@@ -393,7 +393,7 @@ uint8_t adapter_find_sensors(uint8_t *addresses, struct FIELD_BUS_INTERFACE *fie
         while (no_match && count <= max_search_attempts)
         {
             /* Call address by bus communication and set address in array when match */
-            no_match = poll_fbus(addresses, fieldbus_interface, loop_var);
+            no_match = poll_fbus(addresses, bus_interface, loop_var);
             /* Increment  brak condition and sleep 10ms */
             if (no_match)
             {
@@ -420,9 +420,9 @@ int8_t adapter_fbus_write(const uint8_t sensor_address, const uint8_t reg_addres
 {  
     uint8_t result = PAC1720_OK;
     /* Send start communication (blocking) */
-    internal_fieldbus_interface->startWait((sensor_address << BUS_ADDRESS_SHIFT) + I2C_WRITE); 
+    internal_bus_interface->startWait((sensor_address << BUS_ADDRESS_SHIFT) + I2C_WRITE); 
     /* Write register address */
-    result = internal_fieldbus_interface->write(reg_address);
+    result = internal_bus_interface->write(reg_address);
     if(result != PAC1720_OK) 
     {
         return result;
@@ -431,7 +431,7 @@ int8_t adapter_fbus_write(const uint8_t sensor_address, const uint8_t reg_addres
     result = fbus_write_loop(data_ptr, len);
 
     /** Stop communication */
-    internal_fieldbus_interface->stop();
+    internal_bus_interface->stop();
     return result;
 }
 
@@ -442,15 +442,15 @@ int8_t adapter_fbus_read(const uint8_t sensor_address, const uint8_t reg_address
 {   
     uint8_t result = PAC1720_OK;
     /* Send start communication (blocking) */
-    internal_fieldbus_interface->startWait((sensor_address << BUS_ADDRESS_SHIFT) + I2C_WRITE);
+    internal_bus_interface->startWait((sensor_address << BUS_ADDRESS_SHIFT) + I2C_WRITE);
     /* Write register address */
-    result = internal_fieldbus_interface->write(reg_address); 
+    result = internal_bus_interface->write(reg_address); 
     if(result != PAC1720_OK)
     {
         return result;
     }
     /* Repeat start in read mode (blocking) */
-    result = internal_fieldbus_interface->repStart((sensor_address << BUS_ADDRESS_SHIFT) + I2C_READ);
+    result = internal_bus_interface->repStart((sensor_address << BUS_ADDRESS_SHIFT) + I2C_READ);
     if(result != PAC1720_OK) 
     {
         return result;
@@ -459,11 +459,11 @@ int8_t adapter_fbus_read(const uint8_t sensor_address, const uint8_t reg_address
     result = fbus_read_loop(data_ptr, len);
 
     /** Stop communication */
-    internal_fieldbus_interface->stop();
+    internal_bus_interface->stop();
     return result;
 }
 
-/* User defined delay function */
+/*! @brief User defined delay function */
 void adapter_delay(uint32_t period)
 {
     /* Provided delay function */
@@ -479,7 +479,7 @@ int8_t fbus_write_loop(uint8_t *data_ptr, const uint16_t len)
     /** Write to #len registers, increase the address #len times, return error if fails */
     for(uint16_t i = 0; i < len; i++)
     {
-        result = internal_fieldbus_interface->write(*data_ptr);
+        result = internal_bus_interface->write(*data_ptr);
         if(result != PAC1720_OK) return result;
         data_ptr++;
     }
@@ -495,9 +495,9 @@ int8_t fbus_read_loop(uint8_t *data_ptr, const uint16_t len)
     /* Read from #len registers, increase the address #len times */
     for(uint16_t i = 0; i < len; i++)
     {   /** Read register and send ACK */
-        if(i < len -1)  *data_ptr = internal_fieldbus_interface->readAck();
+        if(i < len -1)  *data_ptr = internal_bus_interface->readAck();
         /* After the last read send NACK */
-        else            *data_ptr = internal_fieldbus_interface->readNak(); 
+        else            *data_ptr = internal_bus_interface->readNak(); 
         data_ptr++;
     }
     return result;
@@ -506,13 +506,13 @@ int8_t fbus_read_loop(uint8_t *data_ptr, const uint16_t len)
 /*!
  * @brief Polls sensor addresses within find_sensors function.
  */
-uint8_t poll_fbus(uint8_t *addresses, struct FIELD_BUS_INTERFACE *fieldbus_interface, uint8_t loop_var)
+uint8_t poll_fbus(uint8_t *addresses, struct BUS_INTERFACE *bus_interface, uint8_t loop_var)
 {
     /* Get the current sensor address to poll out of lookup-table, indexed by loop variable */
     uint8_t sensor_addr = PAC1720_addresses[loop_var];
     /* Start communication (non-blocking) and stop afterwards*/
-    uint8_t no_match = fieldbus_interface->start((sensor_addr << BUS_ADDRESS_SHIFT) + I2C_WRITE);
-    fieldbus_interface->stop();
+    uint8_t no_match = bus_interface->start((sensor_addr << BUS_ADDRESS_SHIFT) + I2C_WRITE);
+    bus_interface->stop();
     /* If sensor has ACKed store address at its index in the array */
     if(!no_match)
     {
@@ -528,7 +528,7 @@ uint8_t poll_fbus(uint8_t *addresses, struct FIELD_BUS_INTERFACE *fieldbus_inter
  */
 bool check_peripherals_initialized(void)
 {
-    return (internal_fieldbus_interface != NULL && internal_delay != NULL);
+    return (internal_bus_interface != NULL && internal_delay != NULL);
 }
 
 /*!
@@ -561,9 +561,9 @@ bool sensor_address_out_of_range(const uint8_t address)
 /*!
  * @brief Helper function that initializes the internal bus communication.
  */
-void set_fieldbus_ptr(struct FIELD_BUS_INTERFACE *external_fieldbus_interface)
+void set_fieldbus_ptr(struct BUS_INTERFACE *external_bus_interface)
 {
-    internal_fieldbus_interface = external_fieldbus_interface;
+    internal_bus_interface = external_bus_interface;
 }
 
 /*!

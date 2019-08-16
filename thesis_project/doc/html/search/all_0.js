@@ -1,15 +1,16 @@
 var searchData=
 [
   ['adapter',['Adapter',['../group__adapter.html',1,'']]],
+  ['adapter_5fdelay',['adapter_delay',['../group__adapter.html#ga93ed01b7d8018bf3925e2d747b17a1ec',1,'adapter_PAC1720.c']]],
   ['adapter_5fdestroy_5fpac1720',['adapter_destroy_PAC1720',['../group__adapter.html#ga32b7b3731128d51f23e7af678c31b858',1,'adapter_PAC1720.c']]],
   ['adapter_5ffbus_5fread',['adapter_fbus_read',['../group__adapter.html#gaef0bf1eea9bd464a5fab66ec297b132b',1,'adapter_PAC1720.c']]],
   ['adapter_5ffbus_5fwrite',['adapter_fbus_write',['../group__adapter.html#ga1957b9fcfeb089cd7eb4fbd8b24e27b8',1,'adapter_PAC1720.c']]],
-  ['adapter_5ffind_5fsensors',['adapter_find_sensors',['../group__adapter.html#ga75fbccd7b25ade708545c97baedb7f15',1,'adapter_PAC1720.c']]],
+  ['adapter_5ffind_5fsensors',['adapter_find_sensors',['../group__adapter.html#ga2c08ad2969edaa4c0daf6257ef56bd9d',1,'adapter_PAC1720.c']]],
   ['adapter_5fget_5fmeasurements_5fpac1720',['adapter_get_measurements_PAC1720',['../group__adapter.html#ga56f4b43af759ce48e135da6cd6d8885a',1,'adapter_PAC1720.c']]],
   ['adapter_5fget_5fraw_5fmeasurements_5fpac1720',['adapter_get_raw_measurements_PAC1720',['../group__adapter.html#ga5d9404c7d1e4c32e09f8af161491d842',1,'adapter_PAC1720.c']]],
   ['adapter_5finit_5fpac1720_5ffrom_5ffield',['adapter_init_PAC1720_from_field',['../group__adapter.html#ga94cd612009aa306b2e085a77252b6c35',1,'adapter_PAC1720.c']]],
   ['adapter_5finit_5fpac1720_5fuser_5fdefined',['adapter_init_PAC1720_user_defined',['../group__adapter.html#ga99574463e5985ddbb640f8aee3b1c25b',1,'adapter_PAC1720.c']]],
-  ['adapter_5finit_5fperipherals',['adapter_init_peripherals',['../group__adapter.html#gacc8e6007494e0763460aa21b3fc6f64e',1,'adapter_PAC1720.c']]],
+  ['adapter_5finit_5fperipherals',['adapter_init_peripherals',['../group__adapter.html#gac7e6afaeb9801845c5840baa10929fd5',1,'adapter_PAC1720.c']]],
   ['adapter_5fpac1720_2ec',['adapter_PAC1720.c',['../adapter___p_a_c1720_8c.html',1,'']]],
   ['adapter_5fpac1720_2eh',['adapter_PAC1720.h',['../adapter___p_a_c1720_8h.html',1,'']]],
   ['adapter_5fwrite_5fone_5fshot_5fpac1720',['adapter_write_one_shot_PAC1720',['../group__adapter.html#ga7669aec0b4f22942e80009accf0909c3',1,'adapter_PAC1720.c']]],

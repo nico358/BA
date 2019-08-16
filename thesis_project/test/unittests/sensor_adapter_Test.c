@@ -69,7 +69,7 @@ void mock_user_delay(uint32_t period){
 }
 
 /** Field- Bus communication struct from external */
-struct FIELD_BUS_INTERFACE dummy_i2c = {
+struct BUS_INTERFACE dummy_i2c = {
     .stop       = &mock_i2c_stop,
     .start      = &mock_i2c_start,
     .repStart   = &mock_i2c_rep_start,
@@ -85,8 +85,8 @@ typedef int8_t      (*adapter_fbus_read)            (const uint8_t sensor_addres
 typedef void        (*adapter_delay)                (uint32_t period);
 typedef bool        (*sensor_address_out_of_range)  (const uint8_t address);
 //NULL
-typedef uint8_t     (*poll_fbus)                    (uint8_t *addresses, struct FIELD_BUS_INTERFACE *fieldbus_interface, uint8_t loop_var);
-typedef void        (*set_fieldbus_ptr)             (struct FIELD_BUS_INTERFACE *external_fieldbus_interface);
+typedef uint8_t     (*poll_fbus)                    (uint8_t *addresses, struct BUS_INTERFACE *bus_interface, uint8_t loop_var);
+typedef void        (*set_fieldbus_ptr)             (struct BUS_INTERFACE *external_bus_interface);
 typedef void        (*set_delay_ptr)                (delay_function_ptr external_delay);
 typedef bool        (*check_mandatory_dev_settings) (struct PAC1720_device *dev_ptr);
 typedef bool        (*check_peripherals_initialized)(void);

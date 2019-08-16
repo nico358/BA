@@ -7,7 +7,7 @@
 
 #pragma once
 
-/*! CPP guard */
+/* CPP guard */
 #ifdef __cplusplus
 extern "C"
 {
@@ -38,7 +38,7 @@ static const uint8_t max_search_attempts = 10;
 /******************************** Application specific implementation **********************/
 /* Structure definition */
 /*!
- * @brief  Struct that is used to define bus communication interface. 
+ * @brief  Struct that is used to define TWI communication. 
  * 
  * @param init : A pointer to the init function of an application specific bus interface.
  * @param stop : A pointer to the stop communication function of an application specific bus interface.
@@ -49,17 +49,25 @@ static const uint8_t max_search_attempts = 10;
  * @param readAck : A pointer to the read-and-send-ACK function of an application specific bus interface.
  * @param readNak : A pointer to the read-and-send-NACK function of an application specific bus interface.
  * 
- * @note Instantiate this struct in the application and assign the members to implementations of bus communication.
+ * @note Instantiate this struct in the application and assign the members to an implementation of TWI communication.
  */
-struct FIELD_BUS_INTERFACE
+struct BUS_INTERFACE
 {
+    /* Hardware initialisation of TWI module */
     void            (*init)     (void);
+    /* Stop communication */
     void            (*stop)     (void);
+    /* Start communication */
     unsigned char   (*start)    (unsigned char address);
+    /* Repeated start of communication */
     unsigned char   (*repStart) (unsigned char address);
+    /* Starts communication and blocks until ACK received*/
     void            (*startWait)(unsigned char address);
+    /* Writes the data to a slave */
     unsigned char   (*write)    (unsigned char data);
+    /* Reads data from slave and send ACK */
     unsigned char   (*readAck)  (void);
+    /* Reads data from slave and send NACK */
     unsigned char   (*readNak)  (void);
 };
 
@@ -101,14 +109,14 @@ extern struct PAC1720_device        dev_WIREL_MCU;
  * @fn adapter_init_peripherals
  * 
  * @brief Initializes the adapter's interface of bus communication and delay function,
- * provide a pointer to an instance of FIELD_BUS_INTERFACE where members are replaced by
+ * provide a pointer to an instance of BUS_INTERFACE where members are replaced by
  * bus communication functions and a pointer to a delay function.
  * 
- * @param[in] fieldbus_interface : Pointer to instance of struct FIELD_BUS_INTERFACE.
+ * @param[in] bus_interface : Pointer to instance of struct BUS_INTERFACE.
  * @param[in] delay_fptr : Pointer to a platform specific delay function.
  *
  */
-void adapter_init_peripherals(struct FIELD_BUS_INTERFACE *fieldbus_interface, delay_function_ptr delay_fptr);
+void adapter_init_peripherals(struct BUS_INTERFACE *bus_interface, delay_function_ptr delay_fptr);
 
 /*!
  *  @fn adapter_init_PAC1720_from_field
@@ -215,13 +223,13 @@ void adapterResetMeasCounts(struct PAC1720_device *device_ptr);
  * @note Calls all possible sensor addresses and flags a match.
  *
  * @param[in/out] addresses : Pointer to an array with size of 32* sizeof(uint8_t), initialized by 0. Found addresses are written to the array.
- * @param[in] fieldbus_interface : Pointer to an instance of struct FIELD_BUS_INTERFACE to allow bus communication.
+ * @param[in] bus_interface : Pointer to an instance of struct BUS_INTERFACE to allow bus communication.
  * @param[in] delay_fptr : Pointer to a platform specific delay function.
  * 
  * @return Result of API execution status
  * @retval 0 -> Success / != 0 value -> Error 
  */
-uint8_t adapter_find_sensors(uint8_t *addresses, struct FIELD_BUS_INTERFACE *fieldbus_interface, delay_function_ptr delay_fptr);
+uint8_t adapter_find_sensors(uint8_t *addresses, struct BUS_INTERFACE *bus_interface, delay_function_ptr delay_fptr);
 
 /*!
  * @fn debug_print_measurements_PAC1720PAC1720

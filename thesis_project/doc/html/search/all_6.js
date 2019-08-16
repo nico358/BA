@@ -1,16 +1,10 @@
 var searchData=
 [
-  ['pac1720_5fch_5fconfig',['PAC1720_CH_config',['../struct_p_a_c1720___c_h__config.html',1,'']]],
-  ['pac1720_5fch_5finternal',['PAC1720_ch_internal',['../struct_p_a_c1720__ch__internal.html',1,'']]],
-  ['pac1720_5fch_5fmeasurements',['PAC1720_CH_measurements',['../struct_p_a_c1720___c_h__measurements.html',1,'']]],
-  ['pac1720_5fdefinitions_2eh',['PAC1720_definitions.h',['../_p_a_c1720__definitions_8h.html',1,'']]],
-  ['pac1720_5fdevice',['PAC1720_device',['../struct_p_a_c1720__device.html',1,'']]],
-  ['pac1720_5fdriver_2ec',['PAC1720_driver.c',['../_p_a_c1720__driver_8c.html',1,'']]],
-  ['pac1720_5ffptr',['PAC1720_fptr',['../group__driver.html#ga0a5a7b2dcca825273ebe352610478888',1,'PAC1720_definitions.h']]],
-  ['pac1720_5finternal',['PAC1720_internal',['../struct_p_a_c1720__internal.html',1,'']]],
-  ['pac1720_5fmeas_5finternal',['PAC1720_meas_internal',['../struct_p_a_c1720__meas__internal.html',1,'']]],
-  ['peripherals_5fnull_5fpointer_5fcheck',['peripherals_null_pointer_check',['../group__driver.html#ga466da42f54942b3e6840f0f201610e1d',1,'PAC1720_driver.c']]],
-  ['poll_5ffbus',['poll_fbus',['../group__adapter.html#gae660d02606bcb1a8598d4ebdd16afa0a',1,'adapter_PAC1720.c']]],
-  ['print_5fmeasurements_5fpac1720',['print_measurements_PAC1720',['../group__adapter.html#gab2a9882a532e95d229f792d71d0250f5',1,'adapter_PAC1720.c']]],
-  ['print_5fraw_5fmeasurements_5fpac1720',['print_raw_measurements_PAC1720',['../group__adapter.html#ga2fafa881423662801d18f9387162492a',1,'adapter_PAC1720.c']]]
+  ['i2c_5fread',['I2C_READ',['../group__adapter.html#gab5c0fbe837494c5f9130a5914854250d',1,'adapter_PAC1720.h']]],
+  ['i2c_5fwrite',['I2C_WRITE',['../group__adapter.html#ga9536bf85bced4f4e549a82fb18eb6140',1,'adapter_PAC1720.h']]],
+  ['init_5fdevice_5fpac1720_5ffrom_5ffield',['init_device_PAC1720_from_field',['../group__driver.html#ga6b19497ec2e520e57fbd39ef6db8d29d',1,'PAC1720_driver.c']]],
+  ['init_5fdevice_5fpac1720_5fuser_5fdefined',['init_device_PAC1720_user_defined',['../group__driver.html#ga1a362171fca2c809a377e04b48360db4',1,'PAC1720_driver.c']]],
+  ['internal_5fbus_5finterface',['internal_bus_interface',['../group__adapter.html#ga2f22e8053e5c860aebf194856f0dce20',1,'adapter_PAC1720.c']]],
+  ['internal_5fdelay',['internal_delay',['../group__adapter.html#gaec6c5367d9003216fd1b29dd0e9a7bed',1,'adapter_PAC1720.c']]],
+  ['is_5fnegative_5fvalue',['is_negative_value',['../group__driver.html#gacd4d83074a12fa8899ab47974cd7bb88',1,'PAC1720_driver.c']]]
 ];
