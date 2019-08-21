@@ -6,7 +6,8 @@
     each MCU on the embedded board and save the received data.
     The scmcu thread controls the MCU, which causes the FPGA to switch
     its state. The scmon activates the measurement function
-    on the monitor MCU and receives the data. The third thread saves this.
+    on the monitor MCU and receives the measurement data. The third thread 
+    saves this. Further, the data can be formatted and plots can be made if desired.
 """
 
 import convert.storage.threaded_storage     as ts
@@ -16,8 +17,8 @@ from convert.meas_processor                 import MeasProcessor
 # Define the path where the data is stored and the communication parameters.
 FOLDERPATH              = 'meas/test/' # Folder to store the measurement
 FILEPATH                = '400Hz10mV2s' # File to store the measurement
-PORT_MON                =  'COM26' # COM port monitor MCU
-PORT_MCU                =  'COM22' # COM port controller MCU
+PORT_MON                =  'COM26' # COM port of monitor MCU serial connection
+PORT_MCU                =  'COM22' # COM port of controller MCU serial connection
 BAUDRATE                = 115200
 # The signals controlling the monitor MCU
 START_MONITOR_ALL       = 'A'
@@ -34,16 +35,24 @@ SHUT_ON_FPGA_CMD        = 'C'
 SHUT_OFF_FPGA_CMD       = 'c'
 TESTMODE_FPGA_CMD       = 'T'
 LEDFLASH_FPGA_CMD       = 'L'
+# Specifies the layout of the plot
+PLOT_SUBPLOTS           = 1
+PLOT_ALL_IN_ONE         = 2
+PLOT_BOTH               = 3
 
 def formatData():
-    """ The stored data is processed within this method.
-        The parameters affect the layout of the result.
-        The paths and time limit are mandatory parameters
+    """ The stored data is processed and plotted by this function.
+        The function parameters affect the layout of the results.
+        The 'path' and 'meas_time' attributes are mandatory parameters
         as they tell the module where the data is to be
         stored and which time period underlies the plot.
+        'plotoverlay' specifies which layout is chosen for the plot and
+        'showplot' specifies whether the plot is to be shown after creation.
+        'meas_id' will be written to the plot title.
     """
-    # Instanciate object
-    mp = MeasProcessor(folderpath=FOLDERPATH, filepath=FILEPATH, meas_id='1', meas_time=time_limit, plotoverlay=4, showplot=False)
+    # Instanciate class object, 'plotoverlay' can be assigned to 1 (three subplots in a single frame) 
+    # and 2 (draw all graphs in one plot) or 3 (plot both layouts)
+    mp = MeasProcessor(folderpath=FOLDERPATH, filepath=FILEPATH, meas_id='1', meas_time=time_limit, plotoverlay=PLOT_BOTH, showplot=False)
     # Execute data processing
     mp.processFileByLine()
 
@@ -75,7 +84,7 @@ if __name__ == "__main__":
             pass
         ts.stopThreads(threads)
 
-        # Comment out the method call in order to just store the received data without formatting
+        # Comment out the function call in order to just store the received data without formatting
         #formatData()
 
         # Set sleep period between loops
