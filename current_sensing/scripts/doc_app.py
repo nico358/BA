@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
-"""This module is the top of the current measurement documentation
+""" This module is the top of the current measurement documentation
     all other modules contained in the script folder are utilized here.
-    The main function starts the threads that communicate with
+    The main method starts the threads that communicate with
     each MCU on the embedded board and save the received data.
-    The scmcu thread controls the MCU, which puts the FPGA in the
-    desired state. The scmon activates the measurement function
+    The scmcu thread controls the MCU, which causes the FPGA to switch
+    its state. The scmon activates the measurement function
     on the monitor MCU and receives the data. The third thread saves this.
 """
 
@@ -36,7 +36,7 @@ TESTMODE_FPGA_CMD       = 'T'#
 LEDFLASH_FPGA_CMD       = 'L'#
 
 def formatData():
-    """The stored data is processed within this function.
+    """ The stored data is processed within this method.
         The parameters affect the layout of the result.
         The paths and time limit are mandatory parameters
         as they tell the module where the data is to be
@@ -64,7 +64,7 @@ if __name__ == "__main__":
         scmcu = ts.SerialControllerMcu(port=PORT_MCU, baudrate=BAUDRATE, data=mcu_data)
         sc = ts.StorageController(folderpath=FOLDERPATH, filepath=FILEPATH)
         scmon = ts.SerialControllerMon(port=PORT_MON, baudrate=BAUDRATE, data=START_MON_FPGA)
-        # List for thread start function
+        # List for thread start method
         threads = [scmon, sc, scmcu]
         # Start all threads
         ts.startThreads(threads)
@@ -75,8 +75,8 @@ if __name__ == "__main__":
             pass
         ts.stopThreads(threads)
 
-        # Comment out the function call in order to just store the received data without formatting
-        formatData()
+        # Comment out the method call in order to just store the received data without formatting
+        #formatData()
 
         # Set sleep period between loops
         # timer.timerSleep(2)

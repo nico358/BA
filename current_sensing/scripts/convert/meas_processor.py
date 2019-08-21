@@ -1,15 +1,17 @@
 #!/usr/bin/env python
-"""This module processes measurements stored in a file. It opens the provided filepath and
+""" This module processes measurements stored in a file. It opens the provided filepath and
     reads the data line by line. A specific format for the stored data has to be respected in
     order to allow correct processing. Basically, four lists are used to store measurements
-    temporary and to capture the meta data of the measurement (metadata, current, voltage, power). 
-    The temporary data are written into another file then and the plotter module is called in order to visualize the measurements."""
+    temporary and to capture the meta data of the measurement [[metadata], [current], [voltage], [power]].
+    The temporary data are written into another file then and the plotter module is called in order
+    to visualize the measurements.
+"""
 
 import sys
 from datetime import datetime
 from meas_plotter import MeasPlotter
-from storage.adapter.filestorage_adapter import FileStorageAdapter
 from storage.adapter.exception_handler import ExceptionHandler
+from storage.adapter.filestorage_adapter import FileStorageAdapter
 
 # The list indexes within its container list
 LIST_INDEX_META    = 0
@@ -52,8 +54,9 @@ class MeasProcessor:
     show            = None # Plot is showed or not
 
     def __init__(self, folderpath='meas/', filepath=None, meas_id=None, meas_time=None, plotoverlay=False, showplot=False):
-        """Constructor: folderpath and filepath is required to load a file of measurement data, meas_time is required 
-            for plotting, showplot specifies whether the plot should be shown, plotoverlay specifies the plot format."""
+        """ Constructor: folderpath and filepath is required to load a file of measurement data, meas_time is required
+            for plotting, showplot specifies whether the plot should be shown, plotoverlay specifies the plot format.
+        """
         # Containers that are used to store the data temporary
         self.tmp_meas_ch1 = [[], [], [], []]
         self.tmp_meas_ch2 = [[], [], [], []]
@@ -66,16 +69,18 @@ class MeasProcessor:
         self.show = showplot
 
     def plotFormattedDataToPngFile(self, overlay):
-        """This function instantiates the plot module and 
-            provides the temporary data to the plot."""
+        """ This method instantiates the plot module and
+            provides the temporary data to the plot.
+        """
         filepath_ch1 = self.formatFilepath(self.name_ch1)
         filepath_ch2 = self.formatFilepath(self.name_ch2)
         plotter = MeasPlotter(meas_ch1=self.tmp_meas_ch1, meas_ch2=self.tmp_meas_ch2, folderpath=self.folderpath, filepath1=filepath_ch1, filepath2=filepath_ch2, show=self.show, meas_time=self.meas_time)
         plotter.plotAll(overlay)
 
     def writeFormattedDataToTxtFile(self, tmp_meas_ch, ch_name):
-        """This function instantiates the store module and writes 
-            the processed data to a new file."""
+        """This method instantiates the store module and writes
+           the processed data to a new file.
+        """
         filewriter = FileStorageAdapter()
         # Assemble new file path from channel names
         filepath_ch = self.folderpath + self.formatFilepath(ch_name) + '.txt'
@@ -94,9 +99,10 @@ class MeasProcessor:
         return pathstr
 
     def processFileByLine(self):
-        """This function reads data from a file and formats the readings.
+        """This method reads data from a file and formats the readings.
            The output is a continuous number of measurement results of a specific
-           type such as current temporary stored in lists."""
+           type such as current temporary stored in lists.
+        """
         if not self.filepath is None:
             # Assemble measurement location
             path = self.folderpath + self.filepath + '.txt'
@@ -136,13 +142,15 @@ class MeasProcessor:
             self.plotFormattedDataToPngFile(self.overlay)
 
     def splitStr(self, strg):
-        """Helper function to split a string
-           by whitespace."""
+        """ Helper method to split a string
+            by whitespace.
+        """
         return strg.split(' ')
 
     def setListValues(self, splinter):
-        """This function places the data read from a line in the specified list.
-            Hereby 'splinter' contains a list of splitted data from a line (single measurement)."""
+        """ This method places the data read from a line in the specified list.
+            Hereby 'splinter' contains a list of splitted data from a line (single measurement).
+        """
         # Set the measurement counter in front of a value
         self.tmp_meas_ch1[LIST_INDEX_CURRENT].append(CNTR_DELIMIT + splinter[CNTR_INDEX] + CNTR_DELIMIT)
         # Append actual current value
@@ -164,7 +172,7 @@ class MeasProcessor:
         self.tmp_meas_ch2[LIST_INDEX_POWER].append(float(splinter[CH2_POWER_INDEX]))
 
     def setMetaCh1(self):
-        """This function sets metadata to a measurement from channel 1."""
+        """This method sets metadata to a measurement from channel 1."""
         self.tmp_meas_ch1[LIST_INDEX_META].append(self.name_ch1)
         self.tmp_meas_ch1[LIST_INDEX_META].append(SPACE)
         self.tmp_meas_ch1[LIST_INDEX_META].append(self.meas_id)
@@ -175,7 +183,7 @@ class MeasProcessor:
         self.tmp_meas_ch1[LIST_INDEX_META].append(SPACE)
 
     def setMetaCh2(self):
-        """This function sets metadata to a measurement from channel 2."""
+        """This method sets metadata to a measurement from channel 2."""
         self.tmp_meas_ch2[LIST_INDEX_META].append(self.name_ch2)
         self.tmp_meas_ch2[LIST_INDEX_META].append(SPACE)
         self.tmp_meas_ch2[LIST_INDEX_META].append(self.meas_id)
@@ -186,7 +194,7 @@ class MeasProcessor:
         self.tmp_meas_ch2[LIST_INDEX_META].append(SPACE)
 
     def appendHead(self):
-        """This function prepends delimiters and name of the
+        """This method prepends delimiters and name of the
             seperated records to the data."""
         # Append record header
         self.tmp_meas_ch1[LIST_INDEX_META].append(REC_BEGIN_DELIMIT)
@@ -207,7 +215,7 @@ class MeasProcessor:
         self.tmp_meas_ch2[LIST_INDEX_POWER].append(VAL_BEGIN_DELIMIT)
 
     def appendFoot(self):
-        """This function appends delimiters to the data. """
+        """This method appends delimiters to the data. """
         # Append meas footer
         self.tmp_meas_ch1[LIST_INDEX_CURRENT].append(VAL_END_DELIMIT)
         self.tmp_meas_ch1[LIST_INDEX_VOLTAGE].append(VAL_END_DELIMIT)

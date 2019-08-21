@@ -1,6 +1,7 @@
 #!/usr/bin/env python
-"""This module reads voltage data from a .csv file and calculates current values from it.
-    The results are plotted afterwards."""
+""" This module reads voltage data from a .csv file and calculates current values from it.
+    The results are plotted afterwards.
+"""
 
 import sys
 import matplotlib.pyplot as plt
@@ -19,7 +20,6 @@ INDEX_AVG_CURR = 4
 
 class CsvPlotter:
     """Class that converts and plots voltage values."""
-
     path = None
     folderpath = None
     filepath = None
@@ -29,8 +29,9 @@ class CsvPlotter:
     avg_voltage = None
 
     def __init__(self, folderpath, filepath):
-        """Constructor sets up temprorary lists and identifiers for the plot as well
-            as the filepath where the plot is to be stored."""
+        """ Constructor sets up temprorary lists and identifiers for the plot as well
+            as the filepath where the plot is to be stored.
+        """
         self.tmp_meas = [[], [], [], [], []]
         # Plot entities
         self.tmp_names = ['seconds', 'current', 'diff_voltage', 'avg_diff_voltage', 'avg_current']
@@ -40,8 +41,9 @@ class CsvPlotter:
         self.path = folderpath + filepath + '.CSV'
 
     def processFileByLine(self):
-        """This function reads data line by line and seperates the readings
-            into temporary containers. Afterwards the processed data is plotted."""
+        """ This method reads data line by line and seperates the readings
+            into temporary containers. Afterwards the processed data is plotted.
+        """
         if not self.path is None:
             try:
                 # Readin csv file
@@ -68,8 +70,9 @@ class CsvPlotter:
             self.plotAllNormal()
 
     def calcAverage(self):
-        """This function calculates the average from the list of voltage
-            as well as from the list of current and stores the results in own lists."""
+        """ This method calculates the average from the list of voltage
+            as well as from the list of current and stores the results in own lists.
+        """
         sumV = 0
         for num in self.tmp_meas[INDEX_VOLTAGE]:
             sumV += num
@@ -84,59 +87,60 @@ class CsvPlotter:
         for i in range(len(self.tmp_meas[INDEX_CURRENT])):
             self.tmp_meas[INDEX_AVG_CURR].append(self.avg_current)
         
-
     def calcCurrent(self):
-        """This function calculates the current from the
+        """This method calculates the current from the
             voltage readings and the specified resistance.
             The results are stored in a list."""
         for num in self.tmp_meas[INDEX_VOLTAGE]:
             self.tmp_meas[INDEX_CURRENT].append(num / RESISTANCE)
 
-    
     def plotAllNormal(self):
-        """This function plots the values from all lists into
+        """ This method plots the values from all lists into
             a single plot."""
-        # Set up plot base axes and properties
-        fig, ax1 = plt.subplots(figsize=(10, 5))
-        marker = 'o'
-        ax1.set_xlabel(self.tmp_names[INDEX_TIME])
-        plt.grid(axis='both')
+        try:
+            # Set up plot base axes and properties
+            fig, ax1 = plt.subplots(figsize=(10, 5))
+            marker = 'o'
+            ax1.set_xlabel(self.tmp_names[INDEX_TIME])
+            plt.grid(axis='both')
 
-        # Plot graphs in loop
-        lines = []
-        for i in range(len(self.tmp_meas) -1):
-            lines.append(ax1.plot(self.tmp_meas[INDEX_TIME], self.tmp_meas[i+1], PLOT_COLORS[(i % len(PLOT_COLORS)) -1], marker=marker))
+            # Plot graphs in loop
+            lines = []
+            for i in range(len(self.tmp_meas) -1):
+                lines.append(ax1.plot(self.tmp_meas[INDEX_TIME], self.tmp_meas[i+1], PLOT_COLORS[(i % len(PLOT_COLORS)) -1], marker=marker))
 
-        # Add legend according to graphs
-        ax1.legend([ self.tmp_names[INDEX_CURRENT], self.tmp_names[INDEX_VOLTAGE], self.tmp_names[INDEX_AVG_VOLT] + '=' + str(self.avg_voltage), self.tmp_names[INDEX_AVG_CURR] + '=' + str(self.avg_current) ])
-        plt.setp(lines[0], linewidth=0.8, markersize=1)
-        plt.setp(lines[1], linewidth=0.5, markersize=0.8)
-        plt.setp(lines[2], linewidth=0.2, markersize=0.2)
-        plt.setp(lines[3], linewidth=0.2, markersize=0.2)
-        # Set title and layout
-        fig.tight_layout()
-        plt.title(self.filepath + '.CSV', fontsize=15)
-        plt.subplots_adjust(top=0.88)
-        # Save the plot
-        plt.savefig(self.folderpath + self.filepath + 'normal.png')
-        # Show the plot
-        plt.show()
-
+            # Add legend according to graphs
+            ax1.legend([ self.tmp_names[INDEX_CURRENT], self.tmp_names[INDEX_VOLTAGE], self.tmp_names[INDEX_AVG_VOLT] + '=' + str(self.avg_voltage), self.tmp_names[INDEX_AVG_CURR] + '=' + str(self.avg_current) ])
+            plt.setp(lines[0], linewidth=0.8, markersize=1)
+            plt.setp(lines[1], linewidth=0.5, markersize=0.8)
+            plt.setp(lines[2], linewidth=0.2, markersize=0.2)
+            plt.setp(lines[3], linewidth=0.2, markersize=0.2)
+            # Set title and layout
+            fig.tight_layout()
+            plt.title(self.filepath + '.CSV', fontsize=15)
+            plt.subplots_adjust(top=0.88)
+            # Save the plot
+            plt.savefig(self.folderpath + self.filepath + 'normal.png')
+            # Show the plot
+            plt.show()
+        except (KeyboardInterrupt, ValueError, AssertionError) as e:
+             ExceptionHandler(e, "plotAllNormal")
 
     def formatNumber(self, num):
-        """Helper function to format a reading. Takes the 
-            scientific notation and calculates a floating point value."""
+        """ Helper method to format a reading. Takes the 
+            scientific notation and calculates a floating point value.
+        """
         split = num.split('E')
         mantissa = float(split[0])
         exp = int(split[1])
         return mantissa *10**exp
 
     def formatLine(self, line):
-        """Helper function to replace newline character."""
+        """Helper method to replace newline character."""
         return  "{}".format(line.replace('\n', ''))
 
     def splitStr(self, strg):
-        """Helper function to split string by comma."""
+        """Helper method to split string by comma."""
         return strg.split(',')
 
 
