@@ -1,10 +1,6 @@
 {
 	"folders": [
 		{
-			"name": "thesis_project",
-			"path": "thesis_project"
-		},
-		{
 			"name": "bazel_stage3",
 			"path": "C:\\Users\\thesis\\wsl\\bazel_examples\\cpp-tutorial\\stage3"
 		},
@@ -36,6 +32,9 @@
 		},
 		{
 			"path": "C:\\Users\\thesis\\wsl\\dox"
+		},
+		{
+			"path": "current_sensing"
 		}
 	],
 	"settings": {

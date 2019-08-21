@@ -1,20 +1,27 @@
-"""TODO."""
+""" This module provides an interface for file handling. Several methods are implemented in order to
+    open a file and write data into it.
+"""
+
 import os
 from os.path import join
 from os.path import expanduser
 from exception_handler import ExceptionHandler
 
 class FileStorageAdapter: 
-    """TODO."""
+    """ This class provides methods for file handling."""
 
     file = None 
 
     def __init__(self, file=None):
-        """TODO."""
+        """ The constructor sets the specified path
+            for the file to be handled.
+        """
         self.file = file
 
     def fileIsOpen(self):
-        """TODO."""
+        """ This method returns true if the
+            file handled by the object is open.
+        """
         if self.file == None:
             return False
         if self.file.closed:
@@ -23,12 +30,16 @@ class FileStorageAdapter:
 
     
     def appendPathToHomeDIR(self, path):
-        """TODO."""
+        """ This method returns a specified
+            path appended to $HOMEDIR$.
+        """
         return os.path.join(expanduser("~"), path)
 
 
     def openFile(self, path=None, mode="w+"):
-        """TODO."""
+        """ This method opens a file at the
+            specified path in write mode.
+        """
         if self.file == None and path != None:
             try:
                 self.file = open(path, mode)
@@ -37,7 +48,9 @@ class FileStorageAdapter:
         
 
     def closeFile(self):
-        """TODO."""
+        """ This method closes the actually
+            handled file.
+        """
         if self.file != None:
             try:
                 self.file.close()
@@ -46,7 +59,9 @@ class FileStorageAdapter:
 
 
     def writeToOpenFile(self, data):
-        """TODO."""
+        """ This method writes data to the actually
+            handled file.
+        """
         if self.file != None:
             try:
                 self.file.write(data)
@@ -55,7 +70,9 @@ class FileStorageAdapter:
 
 
     def writeFileWithOpen(self, data, path='None', mode='w+'):
-        """TODO."""
+        """ This method opens a file in write mode and writes
+            the specified data into it.
+        """
         try:
             with open (path, mode) as writer:
                 writer.file.write(data)
@@ -64,7 +81,9 @@ class FileStorageAdapter:
 
 
     def readFileWithOpen(self, path):
-        """TODO."""
+        """ This method opens a file in read mode and returns
+            the contained data.
+        """
         content = None
         try:
             with open (path, "r") as reader:
@@ -75,14 +94,17 @@ class FileStorageAdapter:
         return content
 
     def readFromOpenFile(self):
-        """TODO."""
+        """ This method returns the data contained in an
+            open file.
+        """
         content = None
         if self.file != None:
             content = self.file.read()
         return content
 
     def createFolder(self, fname):
-        """TODO."""
+        """ This method creates a folder at the
+            specified location."""
         if not os.path.exists(fname):
             os.makedirs(fname)
 
