@@ -2,7 +2,7 @@
 The Current Measurement Library provides an API for configuration and query of the PAC1720 current sensors. Multiple sensors can be controlled by means of the library. It is designed to be portable an can be adapted to an individual application by the adapter module. 
 
 ## Introduction
-The driver module of the library contains its core functionality such as calculation of the sensor values. The adapter serves as wrapper for the driver and can be changed to the user's need in order to fit the library to an application. A generic communication interface is provided by the adapter module that allows the driver to communicate with the sensors by a serial bus such as the TWI. Therefore an implementation of the bus communication interface is to be provided to the adapter. After initialization of the adapter module the measurements can be triggered and the results read from the driver's interface.
+The driver module of the library contains its core functionality such as calculation of the sensor values. The adapter serves as wrapper for the driver and can be changed to the user's need in order to fit the library to an application. A generic communication interface is provided by the adapter module that allows the driver to communicate with the sensors by a serial bus such as the TWI. Therefore an implementation of the bus communication interface is to be provided to the adapter. After initialization of the adapter module the measurements can be triggered and the results read from the relevant interface.
 
 ## Dependencies
 
@@ -20,7 +20,7 @@ Dependencies of the Current Measurement API used at its development:
 
 ### Code Documentation
 
-The code is documented using Doxygen. See relevant files in folder doc.
+The code has been documented using Doxygen. Open the file index.html in folder doc/html to get an overview about the project.
 
 ## Required configuration
 
