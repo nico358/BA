@@ -14,33 +14,33 @@ from convert.storage.adapter.timer.timer    import Timer
 from convert.meas_processor                 import MeasProcessor
 
 # Define the path where the data is stored and the communication parameters.
-FOLDERPATH              = 'meas/test/'
-FILEPATH                = '400Hz10mV2s'
-PORT_MON                =  'COM26'#'/dev/ttyS26'#
-PORT_MCU                =  'COM22'#'/dev/ttyS22'#
+FOLDERPATH              = 'meas/test/' # Folder to store the measurement
+FILEPATH                = '400Hz10mV2s' # File to store the measurement
+PORT_MON                =  'COM26' # COM port monitor MCU
+PORT_MCU                =  'COM22' # COM port controller MCU
 BAUDRATE                = 115200
-# The signals to the monitor MCU
+# The signals controlling the monitor MCU
 START_MONITOR_ALL       = 'A'
-START_MON_USB           = 'U' 
+START_MON_USB           = 'U'
 START_MON_FPGA          = 'F'
 START_MON_WIREL         = 'W'
 PAUSE_MON_CMD           = 'p'
 STOP_MON_CMD            = 'q'
 # The signals to the MCU that controls the FPGA.
-SUSPEND_FPGA_CMD        = 'S'#
-UNSUSPEND_FPGA_CMD      = 's'#
-RESET_FPGA_CMD          = 'R'#
-SHUT_ON_FPGA_CMD        = 'C'#
-SHUT_OFF_FPGA_CMD       = 'c'#
-TESTMODE_FPGA_CMD       = 'T'#
-LEDFLASH_FPGA_CMD       = 'L'#
+SUSPEND_FPGA_CMD        = 'S'
+UNSUSPEND_FPGA_CMD      = 's'
+RESET_FPGA_CMD          = 'R'
+SHUT_ON_FPGA_CMD        = 'C'
+SHUT_OFF_FPGA_CMD       = 'c'
+TESTMODE_FPGA_CMD       = 'T'
+LEDFLASH_FPGA_CMD       = 'L'
 
 def formatData():
     """ The stored data is processed within this method.
         The parameters affect the layout of the result.
         The paths and time limit are mandatory parameters
         as they tell the module where the data is to be
-        stored and which time period is underlying the plot.
+        stored and which time period underlies the plot.
     """
     # Instanciate object
     mp = MeasProcessor(folderpath=FOLDERPATH, filepath=FILEPATH, meas_id='1', meas_time=time_limit, plotoverlay=4, showplot=False)
