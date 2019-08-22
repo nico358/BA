@@ -34,6 +34,10 @@ SHUT_ON_FPGA_CMD        = 'C'
 SHUT_OFF_FPGA_CMD       = 'c'
 TESTMODE_FPGA_CMD       = 'T'
 LEDFLASH_FPGA_CMD       = 'L'
+# Specifies the layout of the plot
+PLOT_SUBPLOTS           = 1
+PLOT_ALL_IN_ONE         = 2
+PLOT_BOTH               = 3
 
 def formatData():
     """ The stored data is processed within this method.
@@ -42,8 +46,9 @@ def formatData():
         as they tell the module where the data is to be
         stored and which time period underlies the plot.
     """
-    # Instanciate object
-    mp = MeasProcessor(folderpath=FOLDERPATH, filepath=FILEPATH, meas_id='1', meas_time=time_limit, plotoverlay=4, showplot=False)
+    # Instanciate class object, 'plotoverlay' can be assigned to 1 (three subplots in a single frame) 
+    # and 2 (draw all graphs in one plot) or 3 (plot both layouts)
+    mp = MeasProcessor(folderpath=FOLDERPATH, filepath=FILEPATH, meas_id='1', meas_time=time_limit, plotoverlay=PLOT_BOTH, showplot=False)
     # Execute data processing
     mp.processFileByLine()
 
@@ -52,10 +57,10 @@ if __name__ == "__main__":
     # Set time limit for monitoring
     time_limit = 2
     # Set desired control signal
-    # mcu_data = [TESTMODE_FPGA_CMD, LEDFLASH_FPGA_CMD]
+    mcu_data = [TESTMODE_FPGA_CMD, LEDFLASH_FPGA_CMD]
     # mcu_data = UNSUSPEND_FPGA_CMD
     # mcu_data = SUSPEND_FPGA_CMD
-    mcu_data = RESET_FPGA_CMD
+    # mcu_data = RESET_FPGA_CMD
     # mcu_data = SHUT_ON_FPGA_CMD
 
     # Execute the process one ore more times
@@ -76,7 +81,7 @@ if __name__ == "__main__":
         ts.stopThreads(threads)
 
         # Comment out the method call in order to just store the received data without formatting
-        #formatData()
+        formatData()
 
         # Set sleep period between loops
         # timer.timerSleep(2)
