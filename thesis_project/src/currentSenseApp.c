@@ -47,17 +47,19 @@ int main(void)
             if(state == 3 || state == 6){
                 meas_fail = adapter_get_measurements_PAC1720(&dev_USB_MON);
                 if(!meas_fail)  
-                print_measurements_PAC1720(&dev_USB_MON, &debugWriteString);
+                print_measurements_PAC1720(&dev_USB_MON, &debugWriteString, elapsed_ms);
             }
             if(state == 4 || state == 6){
                 meas_fail = adapter_get_measurements_PAC1720(&dev_FPGA_VCC);
                 if(!meas_fail)
-                    print_measurements_PAC1720(&dev_FPGA_VCC, &debugWriteString);
+                    print_measurements_PAC1720(&dev_FPGA_VCC, &debugWriteString, elapsed_ms);
+                    // debug_PAC1720(&dev_FPGA_VCC, &debugWriteString);
             }   
             if(state == 5 || state == 6){ 
                 meas_fail = adapter_get_measurements_PAC1720(&dev_WIREL_MCU);
                 if(!meas_fail)
-                print_measurements_PAC1720(&dev_WIREL_MCU, &debugWriteString);
+                    print_measurements_PAC1720(&dev_WIREL_MCU, &debugWriteString, elapsed_ms);
+                    // debug_PAC1720(&dev_WIREL_MCU, &debugWriteString);
             }
         }
         /* Reset measurement counter when leaving measurement mode */

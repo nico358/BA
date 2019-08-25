@@ -72,6 +72,11 @@ void reset_counter(void)
     TIM16_WriteTCNT1(0);
 }
 
+void reset_timer(void)
+{
+    elapsed_ms = 0;
+}
+
 void timer_init(void){
     wdt_disable();
 	/* Clear TIM1 Bit in Power Reduction Register */

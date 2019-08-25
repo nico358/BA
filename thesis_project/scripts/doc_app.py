@@ -14,9 +14,9 @@ from convert.storage.adapter.timer.timer    import Timer
 from convert.meas_processor                 import MeasProcessor
 
 # Define the path where the data is stored and the communication parameters.
-FOLDERPATH              = 'meas/test/' # Folder to store the measurement
-FILEPATH                = '400Hz10mV2s' # File to store the measurement
-PORT_MON                =  'COM26' # COM port monitor MCU
+FOLDERPATH              = 'meas/resetFPGA/' # Folder to store the measurement
+FILEPATH                = '12Hz80mV2s' # File to store the measurement
+PORT_MON                =  'COM26' # COM port monitor MCU 'ttyS26' #
 PORT_MCU                =  'COM22' # COM port controller MCU
 BAUDRATE                = 115200
 # The signals controlling the monitor MCU
@@ -57,10 +57,10 @@ if __name__ == "__main__":
     # Set time limit for monitoring
     time_limit = 2
     # Set desired control signal
-    mcu_data = [TESTMODE_FPGA_CMD, LEDFLASH_FPGA_CMD]
+    # mcu_data = [TESTMODE_FPGA_CMD, LEDFLASH_FPGA_CMD]
     # mcu_data = UNSUSPEND_FPGA_CMD
     # mcu_data = SUSPEND_FPGA_CMD
-    # mcu_data = RESET_FPGA_CMD
+    mcu_data = RESET_FPGA_CMD
     # mcu_data = SHUT_ON_FPGA_CMD
 
     # Execute the process one ore more times
@@ -68,17 +68,23 @@ if __name__ == "__main__":
         # Instanciate the threads and provide control signals
         scmcu = ts.SerialControllerMcu(port=PORT_MCU, baudrate=BAUDRATE, data=mcu_data)
         sc = ts.StorageController(folderpath=FOLDERPATH, filepath=FILEPATH)
-        scmon = ts.SerialControllerMon(port=PORT_MON, baudrate=BAUDRATE, data=START_MON_FPGA)
+        scmon = ts.SerialControllerMon(port=PORT_MON, baudrate=BAUDRATE, data=START_MON_WIREL)
         # List for thread start method
-        threads = [scmon, sc, scmcu]
+        # threads = [scmon, sc, scmcu]
+        threads = [scmon, sc]
         # Start all threads
         ts.startThreads(threads)
         # Start timer
         timer = Timer()
+        # timer.timerSleep(0.2)
+        # scmcu.start()
         # Check if time limit is reached and stop threads
         while timer.get_elapsed_time() < time_limit:
             pass
+
         ts.stopThreads(threads)
+        # scmcu.flag = False
+        # scmcu.join()
 
         # Comment out the method call in order to just store the received data without formatting
         formatData()

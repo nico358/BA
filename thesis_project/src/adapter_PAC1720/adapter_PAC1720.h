@@ -241,7 +241,7 @@ uint8_t adapter_find_sensors(uint8_t *addresses, struct BUS_INTERFACE *bus_inter
  * @param[in] debug_fptr : Pointer to a aplication specific debug function.
  * 
  */
-void print_measurements_PAC1720(struct PAC1720_device * dev, debugWriteLine_fptr debug_fptr);
+void print_measurements_PAC1720(struct PAC1720_device * dev, debugWriteLine_fptr debug_fptr, uint16_t time);
 
 /*!
  * @fn print_raw_measurements_PAC1720

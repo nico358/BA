@@ -131,6 +131,10 @@ int8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gr
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__driver.html#ga2b87f00b7feba7b29560bea923cae3ba">sensor_is_in_sleep</a> (struct <a class="el" href="struct_p_a_c1720__device.html">PAC1720_device</a> *device_ptr)</td></tr>
 <tr class="memdesc:ga2b87f00b7feba7b29560bea923cae3ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return sensors ooperational state. <br /></td></tr>
 <tr class="separator:ga2b87f00b7feba7b29560bea923cae3ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9ee7a1cc1e08daa483fe8821ef7101db"><td class="memItemLeft" align="right" valign="top"><a id="ga9ee7a1cc1e08daa483fe8821ef7101db"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__driver.html#ga9ee7a1cc1e08daa483fe8821ef7101db">driver_sleep</a> (struct <a class="el" href="struct_p_a_c1720__device.html">PAC1720_device</a> *device_ptr, uint16_t milliseconds)</td></tr>
+<tr class="memdesc:ga9ee7a1cc1e08daa483fe8821ef7101db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delays the program execution. <br /></td></tr>
+<tr class="separator:ga9ee7a1cc1e08daa483fe8821ef7101db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaad5c5aad09ed60543ad2049d4d762e5e"><td class="memItemLeft" align="right" valign="top"><a id="gaad5c5aad09ed60543ad2049d4d762e5e"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__driver.html#gaad5c5aad09ed60543ad2049d4d762e5e">check_name_opt</a> (struct <a class="el" href="struct_p_a_c1720__device.html">PAC1720_device</a> *device_ptr)</td></tr>
 <tr class="memdesc:gaad5c5aad09ed60543ad2049d4d762e5e"><td class="mdescLeft">&#160;</td><td class="mdescRight">If no name is provided by user the default name is set to the name options in sensor struct instance. <br /></td></tr>
@@ -403,38 +407,27 @@ uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:ga52ccf92c3794cab5d73c66af5bcdddb7"><td class="memItemLeft" align="right" valign="top"><a id="ga52ccf92c3794cab5d73c66af5bcdddb7"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>conversion_done</b></td></tr>
+<tr class="memitem:ga52ccf92c3794cab5d73c66af5bcdddb7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__driver.html#ga52ccf92c3794cab5d73c66af5bcdddb7">conversion_done</a></td></tr>
 <tr class="separator:ga52ccf92c3794cab5d73c66af5bcdddb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga642ad98f7039dd75a2279ed7c8e8ccfb"><td class="memItemLeft" align="right" valign="top"><a id="ga642ad98f7039dd75a2279ed7c8e8ccfb"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>source_voltage_high_limit</b></td></tr>
+<tr class="memitem:ga642ad98f7039dd75a2279ed7c8e8ccfb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__driver.html#ga642ad98f7039dd75a2279ed7c8e8ccfb">source_voltage_high_limit</a></td></tr>
 <tr class="separator:ga642ad98f7039dd75a2279ed7c8e8ccfb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaf9e6bbeb0d03a2b8376324060aae3292"><td class="memItemLeft" align="right" valign="top"><a id="gaf9e6bbeb0d03a2b8376324060aae3292"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>source_voltage_low_limit</b></td></tr>
+<tr class="memitem:gaf9e6bbeb0d03a2b8376324060aae3292"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__driver.html#gaf9e6bbeb0d03a2b8376324060aae3292">source_voltage_low_limit</a></td></tr>
 <tr class="separator:gaf9e6bbeb0d03a2b8376324060aae3292"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga2b728caf8b7be99048fcf172fc68c473"><td class="memItemLeft" align="right" valign="top"><a id="ga2b728caf8b7be99048fcf172fc68c473"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>sense_voltage_high_limit</b></td></tr>
+<tr class="memitem:ga2b728caf8b7be99048fcf172fc68c473"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__driver.html#ga2b728caf8b7be99048fcf172fc68c473">sense_voltage_high_limit</a></td></tr>
 <tr class="separator:ga2b728caf8b7be99048fcf172fc68c473"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga9611cd116c965eaee8b2ad068dc9448c"><td class="memItemLeft" align="right" valign="top"><a id="ga9611cd116c965eaee8b2ad068dc9448c"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>sense_voltage_low_limit</b></td></tr>
+<tr class="memitem:ga9611cd116c965eaee8b2ad068dc9448c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__driver.html#ga9611cd116c965eaee8b2ad068dc9448c">sense_voltage_low_limit</a></td></tr>
 <tr class="separator:ga9611cd116c965eaee8b2ad068dc9448c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga7aaaa24372c0ec0a7fee00badac28521"><td class="memItemLeft" align="right" valign="top"><a id="ga7aaaa24372c0ec0a7fee00badac28521"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>SOURCE_VOLTAGE</b></td></tr>
+<tr class="memitem:ga7aaaa24372c0ec0a7fee00badac28521"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__driver.html#ga7aaaa24372c0ec0a7fee00badac28521">SOURCE_VOLTAGE</a></td></tr>
 <tr class="separator:ga7aaaa24372c0ec0a7fee00badac28521"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gab2c4e0ccdb6bbceb92b39ae2bce5bf4a"><td class="memItemLeft" align="right" valign="top"><a id="gab2c4e0ccdb6bbceb92b39ae2bce5bf4a"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>SENSE_VOLTAGE</b></td></tr>
+<tr class="memitem:gab2c4e0ccdb6bbceb92b39ae2bce5bf4a"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__driver.html#gab2c4e0ccdb6bbceb92b39ae2bce5bf4a">SENSE_VOLTAGE</a></td></tr>
 <tr class="separator:gab2c4e0ccdb6bbceb92b39ae2bce5bf4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga33bc6cf6e364f146941779b88bf4163d"><td class="memItemLeft" align="right" valign="top"><a id="ga33bc6cf6e364f146941779b88bf4163d"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>CURRENT</b></td></tr>
+<tr class="memitem:ga33bc6cf6e364f146941779b88bf4163d"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__driver.html#ga33bc6cf6e364f146941779b88bf4163d">CURRENT</a></td></tr>
 <tr class="separator:ga33bc6cf6e364f146941779b88bf4163d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga8a9794fa4c6a69b457d1eb04b017ef1e"><td class="memItemLeft" align="right" valign="top"><a id="ga8a9794fa4c6a69b457d1eb04b017ef1e"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>POWER</b></td></tr>
+<tr class="memitem:ga8a9794fa4c6a69b457d1eb04b017ef1e"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__driver.html#ga8a9794fa4c6a69b457d1eb04b017ef1e">POWER</a></td></tr>
 <tr class="separator:ga8a9794fa4c6a69b457d1eb04b017ef1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga49e9b5af9568f77bc7160d3aa2895383"><td class="memItemLeft" align="right" valign="top"><a id="ga49e9b5af9568f77bc7160d3aa2895383"></a>
-struct <a class="el" href="struct_p_a_c1720__meas__internal.html">PAC1720_meas_internal</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>meas_internal</b></td></tr>
+<tr class="memitem:ga49e9b5af9568f77bc7160d3aa2895383"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="struct_p_a_c1720__meas__internal.html">PAC1720_meas_internal</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__driver.html#ga49e9b5af9568f77bc7160d3aa2895383">meas_internal</a></td></tr>
 <tr class="separator:ga49e9b5af9568f77bc7160d3aa2895383"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga22533dfd6296ee4496f3f226f9e6976b"><td class="memItemLeft" align="right" valign="top"><a id="ga22533dfd6296ee4496f3f226f9e6976b"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>meas_cnt</b></td></tr>
+<tr class="memitem:ga22533dfd6296ee4496f3f226f9e6976b"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__driver.html#ga22533dfd6296ee4496f3f226f9e6976b">meas_cnt</a></td></tr>
 <tr class="separator:ga22533dfd6296ee4496f3f226f9e6976b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf9be1b36f9b47706f73428c89d36bd42"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__driver.html#gaf9be1b36f9b47706f73428c89d36bd42">CH_name_opt</a></td></tr>
 <tr class="separator:gaf9be1b36f9b47706f73428c89d36bd42"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -446,39 +439,31 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>meas_cnt</b></td>
 <tr class="separator:gaa8085a59f53cb11c8634a03107681990"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga67002a062130ad6e3d34986d40fad491"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__driver.html#ga67002a062130ad6e3d34986d40fad491">CH_current_sense_FSR_reg</a></td></tr>
 <tr class="separator:ga67002a062130ad6e3d34986d40fad491"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga46955def7809a7bea15d7aaee0db04c5"><td class="memItemLeft" align="right" valign="top"><a id="ga46955def7809a7bea15d7aaee0db04c5"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>CH_current_sense_high_limit_reg</b></td></tr>
+<tr class="memitem:ga46955def7809a7bea15d7aaee0db04c5"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__driver.html#ga46955def7809a7bea15d7aaee0db04c5">CH_current_sense_high_limit_reg</a></td></tr>
 <tr class="separator:ga46955def7809a7bea15d7aaee0db04c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gab09b362cb1fa7940b2d02173410f2cce"><td class="memItemLeft" align="right" valign="top"><a id="gab09b362cb1fa7940b2d02173410f2cce"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>CH_current_sense_low_limit_reg</b></td></tr>
+<tr class="memitem:gab09b362cb1fa7940b2d02173410f2cce"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__driver.html#gab09b362cb1fa7940b2d02173410f2cce">CH_current_sense_low_limit_reg</a></td></tr>
 <tr class="separator:gab09b362cb1fa7940b2d02173410f2cce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga808bda4aba0749dd99a5cf229873a7d9"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__driver.html#ga808bda4aba0749dd99a5cf229873a7d9">CH_source_voltage_sampling_time_reg</a></td></tr>
 <tr class="separator:ga808bda4aba0749dd99a5cf229873a7d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga66317d36ee72421b9eb39e01b196330c"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__driver.html#ga66317d36ee72421b9eb39e01b196330c">CH_source_voltage_sampling_average_reg</a></td></tr>
 <tr class="separator:ga66317d36ee72421b9eb39e01b196330c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga40d21071b8574a9cecf433135a40c04c"><td class="memItemLeft" align="right" valign="top"><a id="ga40d21071b8574a9cecf433135a40c04c"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>CH_source_voltage_high_limit_reg</b></td></tr>
+<tr class="memitem:ga40d21071b8574a9cecf433135a40c04c"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__driver.html#ga40d21071b8574a9cecf433135a40c04c">CH_source_voltage_high_limit_reg</a></td></tr>
 <tr class="separator:ga40d21071b8574a9cecf433135a40c04c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga0bdfaf28c77ef4c8e18c7f5c9f9fc59f"><td class="memItemLeft" align="right" valign="top"><a id="ga0bdfaf28c77ef4c8e18c7f5c9f9fc59f"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>CH_source_voltage_low_limit_reg</b></td></tr>
+<tr class="memitem:ga0bdfaf28c77ef4c8e18c7f5c9f9fc59f"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__driver.html#ga0bdfaf28c77ef4c8e18c7f5c9f9fc59f">CH_source_voltage_low_limit_reg</a></td></tr>
 <tr class="separator:ga0bdfaf28c77ef4c8e18c7f5c9f9fc59f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga46eb1c4b45f18da3c41325faffa92f9f"><td class="memItemLeft" align="right" valign="top"><a id="ga46eb1c4b45f18da3c41325faffa92f9f"></a>
-struct <a class="el" href="struct_p_a_c1720__ch__internal.html">PAC1720_ch_internal</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>ch_internal</b></td></tr>
+<tr class="memitem:ga46eb1c4b45f18da3c41325faffa92f9f"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="struct_p_a_c1720__ch__internal.html">PAC1720_ch_internal</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__driver.html#ga46eb1c4b45f18da3c41325faffa92f9f">ch_internal</a></td></tr>
 <tr class="separator:ga46eb1c4b45f18da3c41325faffa92f9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga7c20db155a03b7bb3e6e9c8e73f6936d"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__driver.html#ga7c20db155a03b7bb3e6e9c8e73f6936d">DEV_name_opt</a></td></tr>
 <tr class="separator:ga7c20db155a03b7bb3e6e9c8e73f6936d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga381d1f2a3a83bef34d75f1fc11ce5985"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__driver.html#ga381d1f2a3a83bef34d75f1fc11ce5985">DEV_sensor_address</a></td></tr>
 <tr class="separator:ga381d1f2a3a83bef34d75f1fc11ce5985"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaf394072063ae499107e489802f61deaa"><td class="memItemLeft" align="right" valign="top"><a id="gaf394072063ae499107e489802f61deaa"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>DEV_configuration_reg</b></td></tr>
+<tr class="memitem:gaf394072063ae499107e489802f61deaa"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__driver.html#gaf394072063ae499107e489802f61deaa">DEV_configuration_reg</a></td></tr>
 <tr class="separator:gaf394072063ae499107e489802f61deaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga10adc025f7819eda0bc1b1c505abef05"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__driver.html#ga10adc025f7819eda0bc1b1c505abef05">DEV_conversion_rate_reg</a></td></tr>
 <tr class="separator:ga10adc025f7819eda0bc1b1c505abef05"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gab2508d29cb6f7e05e9855cea6a6863ef"><td class="memItemLeft" align="right" valign="top"><a id="gab2508d29cb6f7e05e9855cea6a6863ef"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>DEV_one_shot_reg</b></td></tr>
+<tr class="memitem:gab2508d29cb6f7e05e9855cea6a6863ef"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__driver.html#gab2508d29cb6f7e05e9855cea6a6863ef">DEV_one_shot_reg</a></td></tr>
 <tr class="separator:gab2508d29cb6f7e05e9855cea6a6863ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga03d8effe6bbba7f1fa7516ee80bc1f77"><td class="memItemLeft" align="right" valign="top"><a id="ga03d8effe6bbba7f1fa7516ee80bc1f77"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>DEV_mask_reg</b></td></tr>
+<tr class="memitem:ga03d8effe6bbba7f1fa7516ee80bc1f77"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__driver.html#ga03d8effe6bbba7f1fa7516ee80bc1f77">DEV_mask_reg</a></td></tr>
 <tr class="separator:ga03d8effe6bbba7f1fa7516ee80bc1f77"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaca1e9392455d02e76179264e5738a129"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="struct_p_a_c1720___c_h__config.html">PAC1720_CH_config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__driver.html#gaca1e9392455d02e76179264e5738a129">DEV_CH1_conf</a></td></tr>
 <tr class="separator:gaca1e9392455d02e76179264e5738a129"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -488,8 +473,7 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>DEV_mask_reg</b></
 <tr class="separator:gada1a661d41e52cb0ec773f05a1e0fb82"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga45f6422eaef0f7f65a17d1d77513ba2f"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="struct_p_a_c1720___c_h__measurements.html">PAC1720_CH_measurements</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__driver.html#ga45f6422eaef0f7f65a17d1d77513ba2f">DEV_CH2_measurements</a></td></tr>
 <tr class="separator:ga45f6422eaef0f7f65a17d1d77513ba2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gade382707b3e91e6fc08eba477cb0e1de"><td class="memItemLeft" align="right" valign="top"><a id="gade382707b3e91e6fc08eba477cb0e1de"></a>
-struct <a class="el" href="struct_p_a_c1720__internal.html">PAC1720_internal</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>internal</b></td></tr>
+<tr class="memitem:gade382707b3e91e6fc08eba477cb0e1de"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="struct_p_a_c1720__internal.html">PAC1720_internal</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__driver.html#gade382707b3e91e6fc08eba477cb0e1de">internal</a></td></tr>
 <tr class="separator:gade382707b3e91e6fc08eba477cb0e1de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
@@ -613,7 +597,7 @@ PAC1720 Application constants</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00203">203</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00205">205</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
 
 </div>
 </div>
@@ -640,7 +624,7 @@ PAC1720 Application constants</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00197">197</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00199">199</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
 
 </div>
 </div>
@@ -672,7 +656,7 @@ PAC1720 Application constants</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_p_a_c1720__driver_8c_source.html#l01296">1296</a> of file <a class="el" href="_p_a_c1720__driver_8c_source.html">PAC1720_driver.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__driver_8c_source.html#l01323">1323</a> of file <a class="el" href="_p_a_c1720__driver_8c_source.html">PAC1720_driver.c</a>.</p>
 
 </div>
 </div>
@@ -703,7 +687,7 @@ PAC1720 Application constants</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_p_a_c1720__driver_8c_source.html#l01304">1304</a> of file <a class="el" href="_p_a_c1720__driver_8c_source.html">PAC1720_driver.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__driver_8c_source.html#l01331">1331</a> of file <a class="el" href="_p_a_c1720__driver_8c_source.html">PAC1720_driver.c</a>.</p>
 
 </div>
 </div>
@@ -728,7 +712,7 @@ PAC1720 Application constants</h2></td></tr>
 <dl class="section note"><dt>Note</dt><dd>For testing purposes only.</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>Void pointer array. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_p_a_c1720__driver_8c_source.html#l01900">1900</a> of file <a class="el" href="_p_a_c1720__driver_8c_source.html">PAC1720_driver.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__driver_8c_source.html#l01927">1927</a> of file <a class="el" href="_p_a_c1720__driver_8c_source.html">PAC1720_driver.c</a>.</p>
 
 </div>
 </div>
@@ -746,7 +730,41 @@ PAC1720 Application constants</h2></td></tr>
 </div><div class="memdoc">
 <p>Full Scale Range (FSR): current sensing range </p>
 
-<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00258">258</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00260">260</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+
+</div>
+</div>
+<a id="ga46955def7809a7bea15d7aaee0db04c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga46955def7809a7bea15d7aaee0db04c5">&#9670;&nbsp;</a></span>CH_current_sense_high_limit_reg</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t CH_current_sense_high_limit_reg</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Sense voltage high limit register </p>
+
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00262">262</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+
+</div>
+</div>
+<a id="gab09b362cb1fa7940b2d02173410f2cce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gab09b362cb1fa7940b2d02173410f2cce">&#9670;&nbsp;</a></span>CH_current_sense_low_limit_reg</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t CH_current_sense_low_limit_reg</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Sense voltage low limit register </p>
+
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00264">264</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
 
 </div>
 </div>
@@ -763,7 +781,7 @@ PAC1720 Application constants</h2></td></tr>
 </div><div class="memdoc">
 <p>Sense resistor value </p>
 
-<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00252">252</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00254">254</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
 
 </div>
 </div>
@@ -780,7 +798,7 @@ PAC1720 Application constants</h2></td></tr>
 </div><div class="memdoc">
 <p>Current sensing averaging settings </p>
 
-<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00256">256</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00258">258</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
 
 </div>
 </div>
@@ -797,7 +815,24 @@ PAC1720 Application constants</h2></td></tr>
 </div><div class="memdoc">
 <p>Current sensing sampling time settings </p>
 
-<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00254">254</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00256">256</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+
+</div>
+</div>
+<a id="ga46eb1c4b45f18da3c41325faffa92f9f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga46eb1c4b45f18da3c41325faffa92f9f">&#9670;&nbsp;</a></span>ch_internal</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct <a class="el" href="struct_p_a_c1720__ch__internal.html">PAC1720_ch_internal</a>* ch_internal</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Internal config </p>
+
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00275">275</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
 
 </div>
 </div>
@@ -814,7 +849,41 @@ PAC1720 Application constants</h2></td></tr>
 </div><div class="memdoc">
 <p>Optional name </p>
 
-<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00250">250</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00252">252</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+
+</div>
+</div>
+<a id="ga40d21071b8574a9cecf433135a40c04c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga40d21071b8574a9cecf433135a40c04c">&#9670;&nbsp;</a></span>CH_source_voltage_high_limit_reg</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t CH_source_voltage_high_limit_reg</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Source voltage high limit register </p>
+
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00271">271</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+
+</div>
+</div>
+<a id="ga0bdfaf28c77ef4c8e18c7f5c9f9fc59f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga0bdfaf28c77ef4c8e18c7f5c9f9fc59f">&#9670;&nbsp;</a></span>CH_source_voltage_low_limit_reg</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t CH_source_voltage_low_limit_reg</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Source voltage low limit register </p>
+
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00273">273</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
 
 </div>
 </div>
@@ -831,7 +900,7 @@ PAC1720 Application constants</h2></td></tr>
 </div><div class="memdoc">
 <p>Source voltage averaging settings </p>
 
-<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00267">267</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00269">269</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
 
 </div>
 </div>
@@ -848,7 +917,41 @@ PAC1720 Application constants</h2></td></tr>
 </div><div class="memdoc">
 <p>Source voltage sampling time settings </p>
 
-<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00265">265</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00267">267</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+
+</div>
+</div>
+<a id="ga52ccf92c3794cab5d73c66af5bcdddb7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga52ccf92c3794cab5d73c66af5bcdddb7">&#9670;&nbsp;</a></span>conversion_done</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool conversion_done</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Sensors conversion cycle done </p>
+
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00224">224</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+
+</div>
+</div>
+<a id="ga33bc6cf6e364f146941779b88bf4163d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga33bc6cf6e364f146941779b88bf4163d">&#9670;&nbsp;</a></span>CURRENT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float CURRENT</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Actual current </p>
+
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00239">239</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
 
 </div>
 </div>
@@ -865,7 +968,7 @@ PAC1720 Application constants</h2></td></tr>
 </div><div class="memdoc">
 <p>Channel 1 configuration </p>
 
-<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00293">293</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00295">295</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
 
 </div>
 </div>
@@ -882,7 +985,7 @@ PAC1720 Application constants</h2></td></tr>
 </div><div class="memdoc">
 <p>Channel 1 measurements </p>
 
-<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00298">298</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00299">299</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
 
 </div>
 </div>
@@ -899,7 +1002,7 @@ PAC1720 Application constants</h2></td></tr>
 </div><div class="memdoc">
 <p>Channel 2 configuration </p>
 
-<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00295">295</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00297">297</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
 
 </div>
 </div>
@@ -916,7 +1019,24 @@ PAC1720 Application constants</h2></td></tr>
 </div><div class="memdoc">
 <p>Channel 2 measurements </p>
 
-<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00300">300</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00301">301</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+
+</div>
+</div>
+<a id="gaf394072063ae499107e489802f61deaa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaf394072063ae499107e489802f61deaa">&#9670;&nbsp;</a></span>DEV_configuration_reg</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t DEV_configuration_reg</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Configuration register </p>
+
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00286">286</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
 
 </div>
 </div>
@@ -933,7 +1053,24 @@ PAC1720 Application constants</h2></td></tr>
 </div><div class="memdoc">
 <p>Updating measurements interval </p>
 
-<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00286">286</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00288">288</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+
+</div>
+</div>
+<a id="ga03d8effe6bbba7f1fa7516ee80bc1f77"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga03d8effe6bbba7f1fa7516ee80bc1f77">&#9670;&nbsp;</a></span>DEV_mask_reg</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t DEV_mask_reg</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Mask register </p>
+
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00292">292</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
 
 </div>
 </div>
@@ -950,7 +1087,24 @@ PAC1720 Application constants</h2></td></tr>
 </div><div class="memdoc">
 <p>Optional name for device </p>
 
-<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00280">280</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00282">282</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+
+</div>
+</div>
+<a id="gab2508d29cb6f7e05e9855cea6a6863ef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gab2508d29cb6f7e05e9855cea6a6863ef">&#9670;&nbsp;</a></span>DEV_one_shot_reg</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t DEV_one_shot_reg</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>One shot register </p>
+
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00290">290</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
 
 </div>
 </div>
@@ -967,7 +1121,177 @@ PAC1720 Application constants</h2></td></tr>
 </div><div class="memdoc">
 <p>Sensor slave address </p>
 
-<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00282">282</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00284">284</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+
+</div>
+</div>
+<a id="gade382707b3e91e6fc08eba477cb0e1de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gade382707b3e91e6fc08eba477cb0e1de">&#9670;&nbsp;</a></span>internal</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct <a class="el" href="struct_p_a_c1720__internal.html">PAC1720_internal</a>* internal</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Internal values </p>
+
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00303">303</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+
+</div>
+</div>
+<a id="ga22533dfd6296ee4496f3f226f9e6976b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga22533dfd6296ee4496f3f226f9e6976b">&#9670;&nbsp;</a></span>meas_cnt</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t meas_cnt</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Count of actual measurements done </p>
+
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00245">245</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+
+</div>
+</div>
+<a id="ga49e9b5af9568f77bc7160d3aa2895383"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga49e9b5af9568f77bc7160d3aa2895383">&#9670;&nbsp;</a></span>meas_internal</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct <a class="el" href="struct_p_a_c1720__meas__internal.html">PAC1720_meas_internal</a>* meas_internal</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Internal measurement results </p>
+
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00243">243</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+
+</div>
+</div>
+<a id="ga8a9794fa4c6a69b457d1eb04b017ef1e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga8a9794fa4c6a69b457d1eb04b017ef1e">&#9670;&nbsp;</a></span>POWER</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float POWER</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Actual power </p>
+
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00241">241</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+
+</div>
+</div>
+<a id="gab2c4e0ccdb6bbceb92b39ae2bce5bf4a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gab2c4e0ccdb6bbceb92b39ae2bce5bf4a">&#9670;&nbsp;</a></span>SENSE_VOLTAGE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float SENSE_VOLTAGE</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Actual sense voltage </p>
+
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00237">237</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+
+</div>
+</div>
+<a id="ga2b728caf8b7be99048fcf172fc68c473"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga2b728caf8b7be99048fcf172fc68c473">&#9670;&nbsp;</a></span>sense_voltage_high_limit</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool sense_voltage_high_limit</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Current limit exceeded </p>
+
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00230">230</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+
+</div>
+</div>
+<a id="ga9611cd116c965eaee8b2ad068dc9448c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga9611cd116c965eaee8b2ad068dc9448c">&#9670;&nbsp;</a></span>sense_voltage_low_limit</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool sense_voltage_low_limit</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Source voltage limit shortfall </p>
+
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00232">232</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+
+</div>
+</div>
+<a id="ga7aaaa24372c0ec0a7fee00badac28521"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga7aaaa24372c0ec0a7fee00badac28521">&#9670;&nbsp;</a></span>SOURCE_VOLTAGE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float SOURCE_VOLTAGE</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Actual source voltage </p>
+
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00235">235</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+
+</div>
+</div>
+<a id="ga642ad98f7039dd75a2279ed7c8e8ccfb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga642ad98f7039dd75a2279ed7c8e8ccfb">&#9670;&nbsp;</a></span>source_voltage_high_limit</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool source_voltage_high_limit</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Source voltage limit exceeded </p>
+
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00226">226</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
+
+</div>
+</div>
+<a id="gaf9e6bbeb0d03a2b8376324060aae3292"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaf9e6bbeb0d03a2b8376324060aae3292">&#9670;&nbsp;</a></span>source_voltage_low_limit</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool source_voltage_low_limit</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Source voltage limit shortfall </p>
+
+<p class="definition">Definition at line <a class="el" href="_p_a_c1720__definitions_8h_source.html#l00228">228</a> of file <a class="el" href="_p_a_c1720__definitions_8h_source.html">PAC1720_definitions.h</a>.</p>
 
 </div>
 </div>

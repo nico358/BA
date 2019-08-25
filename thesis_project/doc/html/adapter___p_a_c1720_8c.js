@@ -19,7 +19,7 @@ var adapter___p_a_c1720_8c =
     [ "fbus_write_loop", "group__adapter.html#ga6e323de5c8cbf61dce7bc6e69a64bcbe", null ],
     [ "get_ADAPTER_TEST_FPTR_FIELD", "group__adapter.html#ga75174664aea59bbf136098d0db4d14d7", null ],
     [ "poll_fbus", "group__adapter.html#gaf13a461e76b60d7819768abe8abdfcaf", null ],
-    [ "print_measurements_PAC1720", "group__adapter.html#gab2a9882a532e95d229f792d71d0250f5", null ],
+    [ "print_measurements_PAC1720", "group__adapter.html#ga3d24c33435ce82c28b811f828d2f8066", null ],
     [ "print_raw_measurements_PAC1720", "group__adapter.html#ga2fafa881423662801d18f9387162492a", null ],
     [ "sensor_address_out_of_range", "group__adapter.html#ga9270866496854810ca88b664b46e3cbc", null ],
     [ "set_delay_ptr", "group__adapter.html#gae78e98ff6a71aeb22599dfdbd9fb9d55", null ],

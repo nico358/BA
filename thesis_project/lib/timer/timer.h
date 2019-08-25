@@ -10,9 +10,11 @@ void     timer_stop(void);
 uint16_t get_counter(void);
 /* Reset counter 3*/
 void     reset_counter(void);
+/* Reset elapsed_ms*/
+void     reset_timer(void);
 /* Init counter, 1us @8Mhz */
 void     counter_init(void);
 /* Stop counter */
 void     counter_stop(void);
-/* timer elapsed time in ms since init */
+/* timer: elapsed time in ms since init */
 extern uint16_t elapsed_ms;

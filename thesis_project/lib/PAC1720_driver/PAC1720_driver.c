@@ -31,6 +31,16 @@ int8_t set_sensor_to_sleep(struct PAC1720_device *device_ptr);
 bool sensor_is_in_sleep(struct PAC1720_device *device_ptr);
 
 /*!
+ * @fn driver_sleep
+ * 
+ * @brief Delays the program execution.
+ *
+ * @param[in] device_ptr : Pointer to structure instance of sensor.
+ * @param[in] milliseconds : Delay interval.
+ */
+void driver_sleep(struct PAC1720_device *device_ptr, uint16_t milliseconds);
+
+/*!
  * @fn check_name_opt
  * 
  * @brief Checks if a name is provided in struct instance of sensor and set default name if not. 
@@ -734,16 +744,18 @@ int8_t init_device_PAC1720_user_defined(struct PAC1720_device *device_ptr, PAC17
     res = peripherals_null_pointer_check(ext_write, ext_read, ext_delay);
     if(res == PAC1720_OK)
     {   
-        /* Destroy all current internal pointers, reset measurements and set name to default if none is provided */
+        /* Destroy all existing internal pointers, reset measurements and set name to default if none is provided */
         destroy_all_internal_ptrs(device_ptr);
         set_measurements_zero(device_ptr);
         check_name_opt(device_ptr);
         /* Create all pointers */
         res = create_all_internal_ptrs(device_ptr, ext_write, ext_read, ext_delay);
-        /* Set sleep mode to allow writing the config registers of the sensor */
         if(res != PAC1720_OK) return res;
+        /* Set sleep mode to allow writing the config registers of the sensor */
         res = set_sensor_to_sleep(device_ptr);
         if(res != PAC1720_OK) return res;
+        /* Wait 220ms for sensor switching to sleep mode */
+        driver_sleep(device_ptr, WAIT_INTERVAL_SENSOR_SWITCH);
         /* Poll sensor state and return error if sensor ins't sleeping after MAX_ATTEMPTS_SET_SLEEP_MODE */
         uint16_t cnt = 0;
         while(!sensor_is_in_sleep(device_ptr)){
@@ -857,6 +869,21 @@ bool sensor_is_in_sleep(struct PAC1720_device *device_ptr)
     /* If communication fails or config isn't set to sleep return false*/
     if(res != PAC1720_OK || config_reg != CONFIG_STANDBY) return false;
     return true;
+}
+
+/*!
+ * @brief Delays the program execution. 
+ */
+void driver_sleep(struct PAC1720_device *device_ptr, uint16_t milliseconds)
+{
+    if(device_ptr->internal != NULL)
+    {
+        /* Assign internal struct pointer to abstract pointer in device struct instance,
+        allows access of the members of the internal pointer that are basically unknown */
+        struct PAC1720_internal *internal = device_ptr->internal;
+        /* Call delay function */
+        internal->delay_ms(milliseconds);
+    }
 }
 
 /*!

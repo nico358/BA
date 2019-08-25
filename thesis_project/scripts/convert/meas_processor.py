@@ -15,9 +15,11 @@ from storage.adapter.filestorage_adapter import FileStorageAdapter
 
 # The list indexes within its container list
 LIST_INDEX_META    = 0
-LIST_INDEX_CURRENT = 1
-LIST_INDEX_VOLTAGE = 2
-LIST_INDEX_POWER   = 3
+LIST_INDEX_TIME    = 1
+LIST_INDEX_CURRENT = 2
+LIST_INDEX_VOLTAGE = 3
+LIST_INDEX_POWER   = 4
+
 # Format of single measurement
 MEAS_FORMAT        = 'float'
 # Definition of delimiters in file
@@ -28,15 +30,16 @@ VAL_BEGIN_DELIMIT   = '['
 VAL_END_DELIMIT     = ']'
 SPACE               = ' '
 # Indexes of entities in a measurement 
-CNTR_INDEX          = 0
-CH1_NAME_INDEX      = 1
-CH1_CURRENT_INDEX   = 2
-CH1_VOLTAGE_INDEX   = 3
-CH1_POWER_INDEX     = 4
-CH2_NAME_INDEX      = 5
-CH2_CURRENT_INDEX   = 6
-CH2_VOLTAGE_INDEX   = 7
-CH2_POWER_INDEX     = 8
+TIME_INDEX          = 0
+CNTR_INDEX          = 1
+CH1_NAME_INDEX      = 2
+CH1_CURRENT_INDEX   = 3
+CH1_VOLTAGE_INDEX   = 4
+CH1_POWER_INDEX     = 5
+CH2_NAME_INDEX      = 6
+CH2_CURRENT_INDEX   = 7
+CH2_VOLTAGE_INDEX   = 8
+CH2_POWER_INDEX     = 9
 
 class MeasProcessor:
     """The class that processes the measurements and calls store module and plotter."""
@@ -58,8 +61,8 @@ class MeasProcessor:
             for plotting, showplot specifies whether the plot should be shown, plotoverlay specifies the plot format.
         """
         # Containers that are used to store the data temporary
-        self.tmp_meas_ch1 = [[], [], [], []]
-        self.tmp_meas_ch2 = [[], [], [], []]
+        self.tmp_meas_ch1 = [[], [], [], [], []]
+        self.tmp_meas_ch2 = [[], [], [], [], []]
         self.meas_id = meas_id
         self.meas_time = meas_time
         self.meas_timestamp = datetime.now().strftime("%m-%d-%Y-%H-%M-%S")
@@ -127,7 +130,7 @@ class MeasProcessor:
                                 self.name_ch2 = splinter[CH2_NAME_INDEX]
                                 self.setMetaCh2()
                             # Append measurements, must be 9 values, drop incomplete 
-                            if len(splinter) == 9:
+                            if len(splinter) == 10:
                                 self.setListValues(splinter)
                             # Read next incoming line
                             line = reader.readline()
@@ -151,6 +154,8 @@ class MeasProcessor:
         """ This method places the data read from a line in the specified list.
             Hereby 'splinter' contains a list of splitted data from a line (single measurement).
         """
+        # Append measurement time 
+        self.tmp_meas_ch1[LIST_INDEX_TIME].append(int(splinter[TIME_INDEX]))
         # Set the measurement counter in front of a value
         self.tmp_meas_ch1[LIST_INDEX_CURRENT].append(CNTR_DELIMIT + splinter[CNTR_INDEX] + CNTR_DELIMIT)
         # Append actual current value
@@ -164,6 +169,7 @@ class MeasProcessor:
         # Append actual power value
         self.tmp_meas_ch1[LIST_INDEX_POWER].append(float(splinter[CH1_POWER_INDEX]))
         # Process the 2nd channel
+        self.tmp_meas_ch2[LIST_INDEX_TIME].append(int(splinter[TIME_INDEX]))
         self.tmp_meas_ch2[LIST_INDEX_CURRENT].append(CNTR_DELIMIT + splinter[CNTR_INDEX] + CNTR_DELIMIT)
         self.tmp_meas_ch2[LIST_INDEX_CURRENT].append(float(splinter[CH2_CURRENT_INDEX]))
         self.tmp_meas_ch2[LIST_INDEX_VOLTAGE].append(CNTR_DELIMIT + splinter[CNTR_INDEX] + CNTR_DELIMIT)

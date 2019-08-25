@@ -31,6 +31,7 @@ var _p_a_c1720__driver_8c =
     [ "destroy_internal_ptr", "group__driver.html#ga7a2168849699eb4d41639d9cfe02248b", null ],
     [ "destroy_meas_internal_ptr", "group__driver.html#gad33d8589fc4b0cd1d12dbc8a857439b0", null ],
     [ "device_null_pointer_check", "group__driver.html#gae2359f64fc21a7ef7c5530120e0913d6", null ],
+    [ "driver_sleep", "group__driver.html#ga9ee7a1cc1e08daa483fe8821ef7101db", null ],
     [ "first_channel_is_active", "group__driver.html#gacadda2e79fb3b16fcdaa94ed940dc6c0", null ],
     [ "get_all_measurements_PAC1720", "group__driver.html#gadee75c5b79cdfd0bfc62c5c229be8c91", null ],
     [ "get_all_settings_from_sensor", "group__driver.html#ga12a294c56d0c03faf846d1662a2dbaea", null ],

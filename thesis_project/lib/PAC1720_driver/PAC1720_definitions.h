@@ -139,7 +139,7 @@ static const uint8_t 	VSOURCE_RESOLUTION_IGNORE_BITS[4] 							= {8,7,6,5};
 static const float 		DENOMINATOR_correction_source_voltage 						= 1.0f;
 
 /*! @name PAC1720 Application constants */
-/** Failure codes */
+/* Failure codes */
 static const int8_t 	PAC1720_OK 													= 0;
 static const int8_t 	PAC1720_FAILURE 											= -1;
 static const int8_t 	PAC1720_ADDRESS_ERROR 										= -2;
@@ -185,6 +185,8 @@ static const uint8_t 	SHIFT_THREE_BITS											= 3;
 static const uint8_t 	SHIFT_TWO_BITS												= 2;
 /* Max cycles to poll config reg */
 static const uint16_t   MAX_ATTEMPTS_SET_SLEEP_MODE									= 10; 
+/* Sleep interval of process to wait for sensor switching to sleep (ms)*/
+static const uint16_t   WAIT_INTERVAL_SENSOR_SWITCH									= 220;
 
 /** Type definitions */
 /*!
@@ -207,39 +209,39 @@ typedef void (*delay_fptr) (uint32_t period);
 /*!
  * @brief  Datastructures that are used to instanciate a sensor device. Holds configuration and results. 
  */
-/* Internal values */
+/*! Internal values */
 struct 	PAC1720_internal;
-/* Internal config values */
+/*! Internal config values */
 struct  PAC1720_ch_internal;
-/* Internal measurement values */
+/*! Internal measurement values */
 struct 	PAC1720_meas_internal;
 
 /*! @brief Result interface, holds the channels status flags and calculated measurements */
 struct 	PAC1720_CH_measurements 
 {
 	/* Flags for sensor conversion state and limit exceedings */
-	/* Sensors conversion cycle done */
+	/*! Sensors conversion cycle done */
 	bool 						conversion_done;
-	/* Source voltage limit exceeded */
+	/*! Source voltage limit exceeded */
 	bool 						source_voltage_high_limit;
-	/* Source voltage limit shortfall */
+	/*! Source voltage limit shortfall */
 	bool 						source_voltage_low_limit;
-	/* Current limit exceeded */
+	/*! Current limit exceeded */
 	bool 						sense_voltage_high_limit;
-	/* Source voltage limit shortfall */
+	/*! Source voltage limit shortfall */
 	bool 						sense_voltage_low_limit;
 	/* Actual results after calculation */
-	/* Actual source voltage */
+	/*! Actual source voltage */
 	float 						SOURCE_VOLTAGE;
-	/* Actual sense voltage */
+	/*! Actual sense voltage */
 	float 						SENSE_VOLTAGE;
-	/* Actual current */
+	/*! Actual current */
 	float 						CURRENT;
-	/* Actual power */
+	/*! Actual power */
 	float 						POWER;
-	/* Internal measurement results */
+	/*! Internal measurement results */
 	struct PAC1720_meas_internal * meas_internal;
-	/* Count of actual measurements done */
+	/*! Count of actual measurements done */
 	uint32_t 					meas_cnt;
 };//PAC1720_CH_measurements
 
@@ -256,20 +258,20 @@ struct 	PAC1720_CH_config
 	uint8_t 					 CH_current_sense_sampling_average_reg;
 	/*! Full Scale Range (FSR): current sensing range */
 	uint8_t 					 CH_current_sense_FSR_reg;
-	/* Sense voltage high limit register */
+	/*! Sense voltage high limit register */
 	uint8_t 					 CH_current_sense_high_limit_reg;
-	/* Sense voltage low limit register */
+	/*! Sense voltage low limit register */
 	uint8_t 					 CH_current_sense_low_limit_reg;
 
 	/*! Source voltage sampling time settings */
 	uint8_t 					 CH_source_voltage_sampling_time_reg;
 	/*! Source voltage averaging settings */
 	uint8_t 					 CH_source_voltage_sampling_average_reg;
-	/* Source voltage high limit register */
+	/*! Source voltage high limit register */
 	uint8_t 					 CH_source_voltage_high_limit_reg;
-	/* Source voltage low limit register */
+	/*! Source voltage low limit register */
 	uint8_t 					 CH_source_voltage_low_limit_reg;
-	/* Internal config */
+	/*! Internal config */
 	struct PAC1720_ch_internal * ch_internal;
 };//PAC1720_CH_config
 
@@ -280,25 +282,24 @@ struct 	PAC1720_device
 	char *							DEV_name_opt;
 	/*! Sensor slave address */
 	uint8_t 						DEV_sensor_address;
-	/* Configuration register */
+	/*! Configuration register */
 	uint8_t 						DEV_configuration_reg;
 	/*! Updating measurements interval */
 	uint8_t 						DEV_conversion_rate_reg;
-	/* One shot register */
+	/*! One shot register */
 	uint8_t 						DEV_one_shot_reg;
-	/* Mask register */
+	/*! Mask register */
 	uint8_t 					 	DEV_mask_reg;
 
 	/*! Channel 1 configuration */
 	struct PAC1720_CH_config 		DEV_CH1_conf;
 	/*! Channel 2 configuration */
 	struct PAC1720_CH_config 		DEV_CH2_conf;
-
 	/*! Channel 1 measurements */
 	struct PAC1720_CH_measurements 	DEV_CH1_measurements;
 	/*! Channel 2 measurements */
 	struct PAC1720_CH_measurements	DEV_CH2_measurements;
-	/* Internal values */
+	/*! Internal values */
 	struct PAC1720_internal *		internal;
 };//PAC1720_device
 

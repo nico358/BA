@@ -2,7 +2,7 @@
 The Current Measurement Library provides an API for configuration and query of the PAC1720 current sensors. Multiple sensors can be controlled by means of the library. It is designed to be portable an can be adapted to an individual application by the adapter module. 
 
 ## Introduction
-The driver module of the library contains its core functionality such as calculation of the sensor values. The adapter serves as wrapper for the driver and can be changed to the user's need in order to fit the library to an application. A generic communication interface is provided by the adapter module that allows the driver to communicate with the sensors by a serial bus such as the TWI. Therefore an implementation of the bus communication interface is to be provided to the adapter. After initialization of the adapter module the measurements can be triggered and the results read from the driver's interface.
+The driver module of the library contains its core functionality such as calculation of the sensor values. The adapter serves as wrapper for the driver and can be changed to the user's need in order to fit the library to an application. A generic communication interface is provided by the adapter module that allows the driver to communicate with the sensors by a serial bus such as the TWI. Therefore an implementation of the bus communication interface is to be provided to the adapter. After initialization of the adapter module the measurements can be triggered and the results read from the relevant interface.
 
 ## Dependencies
 
@@ -20,7 +20,7 @@ Dependencies of the Current Measurement API used at its development:
 
 ### Code Documentation
 
-The code is documented using Doxygen. See relevant files in folder doc.
+The code has been documented using Doxygen. Open the file index.html in folder doc/html to get an overview about the project.
 
 ## Required configuration
 
@@ -43,11 +43,11 @@ the driver header according to the location.
 
 ## Driver
 
-The entry point of the driver API is the function `adapter_init_PAC1720_user_defined`. It requires a reference to an instance of the `struct PAC1720_device` where the configuration of the sensor is stored. The sensor is initialized by the function call and the measurements can be triggered by a call to the function  `get_all_measurements_PAC1720`. Afterwards the measurements can be read from the device struct.
+The entry point of the sensor API is the function `adapter_init_PAC1720_user_defined`. It takes a reference to an instance of the `struct PAC1720_device` where the configuration of the sensor is stored. The sensor is initialized by the function call and the measurements can be triggered by a call to the function  `get_all_measurements_PAC1720`. Afterwards the measurements can be read from the device struct.
 
 ## Adapter
 
-The adapter needs to be initialized before it can be used. Provide an instance of the `struct BUS_INTERFACE` to the function `adapter_init_peripherals`. This initializes the required communication interface of the adapter. The instance of the struct must be supplied by references to an implementation of bus communication. Basically the adapter wraps the driver API and provides an interface to it. The function `adapter_init_PAC1720_user_defined` is to be called with an `struct PAC1720_device` instance as described above. Internally the function `adapter_init_PAC1720_user_defined`is called. The measurements can be triggered by the function `adapter_get_measurements_PAC1720` and the reading of the results is the same as described above.
+The adapter needs to be initialized before it can be used. Provide an instance of the `struct BUS_INTERFACE` to the function `adapter_init_peripherals`. This initializes the required communication interface of the adapter. The instance of the struct must be assigned to references the bus communication's implementation. Basically the adapter wraps the driver API and provides an interface to it. The function `adapter_init_PAC1720_user_defined` is to be called with an `struct PAC1720_device` instance as described above. Internally the function `adapter_init_PAC1720_user_defined`is called. The measurements can be triggered by the function `adapter_get_measurements_PAC1720` and the reading of the results is the same as described above.
 
 ## Initialization process
 
@@ -78,7 +78,7 @@ Call the init function of the adapter.
  adapter_init_peripherals(&external_bus_interface, external_delay_function);
 ```
 
-Instanciate a `struct PAC1720_device` and set the desired configuration. The names are optional but the resistor values of the measurement resistors is mandatory. The sensor's bus address as well. All other settings are optional but some of them should be set to default as shown below.
+Instanciate a `struct PAC1720_device` and set the desired configuration. The names are optional but the resistor values of the measurement resistors are mandatory. The sensor's bus address is mandatory as well. All other settings are optional but some of them should be set to default as shown below.
 
 ```c
   // Minimum settings required for an initialization:

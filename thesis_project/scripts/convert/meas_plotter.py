@@ -37,7 +37,7 @@ class MeasPlotter:
     """
 
     # The formatted measurement results of a single channel
-    # [[METADATA], [CURRENT], [VOLTAGE], [POWER]] 
+    # [[METADATA], [CURRENT], [VOLTAGE], [POWER], [TIME]] 
     tmp_meas_ch1  = None
     tmp_meas_ch2  = None
     # The path where the plots will be stored
@@ -87,10 +87,10 @@ class MeasPlotter:
                 tmp_meas_names = []
                 tmp_meas_lists = []
                 # Get lists of measurement values and names from container
-                # Discard first element in container (metadata)
-                for i in range(len(tmp_meas_ch) -1):
+                # Discard first two lists in container (metadata + time)
+                for i in range(len(tmp_meas_ch) -2):
                     # Temporary list of results
-                    tmp = tmp_meas_ch[i+1]
+                    tmp = tmp_meas_ch[i+2]
                     # Filter name and append to list of names
                     tmp_meas_names.append(tmp[INDEX_MEAS_NAME])
                     # Filter floats and append to list of results
@@ -98,7 +98,8 @@ class MeasPlotter:
                 # Get metadata
                 title = self.getTitle(tmp_meas_ch)
                 # Get interval by division of meas time by meas number
-                xax = self.getXaxis(tmp_meas_lists)
+                # xax = self.getXaxis(tmp_meas_lists)
+                xax = tmp_meas_ch[1]
                 # Call a plot method according to the 'overlay' attribute
                 if overlay == 1:
                     self.plotAllOverlay(tmp_meas_names, tmp_meas_lists, title, xax, path)
@@ -125,8 +126,18 @@ class MeasPlotter:
                 axs[i].plot(xax, tmp_meas_lists[i], color=PLOT_COLORS[(i % len(PLOT_COLORS)) -1], marker=marker, linewidth=LINEWIDTH, markersize=MARKERSIZE)
                 # The label for the y-axis of the subplot
                 axs[i].set_ylabel(tmp_meas_names[i])
+                # axs[i].set_yticks(tmp_meas_lists[i])
                 # Draw grid lines
                 axs[i].grid(axis='both')
+                # Set x ticks according to time list
+                for tick in axs[i].xaxis.get_major_ticks():
+                    # tick.label.set_fontsize(14) 
+                    # specify integer or one of preset strings, e.g.
+                    tick.label.set_fontsize(5) 
+                    tick.label.set_rotation('vertical')
+                plt.xticks(xax)
+                
+
             # Set the XLABEL for x-axis of each plot
             axs[len(tmp_meas_lists) -1].set_xlabel(XLABEL)
             # Format frame layout
@@ -134,6 +145,7 @@ class MeasPlotter:
             # Set frame title
             fig.suptitle(title, fontsize=FONTSIZE)
             plt.subplots_adjust(top=ADJUST)
+
             # Save figure
             if not path is None:
                 plt.savefig(path + 'beside.png')
@@ -194,6 +206,15 @@ class MeasPlotter:
             fig.tight_layout()
             plt.title(title, fontsize=FONTSIZE, y=1.03)
             plt.subplots_adjust(top=ADJUST)
+
+            # Set x ticks according to time list
+            for tick in host.xaxis.get_major_ticks():
+                # tick.label.set_fontsize(14) 
+                # specify integer or one of preset strings, e.g.
+                tick.label.set_fontsize(5) 
+                tick.label.set_rotation('vertical')
+            plt.xticks(xax)
+
             # Save figure if filepath was != None
             if not path is None:
                 plt.savefig(path  + 'ovelay.png')

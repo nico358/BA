@@ -15,7 +15,7 @@ var adapter___p_a_c1720_8h =
     [ "adapterResetMeasCounts", "group__adapter.html#gaabfaa33e57df19f48dd554cd9842a92b", null ],
     [ "debug_PAC1720", "group__adapter.html#ga7ce57b185d79f8956fe65f12e05a095c", null ],
     [ "get_ADAPTER_TEST_FPTR_FIELD", "group__adapter.html#ga75174664aea59bbf136098d0db4d14d7", null ],
-    [ "print_measurements_PAC1720", "group__adapter.html#gab2a9882a532e95d229f792d71d0250f5", null ],
+    [ "print_measurements_PAC1720", "group__adapter.html#ga3d24c33435ce82c28b811f828d2f8066", null ],
     [ "print_raw_measurements_PAC1720", "group__adapter.html#ga2fafa881423662801d18f9387162492a", null ],
     [ "dev_FPGA_VCC", "group__adapter.html#ga011b4a3622d6aad55d8ab321681a213d", null ],
     [ "dev_USB_MON", "group__adapter.html#gae47b9ecf034efa133019b4670edb3c76", null ],
