@@ -22,7 +22,7 @@ PLOT_COLORS       = ['g', 'b', 'c', 'm', 'y', 'k', 'r']
 FONTSIZE          = 10
 ADJUST            = 0.88
 # Label at the x-axes
-XLABEL            = 'time (ms)'
+XLABEL            = 'time (s)'
 # Linewidth and markersize of first line
 LINEWIDTH         = 0.8
 MARKERSIZE        = 1
@@ -130,10 +130,12 @@ class MeasPlotter:
                 # Draw grid lines
                 axs[i].grid(axis='both')
                 # Set x ticks according to time list
+                k = 0
                 for tick in axs[i].xaxis.get_major_ticks():
-                    # tick.label.set_fontsize(14) 
-                    # specify integer or one of preset strings, e.g.
-                    tick.label.set_fontsize(5) 
+                    if k % 2 == 0:
+                        tick.label.set_visible(False)
+                    k += 1
+                    tick.label.set_fontsize(5)
                     tick.label.set_rotation('vertical')
                 plt.xticks(xax)
                 
@@ -208,9 +210,11 @@ class MeasPlotter:
             plt.subplots_adjust(top=ADJUST)
 
             # Set x ticks according to time list
+            k = 0
             for tick in host.xaxis.get_major_ticks():
-                # tick.label.set_fontsize(14) 
-                # specify integer or one of preset strings, e.g.
+                if k % 2 == 0:
+                    tick.label.set_visible(False)
+                k += 1
                 tick.label.set_fontsize(5) 
                 tick.label.set_rotation('vertical')
             plt.xticks(xax)

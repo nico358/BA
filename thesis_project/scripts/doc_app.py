@@ -15,7 +15,7 @@ from convert.meas_processor                 import MeasProcessor
 
 # Define the path where the data is stored and the communication parameters.
 FOLDERPATH              = 'meas/resetFPGA/' # Folder to store the measurement
-FILEPATH                = '12Hz80mV2s' # File to store the measurement
+FILEPATH                = '400Hz10mV500ms' # File to store the measurement
 PORT_MON                =  'COM26' # COM port monitor MCU 'ttyS26' #
 PORT_MCU                =  'COM22' # COM port controller MCU
 BAUDRATE                = 115200
@@ -35,8 +35,8 @@ SHUT_OFF_FPGA_CMD       = 'c'
 TESTMODE_FPGA_CMD       = 'T'
 LEDFLASH_FPGA_CMD       = 'L'
 # Specifies the layout of the plot
-PLOT_SUBPLOTS           = 1
-PLOT_ALL_IN_ONE         = 2
+PLOT_SUBPLOTS           = 2
+PLOT_ALL_IN_ONE         = 1
 PLOT_BOTH               = 3
 
 def formatData():
@@ -48,27 +48,28 @@ def formatData():
     """
     # Instanciate class object, 'plotoverlay' can be assigned to 1 (three subplots in a single frame) 
     # and 2 (draw all graphs in one plot) or 3 (plot both layouts)
-    mp = MeasProcessor(folderpath=FOLDERPATH, filepath=FILEPATH, meas_id='1', meas_time=time_limit, plotoverlay=PLOT_BOTH, showplot=False)
+    mp = MeasProcessor(folderpath=FOLDERPATH, filepath=FILEPATH, meas_id='1', meas_time=time_limit, plotoverlay=PLOT_SUBPLOTS, showplot=False)
     # Execute data processing
     mp.processFileByLine()
 
 
 if __name__ == "__main__":
     # Set time limit for monitoring
-    time_limit = 2
+    time_limit = 0.5
     # Set desired control signal
     # mcu_data = [TESTMODE_FPGA_CMD, LEDFLASH_FPGA_CMD]
     # mcu_data = UNSUSPEND_FPGA_CMD
     # mcu_data = SUSPEND_FPGA_CMD
     mcu_data = RESET_FPGA_CMD
     # mcu_data = SHUT_ON_FPGA_CMD
+    # mcu_data = SHUT_OFF_FPGA_CMD
 
     # Execute the process one ore more times
     for i in range(1):
         # Instanciate the threads and provide control signals
         scmcu = ts.SerialControllerMcu(port=PORT_MCU, baudrate=BAUDRATE, data=mcu_data)
         sc = ts.StorageController(folderpath=FOLDERPATH, filepath=FILEPATH)
-        scmon = ts.SerialControllerMon(port=PORT_MON, baudrate=BAUDRATE, data=START_MON_WIREL)
+        scmon = ts.SerialControllerMon(port=PORT_MON, baudrate=BAUDRATE, data=START_MON_FPGA)
         # List for thread start method
         # threads = [scmon, sc, scmcu]
         threads = [scmon, sc]
@@ -76,15 +77,15 @@ if __name__ == "__main__":
         ts.startThreads(threads)
         # Start timer
         timer = Timer()
-        # timer.timerSleep(0.2)
-        # scmcu.start()
+        timer.timerSleep(0.2)
+        scmcu.start()
         # Check if time limit is reached and stop threads
         while timer.get_elapsed_time() < time_limit:
             pass
 
         ts.stopThreads(threads)
-        # scmcu.flag = False
-        # scmcu.join()
+        scmcu.flag = False
+        scmcu.join()
 
         # Comment out the method call in order to just store the received data without formatting
         formatData()

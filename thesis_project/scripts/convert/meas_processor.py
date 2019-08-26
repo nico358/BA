@@ -154,8 +154,9 @@ class MeasProcessor:
         """ This method places the data read from a line in the specified list.
             Hereby 'splinter' contains a list of splitted data from a line (single measurement).
         """
+        t = 0.000128 * float(splinter[TIME_INDEX]) 
         # Append measurement time 
-        self.tmp_meas_ch1[LIST_INDEX_TIME].append(int(splinter[TIME_INDEX]))
+        self.tmp_meas_ch1[LIST_INDEX_TIME].append(t)
         # Set the measurement counter in front of a value
         self.tmp_meas_ch1[LIST_INDEX_CURRENT].append(CNTR_DELIMIT + splinter[CNTR_INDEX] + CNTR_DELIMIT)
         # Append actual current value
@@ -169,7 +170,7 @@ class MeasProcessor:
         # Append actual power value
         self.tmp_meas_ch1[LIST_INDEX_POWER].append(float(splinter[CH1_POWER_INDEX]))
         # Process the 2nd channel
-        self.tmp_meas_ch2[LIST_INDEX_TIME].append(int(splinter[TIME_INDEX]))
+        self.tmp_meas_ch2[LIST_INDEX_TIME].append(t)
         self.tmp_meas_ch2[LIST_INDEX_CURRENT].append(CNTR_DELIMIT + splinter[CNTR_INDEX] + CNTR_DELIMIT)
         self.tmp_meas_ch2[LIST_INDEX_CURRENT].append(float(splinter[CH2_CURRENT_INDEX]))
         self.tmp_meas_ch2[LIST_INDEX_VOLTAGE].append(CNTR_DELIMIT + splinter[CNTR_INDEX] + CNTR_DELIMIT)

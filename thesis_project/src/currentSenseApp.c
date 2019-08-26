@@ -52,14 +52,17 @@ int main(void)
             if(state == 4 || state == 6){
                 meas_fail = adapter_get_measurements_PAC1720(&dev_FPGA_VCC);
                 if(!meas_fail)
-                    print_measurements_PAC1720(&dev_FPGA_VCC, &debugWriteString, elapsed_ms);
+                {
+                    print_measurements_PAC1720(&dev_FPGA_VCC, &debugWriteString, get_counter());
                     // debug_PAC1720(&dev_FPGA_VCC, &debugWriteString);
+                }
             }   
             if(state == 5 || state == 6){ 
                 meas_fail = adapter_get_measurements_PAC1720(&dev_WIREL_MCU);
                 if(!meas_fail)
+                {
                     print_measurements_PAC1720(&dev_WIREL_MCU, &debugWriteString, elapsed_ms);
-                    // debug_PAC1720(&dev_WIREL_MCU, &debugWriteString);
+                }
             }
         }
         /* Reset measurement counter when leaving measurement mode */
@@ -83,6 +86,7 @@ int8_t init_platform(void)
     /* Init debug */
     debugInit(NULL);
     external_bus_interface.init();
+    counter_init();
     /* Inject bus communication and delay function pointer to adapter */
     adapter_init_peripherals(&external_bus_interface, external_delay_function);
     /* Configure sensors, struct instances are located in adapter */
@@ -97,6 +101,7 @@ int8_t init_platform(void)
 /* Clean up */
 void tear_down_platform(void)
 {
+    counter_stop();
     adapter_destroy_PAC1720(&dev_USB_MON);
     adapter_destroy_PAC1720(&dev_FPGA_VCC);
     adapter_destroy_PAC1720(&dev_WIREL_MCU);
@@ -126,6 +131,7 @@ void set_state(uint8_t data, uint8_t *state)
         break;
     case 'F': // FPGA monitoring
         *state = 4;
+        reset_counter();
         break;
     case 'W': // Wireless monitoring
         *state = 5;

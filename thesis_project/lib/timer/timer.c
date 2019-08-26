@@ -99,10 +99,12 @@ void timer_stop(void){
 }
 
 void counter_init(void){
+    counter_stop();
 	/* Clear TIM1 Bit in Power Reduction Register */
 	PRR0   &= ~(_BV(PRTIM1));
     /* Clock select bit: prescaling = 8 */
-	TCCR1B |= _BV(CS11);
+    // TCCR1B |= _BV(CS11);
+	TCCR1B |= _BV(CS12) | _BV(CS10);
 }
 
 void counter_stop(void){
