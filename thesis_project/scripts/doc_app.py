@@ -14,8 +14,8 @@ from convert.storage.adapter.timer.timer    import Timer
 from convert.meas_processor                 import MeasProcessor
 
 # Define the path where the data is stored and the communication parameters.
-FOLDERPATH              = 'meas/resetFPGA/' # Folder to store the measurement
-FILEPATH                = '400Hz10mV500ms' # File to store the measurement
+FOLDERPATH              = 'meas/unsuspendFPGA/' # Folder to store the measurement
+FILEPATH                = '400Hz40&10mV1s' # File to store the measurement
 PORT_MON                =  'COM26' # COM port monitor MCU 'ttyS26' #
 PORT_MCU                =  'COM22' # COM port controller MCU
 BAUDRATE                = 115200
@@ -55,12 +55,12 @@ def formatData():
 
 if __name__ == "__main__":
     # Set time limit for monitoring
-    time_limit = 0.5
+    time_limit = 2
     # Set desired control signal
     # mcu_data = [TESTMODE_FPGA_CMD, LEDFLASH_FPGA_CMD]
-    # mcu_data = UNSUSPEND_FPGA_CMD
+    mcu_data = UNSUSPEND_FPGA_CMD
     # mcu_data = SUSPEND_FPGA_CMD
-    mcu_data = RESET_FPGA_CMD
+    # mcu_data = RESET_FPGA_CMD
     # mcu_data = SHUT_ON_FPGA_CMD
     # mcu_data = SHUT_OFF_FPGA_CMD
 
