@@ -184,7 +184,7 @@ static const uint8_t 	SHIFT_FOUR_BITS												= 4;
 static const uint8_t 	SHIFT_THREE_BITS											= 3;
 static const uint8_t 	SHIFT_TWO_BITS												= 2;
 /* Max cycles to poll config reg */
-static const uint16_t   MAX_ATTEMPTS_SET_SLEEP_MODE									= 10; 
+static const uint16_t   MAX_ATTEMPTS_SET_SLEEP_MODE									= 1000; 
 
 /** Type definitions */
 /*!
