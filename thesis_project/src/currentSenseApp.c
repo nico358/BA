@@ -47,7 +47,7 @@ int main(void)
             if(state == 3 || state == 6){
                 meas_fail = adapter_get_measurements_PAC1720(&dev_USB_MON);
                 if(!meas_fail)  
-                print_measurements_PAC1720(&dev_USB_MON, &debugWriteString, elapsed_ms);
+                print_measurements_PAC1720(&dev_USB_MON, &debugWriteString, get_counter());
             }
             if(state == 4 || state == 6){
                 meas_fail = adapter_get_measurements_PAC1720(&dev_FPGA_VCC);
@@ -61,7 +61,7 @@ int main(void)
                 meas_fail = adapter_get_measurements_PAC1720(&dev_WIREL_MCU);
                 if(!meas_fail)
                 {
-                    print_measurements_PAC1720(&dev_WIREL_MCU, &debugWriteString, elapsed_ms);
+                    print_measurements_PAC1720(&dev_WIREL_MCU, &debugWriteString, get_counter());
                 }
             }
         }
@@ -85,7 +85,9 @@ int8_t init_platform(void)
     int8_t res = PAC1720_OK;
     /* Init debug */
     debugInit(NULL);
+    /* Init TWI */
     external_bus_interface.init();
+    /* Init counter */
     counter_init();
     /* Inject bus communication and delay function pointer to adapter */
     adapter_init_peripherals(&external_bus_interface, external_delay_function);
@@ -125,9 +127,11 @@ void set_state(uint8_t data, uint8_t *state)
     {
     case 'A': // Monitor all
         *state = 6;
+        reset_counter();
         break;
     case 'U': // USB monitoring
         *state = 3;
+        reset_counter();
         break;
     case 'F': // FPGA monitoring
         *state = 4;
@@ -135,6 +139,7 @@ void set_state(uint8_t data, uint8_t *state)
         break;
     case 'W': // Wireless monitoring
         *state = 5;
+        reset_counter();
         break;
     case 'q': // Leave program
         *state = 0;
