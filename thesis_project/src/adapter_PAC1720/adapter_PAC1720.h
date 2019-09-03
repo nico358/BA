@@ -175,6 +175,24 @@ void adapter_destroy_PAC1720(struct PAC1720_device *device_ptr);
 int8_t adapter_get_measurements_PAC1720(struct PAC1720_device *device_ptr);
 
 /*!
+ *  @fn adapter_get_measurements_fast_PAC1720
+ *  @brief This API is the fast interface to the meaurements. After calling this function, the results in the measurement struct are updated.
+ *         Polling the conversion done flag of the sensor is omitted to accelerate the measurement. At 8MHz clock frequency and 210kHz TWI frequency
+ *         the function is executed in approximately 1.4ms. 
+ *
+ *  @param[in,out] device_ptr : Pointer to structure instance of sensor.
+ * 
+ *  @note The actual measurement results can be accessed by the sensor struct's internal measurement container. The same measurement can be read
+ *        twice if the function is called several times within one sensor conversion cycle. Adjust the time externally in which you call the function.
+ * 
+ *  @see PAC1720_CH_measurements.
+ * 
+ *  @return Result of API execution status
+ *  @retval 0 -> Success / != 0 value -> Error 
+ */
+int8_t adapter_get_measurements_fast_PAC1720(struct PAC1720_device *device_ptr);
+
+/*!
  * @fn adapter_get_raw_measurements_PAC1720
  * 
  * @brief Interface to the get_raw_measurements function of the driver. This function is to be called 

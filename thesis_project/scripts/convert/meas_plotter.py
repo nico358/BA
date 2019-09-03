@@ -132,7 +132,9 @@ class MeasPlotter:
                 # Set x ticks according to time list
                 k = 0
                 for tick in axs[i].xaxis.get_major_ticks():
-                    if k % 2 == 0:
+                    if k % 10 == 0:
+                        tick.label.set_visible(True)
+                    else:
                         tick.label.set_visible(False)
                     k += 1
                     tick.label.set_fontsize(5)

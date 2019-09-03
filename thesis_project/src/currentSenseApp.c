@@ -45,23 +45,31 @@ int main(void)
         if(state > 2)
         {
             if(state == 3 || state == 6){
-                meas_fail = adapter_get_measurements_PAC1720(&dev_USB_MON);
-                if(!meas_fail)  
-                print_measurements_PAC1720(&dev_USB_MON, &debugWriteString, get_counter());
+                meas_fail = adapter_get_measurements_fast_PAC1720(&dev_USB_MON);
+                if(!meas_fail){
+                    print_measurements_PAC1720(&dev_USB_MON, &debugWriteString, get_counter());
+                    user_delay_ms(1);
+                }
             }
             if(state == 4 || state == 6){
-                meas_fail = adapter_get_measurements_PAC1720(&dev_FPGA_VCC);
+                meas_fail = adapter_get_measurements_fast_PAC1720(&dev_FPGA_VCC);
                 if(!meas_fail)
                 {
                     print_measurements_PAC1720(&dev_FPGA_VCC, &debugWriteString, get_counter());
+                    // sprintf(msg, "%u\r\n",  get_counter());
+                    // debugWriteLine(msg);
+                    // reset_counter();
                     // debug_PAC1720(&dev_FPGA_VCC, &debugWriteString);
+                    user_delay_ms(1);
                 }
             }   
             if(state == 5 || state == 6){ 
-                meas_fail = adapter_get_measurements_PAC1720(&dev_WIREL_MCU);
+                meas_fail = adapter_get_measurements_fast_PAC1720(&dev_WIREL_MCU);
                 if(!meas_fail)
                 {
                     print_measurements_PAC1720(&dev_WIREL_MCU, &debugWriteString, get_counter());
+                    // debug_PAC1720(&dev_WIREL_MCU, &debugWriteString);
+                    user_delay_ms(1);
                 }
             }
         }

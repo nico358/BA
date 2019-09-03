@@ -66,7 +66,7 @@ void destroy_device_PAC1720(struct PAC1720_device *device_ptr);
 
 /*!
  *  @fn get_all_measurements_PAC1720
- *  @brief This API is the interface to meaurements. After calling this function, the results in the measurement struct are updated.
+ *  @brief This API is the interface to the meaurements. After calling this function, the results in the measurement struct are updated.
  *
  *  @param[in,out] device_ptr : Pointer to structure instance of sensor.
  * 
@@ -78,6 +78,24 @@ void destroy_device_PAC1720(struct PAC1720_device *device_ptr);
  *  @retval 0 -> Success / != 0 value -> Error 
  */
 int8_t get_all_measurements_PAC1720(struct PAC1720_device *device_ptr);
+
+/*!
+ *  @fn get_all_measurements_fast_PAC1720
+ *  @brief This API is the fast interface to the meaurements. After calling this function, the results in the measurement struct are updated.
+ *         Polling the conversion done flag of the sensor is omitted to accelerate the measurement. At 8MHz clock frequency and 210kHz TWI frequency
+ *         the function is executed in approximately 1.4ms. 
+ *
+ *  @param[in,out] device_ptr : Pointer to structure instance of sensor.
+ * 
+ *  @note The actual measurement results can be accessed by the sensor struct's internal measurement container. The same measurement can be read
+ *        twice if the function is called several times within one sensor conversion cycle. Adjust the time externally in which you call the function.
+ * 
+ *  @see PAC1720_CH_measurements.
+ * 
+ *  @return Result of API execution status
+ *  @retval 0 -> Success / != 0 value -> Error 
+ */
+int8_t get_all_measurements_fast_PAC1720(struct PAC1720_device *device_ptr);
 
 /*!
  *  @fn get_raw_measurements_PAC1720

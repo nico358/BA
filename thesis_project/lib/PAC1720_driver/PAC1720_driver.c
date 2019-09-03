@@ -788,8 +788,6 @@ void destroy_device_PAC1720(struct PAC1720_device *device_ptr)
  */
 int8_t get_all_measurements_PAC1720(struct PAC1720_device *device_ptr)
 {
-    /* Null pointer check */
-    if(device_ptr->internal == NULL) return PAC1720_NULLPTR_ERROR;
     int8_t res = PAC1720_OK;
     /* Read the limit statuses of the sensor (conversion cycle done flag) */
     res = readin_limit_status_registers(device_ptr);
@@ -808,6 +806,19 @@ int8_t get_all_measurements_PAC1720(struct PAC1720_device *device_ptr)
         set_measurements_zero(device_ptr);
         return PAC1720_CONVERSION_UNDONE;
     }
+    return res;
+}
+
+/*!
+ * @brief Fetch the measurement results from sensor in shortest time period and calculate actual values.
+ */
+int8_t get_all_measurements_fast_PAC1720(struct PAC1720_device *device_ptr)
+{
+    int8_t res = PAC1720_OK;
+    /* Fetch mesaurement results from sensor and calculate actual values */
+    res = readin_measurements_registers(device_ptr);
+    if(res != PAC1720_OK) return res;
+    res = calculate_all_measurements(device_ptr);
     return res;
 }
 

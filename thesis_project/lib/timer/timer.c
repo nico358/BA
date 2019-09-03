@@ -102,8 +102,9 @@ void counter_init(void){
     counter_stop();
 	/* Clear TIM1 Bit in Power Reduction Register */
 	PRR0   &= ~(_BV(PRTIM1));
-    /* Clock select bit: prescaling = 8 */
+    /* Clock select bit: prescaling = 8, reset all ~65.5ms, step = 1us */
     // TCCR1B |= _BV(CS11);
+    /* Clock select bit: prescaling = 1024, reset all ~8.38s, step = 128us */
 	TCCR1B |= _BV(CS12) | _BV(CS10);
 }
 
