@@ -6,7 +6,8 @@
     each MCU on the embedded board and save the received data.
     The scmcu thread controls the MCU, which causes the FPGA to switch
     its state. The scmon activates the measurement function
-    on the monitor MCU and receives the data. The third thread saves this.
+    on the monitor MCU and receives the measurement data. The third thread 
+    saves this. Further, the data can be formatted and plots can be made if desired.
 """
 
 import convert.storage.threaded_storage     as ts
@@ -40,11 +41,14 @@ PLOT_ALL_IN_ONE         = 1
 PLOT_BOTH               = 3
 
 def formatData():
-    """ The stored data is processed within this method.
-        The parameters affect the layout of the result.
-        The paths and time limit are mandatory parameters
+    """ The stored data is processed and plotted by this function.
+        The function parameters affect the layout of the results.
+        The 'path' and 'meas_time' attributes are mandatory parameters
         as they tell the module where the data is to be
         stored and which time period underlies the plot.
+        'plotoverlay' specifies which layout is chosen for the plot and
+        'showplot' specifies whether the plot is to be shown after creation.
+        'meas_id' will be written to the plot title.
     """
     # Instanciate class object, 'plotoverlay' can be assigned to 1 (three subplots in a single frame) 
     # and 2 (draw all graphs in one plot) or 3 (plot both layouts)
