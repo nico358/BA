@@ -121,9 +121,6 @@ static const float 		DENOMINATOR_values_current_sense[8] 						= {63.0f, 127.0f,
 /*! @brief Ignore register bits (sense resolution) in BUS current formula, 
  *  determined by 'current_sense_sampling_time_reg' */
 static const uint8_t 	CURRENT_RESOLUTION_IGNORE_BITS[8] 							= {9,8,7,6,5,4,4,4};
-/*! @brief Ignore upper bits in two's complement calculation of Vsense, 
- *  determined by 'current_sense_sampling_time_reg' */
-// static const uint16_t 	NEGATIVE_CURRENT_RESOLUTION_MASK[8] 						= {0x007F, 0x00FF, 0x01FF, 0x03FF, 0x07FF, 0x0FFF, 0x0FFF, 0x0FFF};
 /*! @brief Sign bit in int8_t, used to check polarity of Vsense reg */
 static const uint8_t 	SHIFT_TO_SIGN_BIT 											= 15;
 
