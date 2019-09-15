@@ -243,7 +243,7 @@ class MeasPlotter:
         """This helper method builds a list of values from the
             meas_time attribute. The list represents the
             x-axis in general and shows the measurement
-            time in ms.
+            time in ms. Not used with timer.
         """
         # Determine how many values the plot method requires for the x-axis
         # List size must be equal to size of measurements

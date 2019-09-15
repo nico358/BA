@@ -58,7 +58,7 @@ class MeasProcessor:
 
     def __init__(self, folderpath='meas/', filepath=None, meas_id=None, meas_time=None, plotoverlay=False, showplot=False):
         """ Constructor: folderpath and filepath is required to load a file of measurement data, meas_time is required
-            for plotting, showplot specifies whether the plot should be shown, plotoverlay specifies the plot format.
+            for plotting when no timer is used, showplot specifies whether the plot should be shown, plotoverlay specifies the plot format.
         """
         # Containers that are used to store the data temporary
         self.tmp_meas_ch1 = [[], [], [], [], []]
@@ -154,6 +154,7 @@ class MeasProcessor:
         """ This method places the data read from a line in the specified list.
             Hereby 'splinter' contains a list of splitted data from a line (single measurement).
         """
+        # Specify timer period of current sense app (128ns = 8MHz/1024 prescale)
         t = 0.000128 * float(splinter[TIME_INDEX]) 
         # Append measurement time 
         self.tmp_meas_ch1[LIST_INDEX_TIME].append(t)
