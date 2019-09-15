@@ -14,8 +14,8 @@ from convert.storage.adapter.timer.timer    import Timer
 from convert.meas_processor                 import MeasProcessor
 
 # Define the path where the data is stored and the communication parameters.
-FOLDERPATH              = 'meas/test/' # Folder to store the measurement
-FILEPATH                = '400Hz40&10mV1s' # File to store the measurement
+FOLDERPATH              = 'meas/TEST/' # Folder to store the measurement
+FILEPATH                = '400Hz10mV1s' # File to store the measurement
 PORT_MON                =  'COM26' # COM port monitor MCU 'ttyS26' #
 PORT_MCU                =  'COM22' # COM port controller MCU
 BAUDRATE                = 115200
@@ -48,21 +48,21 @@ def formatData():
     """
     # Instanciate class object, 'plotoverlay' can be assigned to 1 (three subplots in a single frame) 
     # and 2 (draw all graphs in one plot) or 3 (plot both layouts)
-    mp = MeasProcessor(folderpath=FOLDERPATH, filepath=FILEPATH, meas_id='1', meas_time=time_limit, plotoverlay=PLOT_SUBPLOTS, showplot=False)
+    mp = MeasProcessor(folderpath=FOLDERPATH, filepath=FILEPATH, meas_id='1', meas_time=time_limit, plotoverlay=PLOT_SUBPLOTS, showplot=True)
     # Execute data processing
     mp.processFileByLine()
 
 
 if __name__ == "__main__":
     # Set time limit for monitoring
-    time_limit = 4
+    time_limit = 0.5
     # Set desired control signal
     # mcu_data = [TESTMODE_FPGA_CMD, LEDFLASH_FPGA_CMD]
     # mcu_data = UNSUSPEND_FPGA_CMD
     # mcu_data = SUSPEND_FPGA_CMD
-    mcu_data = RESET_FPGA_CMD
+    # mcu_data = RESET_FPGA_CMD
     # mcu_data = SHUT_ON_FPGA_CMD
-    # mcu_data = SHUT_OFF_FPGA_CMD
+    mcu_data = SHUT_OFF_FPGA_CMD
 
     # Execute the process one ore more times
     for i in range(1):

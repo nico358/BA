@@ -56,10 +56,6 @@ int main(void)
                 if(!meas_fail)
                 {
                     print_measurements_PAC1720(&dev_FPGA_VCC, &debugWriteString, get_counter());
-                    // sprintf(msg, "%u\r\n",  get_counter());
-                    // debugWriteLine(msg);
-                    // reset_counter();
-                    // debug_PAC1720(&dev_FPGA_VCC, &debugWriteString);
                     user_delay_ms(1);
                 }
             }   
@@ -68,7 +64,6 @@ int main(void)
                 if(!meas_fail)
                 {
                     print_measurements_PAC1720(&dev_WIREL_MCU, &debugWriteString, get_counter());
-                    // debug_PAC1720(&dev_WIREL_MCU, &debugWriteString);
                     user_delay_ms(1);
                 }
             }
