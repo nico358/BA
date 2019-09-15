@@ -34,7 +34,8 @@
 			"path": "C:\\Users\\thesis\\wsl\\dox"
 		},
 		{
-			"path": "current_sensing"
+			"name": "thesis_project",
+			"path": "thesis_project"
 		}
 	],
 	"settings": {
